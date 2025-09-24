@@ -41,3 +41,8 @@ Thumbs.db
 build/
 dist/
 *.egg-info/
+
+/static/css/output.css
+/staticfiles/
+
+/node_modules/

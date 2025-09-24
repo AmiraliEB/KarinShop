@@ -1,0 +1,45 @@
+{% load static %}  
+<!DOCTYPE html>
+<html lang="en" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link href="{% static 'css/output.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'js/libs/swiper/swiper.css' %}">
+
+    <title>{% block title %}{% endblock %}</title>
+
+        <!-- ==========================  DARK MODE SCRIPT ============================= -->
+    <script type="text/javascript">
+        if (
+            localStorage.theme === "dark" ||
+            (!("theme" in localStorage) &&
+                window.matchMedia("(prefers-color-scheme: dark)").matches)
+        ) {
+            document.documentElement.classList.add("dark");
+        } else {
+            document.documentElement.classList.remove("dark");
+        }
+    </script>
+</head>
+<body>
+    {% include 'partials/header.html' %}  
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    {% include 'partials/footer.html' %} 
+
+    <!-- Overlay -->
+    <div class="overlay"></div>
+    <div class="search-overlay"></div>
+    
+    <script src="{% static 'js/libs/swiper/swiper.js' %}"></script>
+    <script src="{% static 'js/app.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
