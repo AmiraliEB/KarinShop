@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 
-#TODO: Add brand and category field
+#TODO: Add brand model
 class Product(models.Model):
     name = models.CharField(max_length=255,verbose_name="نام محصول")
     description = models.TextField(blank=True, null=True, verbose_name="توضیحات")
@@ -32,7 +32,6 @@ class Product(models.Model):
         ordering = ['name']
 
 
-
 def product_image_upload_to(instance, filename):
     return f'products/{instance.product.slug}/{filename}'
 
@@ -48,3 +47,21 @@ class ProductImage(models.Model):
         verbose_name = 'تصویر محصول'
         verbose_name_plural = 'تصاویر محصولات'
         ordering = ['-id']
+
+class ProductCategory(models.Model):
+    name = models.CharField(max_length=255, verbose_name="نام دسته‌بندی")
+    slug = models.SlugField(max_length=255, unique=True, verbose_name="اسلاگ", allow_unicode=True)
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name='children', verbose_name="دسته‌بندی والد")
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name, allow_unicode=True)
+        super().save(*args, **kwargs)
+
+    class Meta:
+        verbose_name = 'دسته‌بندی محصول'
+        verbose_name_plural = 'دسته‌بندی‌های محصولات'
+        ordering = ['name']
