@@ -27,6 +27,7 @@ class ProductCategoryAdmin(admin.ModelAdmin):
 class AttributeValueAdmin(admin.ModelAdmin):
     list_display = ('attribute', 'value')
     search_fields = ('value', 'attribute__name')
+    ordering = ('attribute__name', 'value')
 
 @admin.register(models.Attribute)
 class AttributeAdmin(admin.ModelAdmin):

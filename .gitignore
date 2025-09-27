@@ -47,3 +47,5 @@ dist/
 /staticfiles/
 
 /node_modules/
+
+*.mo
