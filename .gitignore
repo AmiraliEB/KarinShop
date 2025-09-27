@@ -20,8 +20,9 @@ staticfiles/
 static_root/
 
 
-media/
+media/*
 media_root/
+!/media/.gitkeep
 
 
 *.log
