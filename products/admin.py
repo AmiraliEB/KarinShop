@@ -1,24 +1,34 @@
 from django.contrib import admin
 from . import models
 
-@admin.register(models.Product)
-class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'price', 'discount_price', 'stock', 'is_available', 'is_amazing', 'is_best_selling', 'datetime_created', 'datetime_modified')
-    list_filter = ('is_available', 'is_amazing', 'is_best_selling', 'datetime_created')
-    search_fields = ('name', 'description')
-    prepopulated_fields = {'slug': ('name',)}
-    # inlines = [ProductImageInline]
-
+class ProductVariantInline(admin.TabularInline):
+    model = models.ProductVariant
+    extra = 1 
+    autocomplete_fields = ['variant_attributes'] 
 class ProductImageInline(admin.TabularInline):
     model = models.ProductImage
     extra = 1
-    readonly_fields = ('image_preview',)
 
-admin.site.register(models.ProductImage)
+@admin.register(models.Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('name', 'category', 'is_variable')
+    list_filter = ('category',)
+    search_fields = ('name', 'description')
+    inlines = [ProductVariantInline,ProductImageInline]
+    readonly_fields = ('slug',)
 
 @admin.register(models.ProductCategory)
 class ProductCategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'parent')
     search_fields = ('name',)
     readonly_fields = ('slug',)
-    # prepopulated_fields = {'slug': ('name',)}
+
+@admin.register(models.AttributeValue)
+class AttributeValueAdmin(admin.ModelAdmin):
+    list_display = ('attribute', 'value')
+    search_fields = ('value', 'attribute__name')
+
+@admin.register(models.Attribute)
+class AttributeAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    search_fields = ('name',)
