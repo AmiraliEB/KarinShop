@@ -319,23 +319,21 @@
                     <!-- IMAGE SLIDER -->
                     <div class="w-2/4 hidden md:flex flex-col justify-center items-center gap-y-4">
                         <span class="open-sliderModal">
-                            <img src="{% static "./images/products/11.png" %}" class="cursor-pointer object-cover" alt="">
+                            <img src={{product.images.last.image.url}} class="cursor-pointer object-cover" alt="">
                         </span>
                         <div class="grid grid-cols-12 child:col-span-3 child:app-border gap-x-4 child:size-16 child:rounded-lg child:cursor-pointer">
-                            <div class="p-1 open-sliderModal">
-                                <img src="{% static "./images/products/11.png" %}" class="object-cover  rounded-lg">
-                            </div>
-                            <div class="p-1 open-sliderModal">
-                                <img src="{% static "./images/products/12.webp" %}" class="object-cover  rounded-lg">
-                            </div>
-                            <div class="p-1 open-sliderModal">
-                                <img src="{% static "./images/products/13.webp" %}" class="object-cover  rounded-lg">
-                            </div>
+                            {% for image_obj in product.images.all reversed%}
+                            {% if forloop.counter <= 3 %}
+                                <div class="p-1 open-sliderModal">
+                                    <img src={{image_obj.image.url}} class="object-cover  rounded-lg">
+                                </div>
+                            {% endif %}
+                            {% endfor %}
                             <div class="overflow-hidden relative open-sliderModal">
-                                    <svg class="absolute size-8 text-gray-100 top-4 left-4 z-10">
+                                    <svg class="absolute size-8 text-gray-600 top-4 left-4 z-10">
                                         <use href="#ellipsis"></use>
                                     </svg>
-                                <img src="{% static "./images/products/14.webp" %}" class="object-cover rounded-lg blur-sm">
+                                <img src={{product.images.first.image.url}} class="object-cover rounded-lg blur-sm">
                             </div>
                         </div>                        
                     </div>
@@ -351,18 +349,11 @@
                         
                         <div class="swiper ProductDetailsSlider mt-14 px-10 w-96 relative">
                             <div class="swiper-wrapper w-[50%] child:w-full child:rounded-lg child:overflow-hidden">
+                            {% for image_obj in product.images.all %}
                               <div class="swiper-slide">
-                                <img src="{% static "./images/products/11.png" %}"  alt="">
+                                <img src={{image_obj.image.url}}  alt="">
                               </div>
-                              <div class="swiper-slide">
-                                <img src="{% static "./images/products/12.webp" %}"  alt="">
-                              </div>
-                              <div class="swiper-slide">
-                                <img src="{% static "./images/products/13.webp" %}"  alt="">
-                              </div>
-                              <div class="swiper-slide">
-                                <img src="{% static "./images/products/14.webp" %}"  alt="">
-                              </div>
+                            {% endfor %}
                             </div>
                         </div>
                         <button class="slider-navigate_btn absolute right-40 top-[17rem] border dark:border-gray-700 border-gray-200 button-prev-ProductDetailsSlider z-20">

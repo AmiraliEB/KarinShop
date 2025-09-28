@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views import generic
-from products.models import Product, ProductCategory
+from products.models import Product, ProductImage
 from django.shortcuts import get_object_or_404, redirect
 
 def post_redirect_view(request, pk):
