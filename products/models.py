@@ -17,6 +17,7 @@ class Product(models.Model):
     is_amazing = models.BooleanField(default=False, verbose_name=_("is amazing?"))
     is_best_selling = models.BooleanField(default=False, verbose_name=_("is best selling?"))
 
+    brand = models.ForeignKey('Brand', on_delete=models.PROTECT, blank=True, null=True, related_name='products', verbose_name=_("brand"))
     color = models.ManyToManyField('Color', blank=True, verbose_name=_("available colors"))
     attribute_values = models.ManyToManyField('AttributeValue', verbose_name=_("attribute values"))
 
@@ -41,6 +42,17 @@ class Product(models.Model):
     
     def get_absolute_url(self):
         return reverse('products:product-detail', kwargs={'pk': self.pk, 'slug': self.slug})
+    @property
+    def full_name(self):
+        base_name = f'{self.category} {self.brand} مدل {self.name} '
+        storage_value_obj = self.attribute_values.filter(attribute__name='حافظه داخلی').first()
+        ram_value_obj = self.attribute_values.filter(attribute__name='رم').first()
+        
+        if storage_value_obj:
+            base_name += f'ظرفیت {storage_value_obj.value} گیگابایت '
+        if ram_value_obj:
+            base_name += f'رم {ram_value_obj.value} گیگابایت '
+        return base_name.strip()
 
 def product_image_upload_to(instance, filename):
     return f'products/{instance.product.slug}/{filename}'
@@ -108,4 +120,7 @@ class Color(models.Model):
     
 class Brand(models.Model):
     name = models.CharField(max_length=50, verbose_name=_("brand"))
-    categoty = models.ForeignKey(ProductCategory, on_delete=models.PROTECT, related_name='brands', verbose_name=_("category"))
+    category = models.ForeignKey(ProductCategory, on_delete=models.PROTECT, related_name='brands', verbose_name=_("category"))
+
+    def __str__(self):
+        return self.name

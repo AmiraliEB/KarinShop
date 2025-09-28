@@ -25,7 +25,7 @@ class ProductAdmin(admin.ModelAdmin):
             'fields': ('is_available', 'is_amazing', 'is_best_selling')
         }),
         (None, {
-            'fields': ('color', 'attribute_values')
+            'fields': ('brand','color', 'attribute_values')
         }),
         (None, {
             'fields': ('datetime_created', 'datetime_modified')
@@ -52,3 +52,5 @@ class AttributeAdmin(admin.ModelAdmin):
 class ColorAdmin(admin.ModelAdmin):
     list_display = ('name',)
     search_fields = ('name',)
+
+admin.site.register(models.Brand)
