@@ -1,54 +1,14 @@
 from django.db import models
+from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
+from django.core.exceptions import ValidationError
 
-#TODO: Add brand model
 class Product(models.Model):
-    PRODUCT_TYPE_CHOICES = (
-        ('PARENT', _('parent')),
-        ('CHILD', _('child')),
-    )
-
-    product_type = models.CharField(
-        _("product type"),
-        max_length=10,
-        choices=PRODUCT_TYPE_CHOICES,
-        default='CHILD'
-    )
-
-    parent = models.ForeignKey(
-    'self',
-    on_delete=models.CASCADE,
-    null=True,
-    blank=True,
-    related_name='children',
-    verbose_name=_("parent product")
-    )
-
     name = models.CharField(max_length=255,verbose_name=_("product name"))
-    category = models.ForeignKey('ProductCategory', on_delete=models.SET_NULL, blank=True, null=True, related_name='products', verbose_name=_("category"))
+    category = models.ForeignKey('ProductCategory', on_delete=models.PROTECT, blank=True, null=True, related_name='products', verbose_name=_("category"))
     slug = models.SlugField(max_length=255, unique=True, verbose_name=_("slug"), allow_unicode=True)
     
-    fixed_attribute = models.ManyToManyField('AttributeValue', blank=True, verbose_name=_("fixed attributes"))
-    is_variable = models.BooleanField(default=False, verbose_name=_("product has color?"))
-
-    datetime_created = models.DateTimeField(auto_now_add=True, verbose_name=_("creation date"))
-    datetime_modified = models.DateTimeField(auto_now=True, verbose_name=_("last modified date"))
-
-    def __str__(self):
-        return self.name
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name, allow_unicode=True)
-        super().save(*args, **kwargs)
-    class Meta:
-        verbose_name = _("product")
-        verbose_name_plural = _("products"  )
-        ordering = ['name']
-
-class ProductVariant(models.Model):
-    product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='variants', verbose_name=_("product"))
     price = models.DecimalField(max_digits=10, decimal_places=0, verbose_name=_("price (Toman)"))
     discount_price = models.DecimalField(max_digits=10, decimal_places=0, blank=True, null=True, verbose_name=_("discounted price (Toman)"))
     stock = models.PositiveIntegerField(default=0, verbose_name=_("stock"))
@@ -57,27 +17,30 @@ class ProductVariant(models.Model):
     is_amazing = models.BooleanField(default=False, verbose_name=_("is amazing?"))
     is_best_selling = models.BooleanField(default=False, verbose_name=_("is best selling?"))
 
+    color = models.ManyToManyField('Color', blank=True, verbose_name=_("available colors"))
+    attribute_values = models.ManyToManyField('AttributeValue', verbose_name=_("attribute values"))
+
     datetime_created = models.DateTimeField(auto_now_add=True, verbose_name=_("creation date"))
     datetime_modified = models.DateTimeField(auto_now=True, verbose_name=_("last modified date"))
 
-    variant_attributes = models.ManyToManyField('AttributeValue', verbose_name=_("variant attributes"))
+    class Meta:
+        verbose_name = _("product")
+        verbose_name_plural = _("products"  )
+        ordering = ['name']
 
-    def __str__(self):
-        return f"{self.product.name} - {self.name}"
-    
     def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name, allow_unicode=True)
+
         if self.stock == 0:
             self.is_available = False
         super().save(*args, **kwargs)
 
-    class Meta:
-        verbose_name = _('product variant')
-        verbose_name_plural = _('product variants')
-
-
     def __str__(self):
-        variant_name = " / ".join([str(attr.value) for attr in self.variant_attributes.all()])
-        return f"{self.product.name} ({variant_name})"
+        return f'{self.id}:{self.name}'
+    
+    def get_absolute_url(self):
+        return reverse('products:product-detail', kwargs={'pk': self.pk, 'slug': self.slug})
 
 def product_image_upload_to(instance, filename):
     return f'products/{instance.product.slug}/{filename}'
@@ -136,3 +99,13 @@ class AttributeValue(models.Model):
         verbose_name_plural = _('attribute values')
         unique_together = ('value', 'attribute')
         ordering = ['attribute']
+
+class Color(models.Model):
+    name = models.CharField(max_length=50, verbose_name=_("color name"))
+    hex_code = models.CharField(max_length=7, verbose_name=_("hex code"))
+    def __str__(self):
+        return self.name
+    
+class Brand(models.Model):
+    name = models.CharField(max_length=50, verbose_name=_("brand"))
+    categoty = models.ForeignKey(ProductCategory, on_delete=models.PROTECT, related_name='brands', verbose_name=_("category"))

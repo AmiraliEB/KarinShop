@@ -114,7 +114,7 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 
 #static files settings
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [str(BASE_DIR.joinpath('static'))]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'),]
 
 #Media files settings
 MEDIA_URL = '/media/'

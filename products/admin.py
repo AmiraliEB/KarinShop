@@ -1,22 +1,36 @@
 from django.contrib import admin
+from django.utils.translation import gettext_lazy as _
 from . import models
 
-class ProductVariantInline(admin.TabularInline):
-    model = models.ProductVariant
-    extra = 1 
-    autocomplete_fields = ['variant_attributes'] 
 class ProductImageInline(admin.TabularInline):
     model = models.ProductImage
     extra = 1
 
 @admin.register(models.Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category', 'is_variable')
+    list_display = ('name',)
     list_filter = ('category',)
     search_fields = ('name', 'description')
-    inlines = [ProductVariantInline,ProductImageInline]
-    readonly_fields = ('slug',)
+    readonly_fields = ('slug','datetime_created', 'datetime_modified')
+    inlines = [ProductImageInline]
 
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'category',)
+        }),
+        (None, {
+            'fields': ('price','discount_price', 'stock')
+        }),
+        (None, {
+            'fields': ('is_available', 'is_amazing', 'is_best_selling')
+        }),
+        (None, {
+            'fields': ('color', 'attribute_values')
+        }),
+        (None, {
+            'fields': ('datetime_created', 'datetime_modified')
+        }),
+    )
 @admin.register(models.ProductCategory)
 class ProductCategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'parent')
@@ -31,5 +45,10 @@ class AttributeValueAdmin(admin.ModelAdmin):
 
 @admin.register(models.Attribute)
 class AttributeAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    search_fields = ('name',)
+
+@admin.register(models.Color)
+class ColorAdmin(admin.ModelAdmin):
     list_display = ('name',)
     search_fields = ('name',)

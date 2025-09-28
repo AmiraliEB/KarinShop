@@ -38,7 +38,7 @@ msgstr "محصول مادر (غیرقابل فروش)"
 
 #: products/models.py:28
 msgid "product name"
-msgstr "نام محصول"
+msgstr "نام محصول / مشخصه کانفیگ"
 
 #: products/models.py:29
 msgid "category"
