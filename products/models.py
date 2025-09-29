@@ -4,10 +4,22 @@ from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 
+class ParentProduct(models.Model):
+    name = models.CharField(max_length=255, verbose_name=_("parent product name"))
+    category = models.ForeignKey('ProductCategory', on_delete=models.PROTECT, blank=True, null=True, related_name='product_parents', verbose_name=_("category"))
+    brand = models.ForeignKey('Brand', on_delete=models.PROTECT, blank=True, null=True, related_name='product_parents', verbose_name=_("brand"))
+    slug = models.SlugField(max_length=255, unique=True, verbose_name=_("slug"))
+    
+    datetime_created = models.DateTimeField(auto_now_add=True, verbose_name=_("creation date"))
+    datetime_modified = models.DateTimeField(auto_now=True, verbose_name=_("last modified date"))
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+
 class Product(models.Model):
-    name = models.CharField(max_length=255,verbose_name=_("product name"))
-    category = models.ForeignKey('ProductCategory', on_delete=models.PROTECT, blank=True, null=True, related_name='products', verbose_name=_("category"))
-    slug = models.SlugField(max_length=255, unique=True, verbose_name=_("slug"), allow_unicode=True)
+    parent_name = models.ForeignKey('ParentProduct', on_delete=models.PROTECT, related_name='products', verbose_name=_("product name"))
+    slug = models.SlugField(max_length=255, unique=True, verbose_name=_("slug"))
     
     price = models.DecimalField(max_digits=10, decimal_places=0, verbose_name=_("price (Toman)"))
     discount_price = models.DecimalField(max_digits=10, decimal_places=0, blank=True, null=True, verbose_name=_("discounted price (Toman)"))
@@ -17,8 +29,7 @@ class Product(models.Model):
     is_amazing = models.BooleanField(default=False, verbose_name=_("is amazing?"))
     is_best_selling = models.BooleanField(default=False, verbose_name=_("is best selling?"))
 
-    brand = models.ForeignKey('Brand', on_delete=models.PROTECT, blank=True, null=True, related_name='products', verbose_name=_("brand"))
-    color = models.ManyToManyField('Color', blank=True, verbose_name=_("available colors"))
+    color = models.ManyToManyField('Color', blank=True, verbose_name=_("colors"))
     attribute_values = models.ManyToManyField('AttributeValue', verbose_name=_("attribute values"))
 
 
@@ -28,28 +39,21 @@ class Product(models.Model):
     class Meta:
         verbose_name = _("product")
         verbose_name_plural = _("products"  )
-        ordering = ['name']
 
     def clean(self):
         if self.discount_price and self.discount_price >= self.price:
             raise ValidationError({'discount_price': _("Discount price must be less than the original price.")})
 
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name, allow_unicode=True)
-
-        if self.stock == 0:
-            self.is_available = False
-        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f'{self.id}:{self.name}'
+        return f'{self.id}:{self.parent_name}'
     
     def get_absolute_url(self):
-        return reverse('products:product-detail', kwargs={'pk': self.pk, 'slug': self.full_name})
+        return reverse('products:post_redirect', kwargs={'pk': self.pk})
+    
     @property
     def full_name(self):
-        base_name = f'{self.category} {self.brand} مدل {self.name} '
+        base_name = f'{self.parent_name.category} {self.parent_name.brand} مدل {self.parent_name.name} '
         storage_value_obj = self.attribute_values.filter(attribute__name='حافظه داخلی').first()
         ram_value_obj = self.attribute_values.filter(attribute__name='رم').first()
         register_value_obj = self.attribute_values.filter(attribute__name='وضعیت رجیستر').first()
@@ -61,17 +65,29 @@ class Product(models.Model):
         if register_value_obj:
             base_name += f'({register_value_obj.value}) '
         return base_name.strip()
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            storage_value_obj = self.attribute_values.filter(attribute__name='حافظه داخلی').first()
+            ram_value_obj = self.attribute_values.filter(attribute__name='رم').first()
+            slug_text = {self.parent_name.name}-{storage_value_obj.value if storage_value_obj else ''}-{ram_value_obj.value if ram_value_obj else ''}
+            self.slug = slugify(slug_text)
+
+        self.is_available = self.stock > 0
+        super().save(*args, **kwargs)
+
+
 
 def product_image_upload_to(instance, filename):
-    return f'products/{instance.product.slug}/{filename}'
+    return f'products/{instance.parent_product.slug}/{filename}'
 
 class ProductImage(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images', verbose_name=_("product"))
+    parent_product = models.ForeignKey(ParentProduct, on_delete=models.CASCADE, related_name='images', verbose_name=_("parent product"))
     image = models.ImageField(upload_to=product_image_upload_to, verbose_name=_("product image"))
     alt_text = models.CharField(max_length=255, blank=True, null=True, verbose_name=_("alt text"))
 
     def __str__(self):
-        return f"Image for {self.product.name}"
+        return f"Image for {self.parent_product.name}"
 
     class Meta:
         verbose_name = _('product image')
@@ -81,7 +97,7 @@ class ProductImage(models.Model):
 class ProductCategory(models.Model):
     name = models.CharField(max_length=255, verbose_name=_("category name"))
     code = models.CharField(max_length=50, unique=True, verbose_name=_("category code"))
-    slug = models.SlugField(max_length=255, unique=True, verbose_name=_("slug"), allow_unicode=True)
+    slug = models.SlugField(max_length=255, unique=True, verbose_name=_("slug"))
     parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name='children', verbose_name=_("parent category"))
 
 
@@ -90,7 +106,7 @@ class ProductCategory(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.name, allow_unicode=True)
+            self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
     class Meta:

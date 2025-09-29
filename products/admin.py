@@ -6,17 +6,35 @@ class ProductImageInline(admin.TabularInline):
     model = models.ProductImage
     extra = 1
 
-@admin.register(models.Product)
-class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name',)
-    list_filter = ('category',)
-    search_fields = ('name', 'description')
-    readonly_fields = ('slug','datetime_created', 'datetime_modified')
+@admin.register(models.ParentProduct)
+class ParentProductAdmin(admin.ModelAdmin):
+    list_display = ('name','category','brand','slug')
+    readonly_fields = ('slug','datetime_created','datetime_modified')
     inlines = [ProductImageInline]
 
     fieldsets = (
         (None, {
-            'fields': ('name', 'category',)
+            'fields':('name','category','brand',)
+        }),
+        (None, {
+            'fields':('slug',)
+        }),
+        (None, {
+            'fields':('datetime_created','datetime_modified',)
+        })
+    )
+
+
+@admin.register(models.Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('parent_name',)
+    search_fields = ('name', 'description')
+    readonly_fields = ('slug','datetime_created', 'datetime_modified')
+
+    filter_horizontal = ('color', 'attribute_values',)
+    fieldsets = (
+        (None, {
+            'fields': ('parent_name',)
         }),
         (None, {
             'fields': ('price','discount_price', 'stock')
@@ -25,12 +43,13 @@ class ProductAdmin(admin.ModelAdmin):
             'fields': ('is_available', 'is_amazing', 'is_best_selling')
         }),
         (None, {
-            'fields': ('brand','color', 'attribute_values')
+            'fields': ('color', 'attribute_values')
         }),
         (None, {
             'fields': ('datetime_created', 'datetime_modified')
         }),
     )
+
 @admin.register(models.ProductCategory)
 class ProductCategoryAdmin(admin.ModelAdmin):
     list_display = ('name','code', 'parent')
@@ -46,6 +65,7 @@ class AttributeValueAdmin(admin.ModelAdmin):
 class AttributeValueInline(admin.TabularInline):
     model = models.AttributeValue
     extra = 1
+    
 @admin.register(models.Attribute)
 class AttributeAdmin(admin.ModelAdmin):
     list_display = ('name',)

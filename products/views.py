@@ -20,3 +20,7 @@ class ProductDetailView(generic.DetailView):
         context['category'] = product_obj.category
         return context
 
+    def get_queryset(self):
+        queryset =  super().get_queryset()
+        return queryset.prefetch_related('images', 'attribute_values__attribute', 'brand', 'color', 'category')
+
