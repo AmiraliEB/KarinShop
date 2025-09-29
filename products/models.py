@@ -24,7 +24,7 @@ class ParentProduct(models.Model):
         return self.name
     
 class Product(models.Model):
-    parent_name = models.ForeignKey('ParentProduct', on_delete=models.PROTECT, related_name='products', verbose_name=_("product name"))
+    parent_product = models.ForeignKey('ParentProduct', on_delete=models.PROTECT, related_name='products', verbose_name=_("product name"))
     slug = models.SlugField(max_length=255, unique=True, verbose_name=_("slug"))
     
     price = models.DecimalField(max_digits=10, decimal_places=0, verbose_name=_("price (Toman)"))
@@ -52,14 +52,14 @@ class Product(models.Model):
 
 
     def __str__(self):
-        return f'{self.id}:{self.parent_name}'
+        return f'{self.id}:{self.parent_product}'
     
     def get_absolute_url(self):
         return reverse('products:post_redirect', kwargs={'pk': self.pk})
     
     @property
     def full_name(self):
-        base_name = f'{self.parent_name.category} {self.parent_name.brand} مدل {self.parent_name.name} '
+        base_name = f'{self.parent_product.category} {self.parent_product.brand} مدل {self.parent_product.name} '
         storage_value_obj = self.attribute_values.filter(attribute__name='حافظه داخلی').first()
         ram_value_obj = self.attribute_values.filter(attribute__name='رم').first()
         register_value_obj = self.attribute_values.filter(attribute__name='وضعیت رجیستر').first()
@@ -164,7 +164,7 @@ from django.utils.text import slugify
 def update_product_slug_on_attribute_change(sender, instance, action, **kwargs):
     if action == "post_add" or action == "post_remove" or action == "post_clear":
         
-        final_slug_parts = [slugify(instance.parent_name.name)]
+        final_slug_parts = [slugify(instance.parent_product.name)]
             
         storage_value_obj = instance.attribute_values.filter(attribute__name='حافظه داخلی').first()
         ram_value_obj = instance.attribute_values.filter(attribute__name='رم').first()

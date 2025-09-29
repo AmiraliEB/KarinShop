@@ -22,10 +22,10 @@ class ProductDetailView(generic.DetailView):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.select_related(
-            'parent_name__brand',
-            'parent_name__category'
+            'parent_product__brand',
+            'parent_product__category'
         ).prefetch_related(
-            'parent_name__images',
+            'parent_product__images',
             'attribute_values__attribute',
             'color'
         )

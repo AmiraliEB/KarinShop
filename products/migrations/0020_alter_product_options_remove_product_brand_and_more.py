@@ -60,7 +60,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='product',
-            name='parent_name',
+            name='parent_product',
             field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.PROTECT, related_name='products', to='products.parentproduct', verbose_name='product name'),
             preserve_default=False,
         ),

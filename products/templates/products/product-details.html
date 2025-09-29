@@ -322,7 +322,7 @@
                             <img src={{product.images.last.image.url}} class="cursor-pointer object-cover" alt="">
                         </span>
                         <div class="grid grid-cols-12 child:col-span-3 child:app-border gap-x-4 child:size-16 child:rounded-lg child:cursor-pointer">
-                            {% for image_obj in product.parent_name.images.all reversed%}
+                            {% for image_obj in product.parent_product.images.all reversed%}
                             {% if forloop.counter <= 3 %}
                                 <div class="p-1 open-sliderModal">
                                     <img src={{image_obj.image.url}} class="object-cover  rounded-lg">

@@ -27,14 +27,14 @@ class ParentProductAdmin(admin.ModelAdmin):
 
 @admin.register(models.Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('id','parent_name','slug')
+    list_display = ('id','parent_product','slug')
     search_fields = ('name', 'description')
     readonly_fields = ('slug','datetime_created', 'datetime_modified')
 
     filter_horizontal = ('color', 'attribute_values',)
     fieldsets = (
         (None, {
-            'fields': ('parent_name',)
+            'fields': ('parent_product',)
         }),
         (None, {
             'fields': ('price','discount_price', 'stock')
