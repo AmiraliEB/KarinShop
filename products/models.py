@@ -30,6 +30,10 @@ class Product(models.Model):
         verbose_name_plural = _("products"  )
         ordering = ['name']
 
+    def clean(self):
+        if self.discount_price and self.discount_price >= self.price:
+            raise ValidationError({'discount_price': _("Discount price must be less than the original price.")})
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name, allow_unicode=True)
@@ -42,7 +46,7 @@ class Product(models.Model):
         return f'{self.id}:{self.name}'
     
     def get_absolute_url(self):
-        return reverse('products:product-detail', kwargs={'pk': self.pk, 'slug': self.slug})
+        return reverse('products:product-detail', kwargs={'pk': self.pk, 'slug': self.full_name})
     @property
     def full_name(self):
         base_name = f'{self.category} {self.brand} مدل {self.name} '
@@ -126,7 +130,8 @@ class Color(models.Model):
     
 class Brand(models.Model):
     name = models.CharField(max_length=50, verbose_name=_("brand"))
-    category = models.ForeignKey(ProductCategory, on_delete=models.PROTECT, related_name='brands', verbose_name=_("category"))
+    code = models.CharField(max_length=50, unique=True, verbose_name=_("brand code"))
+    category = models.ManyToManyField(ProductCategory, related_name='brands', verbose_name=_("related categories"))
 
     def __str__(self):
         return self.name
