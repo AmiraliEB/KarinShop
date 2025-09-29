@@ -27,7 +27,7 @@ class ParentProductAdmin(admin.ModelAdmin):
 
 @admin.register(models.Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('parent_name',)
+    list_display = ('id','parent_name','slug')
     search_fields = ('name', 'description')
     readonly_fields = ('slug','datetime_created', 'datetime_modified')
 

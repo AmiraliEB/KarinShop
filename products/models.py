@@ -3,6 +3,8 @@ from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
+from django.db.models.signals import m2m_changed
+from django.dispatch import receiver
 
 class ParentProduct(models.Model):
     name = models.CharField(max_length=255, verbose_name=_("parent product name"))
@@ -16,7 +18,11 @@ class ParentProduct(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
+    def __str__(self):
+        return self.name
+    
 class Product(models.Model):
     parent_name = models.ForeignKey('ParentProduct', on_delete=models.PROTECT, related_name='products', verbose_name=_("product name"))
     slug = models.SlugField(max_length=255, unique=True, verbose_name=_("slug"))
@@ -67,14 +73,9 @@ class Product(models.Model):
         return base_name.strip()
     
     def save(self, *args, **kwargs):
-        if not self.slug:
-            storage_value_obj = self.attribute_values.filter(attribute__name='حافظه داخلی').first()
-            ram_value_obj = self.attribute_values.filter(attribute__name='رم').first()
-            slug_text = {self.parent_name.name}-{storage_value_obj.value if storage_value_obj else ''}-{ram_value_obj.value if ram_value_obj else ''}
-            self.slug = slugify(slug_text)
-
         self.is_available = self.stock > 0
         super().save(*args, **kwargs)
+
 
 
 
@@ -151,3 +152,28 @@ class Brand(models.Model):
 
     def __str__(self):
         return self.name
+    
+
+# در انتهای فایل models.py
+
+from django.db.models.signals import m2m_changed
+from django.dispatch import receiver
+from django.utils.text import slugify
+
+@receiver(m2m_changed, sender=Product.attribute_values.through)
+def update_product_slug_on_attribute_change(sender, instance, action, **kwargs):
+    if action == "post_add" or action == "post_remove" or action == "post_clear":
+        
+        final_slug_parts = [slugify(instance.parent_name.name)]
+            
+        storage_value_obj = instance.attribute_values.filter(attribute__name='حافظه داخلی').first()
+        ram_value_obj = instance.attribute_values.filter(attribute__name='رم').first()
+        if storage_value_obj:
+            final_slug_parts.append(slugify(storage_value_obj.value))
+        if ram_value_obj:
+            final_slug_parts.append(slugify(ram_value_obj.value))
+        final_slug = '-'.join(final_slug_parts)
+
+        if instance.slug != final_slug:
+            Product.objects.filter(pk=instance.pk).update(slug=final_slug)
+            instance.slug = final_slug
