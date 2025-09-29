@@ -21,6 +21,7 @@ class Product(models.Model):
     color = models.ManyToManyField('Color', blank=True, verbose_name=_("available colors"))
     attribute_values = models.ManyToManyField('AttributeValue', verbose_name=_("attribute values"))
 
+
     datetime_created = models.DateTimeField(auto_now_add=True, verbose_name=_("creation date"))
     datetime_modified = models.DateTimeField(auto_now=True, verbose_name=_("last modified date"))
 
@@ -47,11 +48,14 @@ class Product(models.Model):
         base_name = f'{self.category} {self.brand} مدل {self.name} '
         storage_value_obj = self.attribute_values.filter(attribute__name='حافظه داخلی').first()
         ram_value_obj = self.attribute_values.filter(attribute__name='رم').first()
+        register_value_obj = self.attribute_values.filter(attribute__name='وضعیت رجیستر').first()
         
         if storage_value_obj:
             base_name += f'ظرفیت {storage_value_obj.value} گیگابایت '
         if ram_value_obj:
             base_name += f'رم {ram_value_obj.value} گیگابایت '
+        if register_value_obj:
+            base_name += f'({register_value_obj.value}) '
         return base_name.strip()
 
 def product_image_upload_to(instance, filename):
@@ -72,8 +76,10 @@ class ProductImage(models.Model):
 
 class ProductCategory(models.Model):
     name = models.CharField(max_length=255, verbose_name=_("category name"))
+    code = models.CharField(max_length=50, unique=True, verbose_name=_("category code"))
     slug = models.SlugField(max_length=255, unique=True, verbose_name=_("slug"), allow_unicode=True)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name='children', verbose_name=_("parent category"))
+
 
     def __str__(self):
         return self.name
@@ -91,6 +97,7 @@ class ProductCategory(models.Model):
 class Attribute(models.Model):
     name = models.CharField(max_length=255, verbose_name=_("attribute name"))
     categories = models.ManyToManyField(ProductCategory, related_name='attributes', verbose_name=_("related categories"))
+
     def __str__(self):
         return self.name
 
@@ -102,7 +109,6 @@ class Attribute(models.Model):
 class AttributeValue(models.Model):
     attribute = models.ForeignKey(Attribute, on_delete=models.CASCADE, related_name='values', verbose_name=_("attribute"))
     value = models.CharField(max_length=255, verbose_name=_("attribute value"))
-
     def __str__(self):
         return f"{self.attribute.name}: {self.value}"
 

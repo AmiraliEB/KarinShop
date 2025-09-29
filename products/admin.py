@@ -33,7 +33,7 @@ class ProductAdmin(admin.ModelAdmin):
     )
 @admin.register(models.ProductCategory)
 class ProductCategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'parent')
+    list_display = ('name','code', 'parent')
     search_fields = ('name',)
     readonly_fields = ('slug',)
 
@@ -43,10 +43,14 @@ class AttributeValueAdmin(admin.ModelAdmin):
     search_fields = ('value', 'attribute__name')
     ordering = ('attribute__name', 'value')
 
+class AttributeValueInline(admin.TabularInline):
+    model = models.AttributeValue
+    extra = 1
 @admin.register(models.Attribute)
 class AttributeAdmin(admin.ModelAdmin):
     list_display = ('name',)
     search_fields = ('name',)
+    inlines = [AttributeValueInline]
 
 @admin.register(models.Color)
 class ColorAdmin(admin.ModelAdmin):
