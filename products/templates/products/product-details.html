@@ -319,7 +319,7 @@
                     <!-- IMAGE SLIDER -->
                     <div class="w-2/4 hidden md:flex flex-col justify-center items-center gap-y-4">
                         <span class="open-sliderModal">
-                            <img src={{product.images.last.image.url}} class="cursor-pointer object-cover" alt="">
+                            <img src={{product.parent_product.images.last.image.url}} class="cursor-pointer object-cover" alt="">
                         </span>
                         <div class="grid grid-cols-12 child:col-span-3 child:app-border gap-x-4 child:size-16 child:rounded-lg child:cursor-pointer">
                             {% for image_obj in product.parent_product.images.all reversed%}
@@ -333,7 +333,7 @@
                                     <svg class="absolute size-8 text-gray-600 top-4 left-4 z-10">
                                         <use href="#ellipsis"></use>
                                     </svg>
-                                <img src={{product.images.first.image.url}} class="object-cover rounded-lg blur-sm">
+                                <img src={{product.parent_product.images.first.image.url}} class="object-cover rounded-lg blur-sm">
                             </div>
                         </div>                        
                     </div>
@@ -349,7 +349,7 @@
                         
                         <div class="swiper ProductDetailsSlider mt-14 px-10 w-96 relative">
                             <div class="swiper-wrapper w-[50%] child:w-full child:rounded-lg child:overflow-hidden">
-                            {% for image_obj in product.images.all %}
+                            {% for image_obj in product.parent_product.images.all %}
                               <div class="swiper-slide">
                                 <img src={{image_obj.image.url}}  alt="">
                               </div>
