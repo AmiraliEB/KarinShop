@@ -57,6 +57,7 @@ class Product(models.Model):
     def get_absolute_url(self):
         return reverse('products:post_redirect', kwargs={'pk': self.pk})
     
+    #TODO: should add a base template for any category, other value such as ram and register should be optional in admin panel
     @property
     def full_name(self):
         base_name = f'{self.parent_product.category} {self.parent_product.brand} مدل {self.parent_product.name} '
@@ -71,6 +72,8 @@ class Product(models.Model):
         if register_value_obj:
             base_name += f'({register_value_obj.value}) '
         return base_name.strip()
+        
+    
     
     def save(self, *args, **kwargs):
         self.is_available = self.stock > 0

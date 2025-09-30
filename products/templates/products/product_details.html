@@ -1,5 +1,6 @@
 {% extends "_base.html" %}
 {% load static %}
+{% load humanize %}
 
 {% block title %}جزئیات محصول{% endblock title %}
 {% block content %}
@@ -374,14 +375,6 @@
                             <a href="shop.html" class="font-DanaMedium text-sky-400">اپل / گوشی موبایل اپل</a>
                             <div class="hidden md:flex items-center gap-x-2">
                                 <div class="tooltip">
-                                    <button class="rounded-full p-1.5 app-border app-hover " id="share-button">
-                                        <svg class="size-4 md:size-5">
-                                            <use href="#share"></use>
-                                        </svg>
-                                    </button>
-                                    <div class="tooltiptext">
-                                        اشتراک‌گذازی
-                                    </div>
                                     <div id="share-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 items-center justify-center z-50">
                                 </div>
                                 </div>
@@ -523,9 +516,23 @@
             <!-- PRICE & ADD TO CART BOX -->
             <div class="w-full lg:w-1/4 lg:sticky top-5 flex flex-col gap-y-6">
                 <!-- PRICE -->
-                <div class="flex items-center gap-x-1">
-                    <p class="text-2xl font-DanaDemiBold">۹۹,۸۹۹,۰۰۰</p>
-                    <p class="">تومان</p>
+                <div class="flex flex-col items-start gap-y-2">
+                    {% if product.discount_price and product.price > product.discount_price %}
+                    <div class="flex items-center gap-x-3">
+                        <span class="bg-red-500 text-white text-sm font-DanaMedium px-2 py-1 rounded-full">{{discount_percentage}}٪ تخفیف</span>
+                        <del class="text-gray-400 text-xl">{{product.price|intcomma:False}}</del>
+                    </div>
+                    <div class="flex items-center gap-x-1">
+                        <p class="text-2xl font-DanaDemiBold">{{product.discount_price|intcomma:False}}</p>
+                        <p class="">تومان</p>
+                    {% else %}
+                    </div>
+                    <div class="flex items-center gap-x-1">
+                        <p class="text-2xl font-DanaDemiBold">{{product.price|intcomma:False}}</p>
+                        <p class="">تومان</p>
+                    </div>
+                    {% endif %}
+                    
                 </div>
                 <button
                     class="w-full flex items-center justify-between gap-x-1 rounded-lg border border-gray-200 dark:border-white/20 py-2 px-3">
@@ -542,12 +549,17 @@
                 <button
                     class="w-full flex items-center gap-x-1 justify-between dark:bg-gray-900 dark:text-gray-400  bg-gray-100 transition-all rounded-lg py-2 px-2 xl:px-3 font-DanaMedium text-sm xl:text-base">
                     <p>مجموع خرید :</p>
-                    <p>۹۹,۸۹۹,۰۰۰ تومان</p>
+                    {% if product.discount_price and product.price > product.discount_price %}
+                    <p>{{product.discount_price|intcomma:False}} تومان</p>
+                    {% else %}
+                    <p>{{product.price|intcomma:False}} تومان</p>
+                    {% endif %}
                 </button>
 
                 <div class="relative overflow-hidden text-sm font-DanaDemiBold text-right">
                     <div id="slider-text" class="transition-all duration-700 ease-in-out">
-                      <p>🔥 ۱۰۰۰+ فروش در هفته گذشته</p>
+                      <p>🔥 ۱۰۰۰+ فروش در هفته گذشته</p> 
+                      {% comment %} TODO {% endcomment %}
                     </div>
                   </div>
                 <button

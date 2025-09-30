@@ -24,6 +24,7 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[])
 # Application definition
 
 INSTALLED_APPS = [
+    # Django apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -31,6 +32,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'django.contrib.humanize',
+
+    # Local apps
     'accounts',
     'core',
     'products',
@@ -98,11 +102,16 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
+LANGUAGE_CODE = 'fa'
+
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
+USE_L10N = True
+USE_THOUSAND_SEPARATOR = True
 USE_TZ = True
+
 
 
 # Default primary key field type
@@ -121,7 +130,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = str(BASE_DIR.joinpath('media'))
 
 #translation settings
-LANGUAGE_CODE = 'fa'
+# LANGUAGE_CODE = 'fa'
 LANGUAGES = [
     ('fa', 'Persian'),
 ]

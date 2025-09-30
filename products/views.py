@@ -29,3 +29,17 @@ class ProductDetailView(generic.DetailView):
             'attribute_values__attribute',
             'color'
         )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        product = self.object
+        
+        discount_percentage = 0
+        
+        if product.discount_price and product.price > 0 and product.price > product.discount_price:
+            discount_amount = product.price - product.discount_price
+            percentage = (discount_amount / product.price) * 100
+            discount_percentage = round(percentage) 
+            
+        context['discount_percentage'] = discount_percentage
+        return context
