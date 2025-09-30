@@ -16,7 +16,7 @@ def post_redirect_view(request, pk):
 
 class ProductDetailView(generic.DetailView):
     model = Product
-    template_name = "products/product-details.html"
+    template_name = "products/product_details.html"
     context_object_name = "product"
     
     def get_queryset(self):

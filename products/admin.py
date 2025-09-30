@@ -11,6 +11,7 @@ class ParentProductAdmin(admin.ModelAdmin):
     list_display = ('name','category','brand','slug')
     readonly_fields = ('slug','datetime_created','datetime_modified')
     inlines = [ProductImageInline]
+    search_fields = ('name', 'category__name', 'brand__name')
 
     fieldsets = (
         (None, {
@@ -30,7 +31,7 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = ('id','parent_product','slug')
     search_fields = ('name', 'description')
     readonly_fields = ('slug','datetime_created', 'datetime_modified')
-
+    autocomplete_fields = ('parent_product',)
     filter_horizontal = ('color', 'attribute_values',)
     fieldsets = (
         (None, {

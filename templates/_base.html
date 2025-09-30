@@ -25,17 +25,20 @@
     </script>
 </head>
 <body>
-    {% include 'partials/header.html' %}  
+    {% include "partials/loading.html" %}
 
-    <main>
-        {% block content %}
-        {% endblock %}
-    </main>
+    <div id="page-content" class="invisible">
+    
+        {% include 'partials/header.html' %}  
 
-    {% include 'partials/footer.html' %} 
+        <main> 
+            {% block content %}
+            {% endblock %}
+        </main>
 
-    <!-- Overlay -->
-    <div class="overlay"></div>
+        {% include 'partials/footer.html' %} 
+
+    </div> <div class="overlay"></div>
     <div class="search-overlay"></div>
     
     <script src="{% static 'js/libs/swiper/swiper.js' %}"></script>

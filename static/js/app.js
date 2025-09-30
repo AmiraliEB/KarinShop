@@ -472,21 +472,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-
-
-// LODING CODE
-const lodingBtn = document.getElementById('loding-btn')
-const lodingModal = document.querySelector('.loding-modal')
-
-lodingBtn?.addEventListener('click', () => {
-  lodingModal.classList.add('active')
-  overlay.classList.add('active')
-})
-
-overlay?.addEventListener('click', () => lodingModal.classList.remove('active'))
-
-
-
 // accordion
 document.addEventListener("DOMContentLoaded", function () {
   const accordions = document.querySelectorAll('.accordion-btn');
@@ -593,3 +578,24 @@ filterModalClose?.addEventListener('click'  , ()=> {
   searchOverlay.classList.remove('active')
   filterModal.classList.remove('active')
 })
+
+
+// ========================== PRELOADER LOGIC (FINAL VERSION) =============================
+window.addEventListener('load', function() {
+    const preloaderWrapper = document.getElementById('preloader-wrapper'); 
+    const pageContent = document.getElementById('page-content'); 
+
+    if (preloaderWrapper) {
+        preloaderWrapper.style.transition = 'opacity 0.5s ease';
+        preloaderWrapper.style.opacity = '0';
+        setTimeout(() => {
+            preloaderWrapper.style.display = 'none';
+        }, 500);
+    }
+
+    if (pageContent) {
+        pageContent.classList.remove('invisible');
+        pageContent.style.transition = 'opacity 0.5s ease';
+        pageContent.style.opacity = '1';
+    }
+});

@@ -374,7 +374,7 @@
                             <a href="shop.html" class="font-DanaMedium text-sky-400">اپل / گوشی موبایل اپل</a>
                             <div class="hidden md:flex items-center gap-x-2">
                                 <div class="tooltip">
-                                    <button class="rounded-full p-1.5 app-border app-hover">
+                                    <button class="rounded-full p-1.5 app-border app-hover " id="share-button">
                                         <svg class="size-4 md:size-5">
                                             <use href="#share"></use>
                                         </svg>
@@ -382,6 +382,8 @@
                                     <div class="tooltiptext">
                                         اشتراک‌گذازی
                                     </div>
+                                    <div id="share-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 items-center justify-center z-50">
+                                </div>
                                 </div>
                                 <div class="tooltip">
                                     <button class="rounded-full p-1.5 app-border app-hover">
@@ -652,7 +654,7 @@
                             <span class="product-card_badge">70% تخفیف‌</س>
                         </div>
                         <!-- product img -->
-                        <a href="product-details.html">
+                        <a href="product_details.html">
                             <img class="product-card_img group-hover:opacity-0 absolute" src="{% static "./images/products/1.png" %}"
                                 alt="">
                             <img class="product-card_img opacity-0 group-hover:opacity-100"
@@ -660,7 +662,7 @@
                         </a>
                         <!--  product footer -->
                         <div class="space-y-2">
-                            <a href="product-details.html" class="product-card_link">
+                            <a href="product_details.html" class="product-card_link">
                                 لپ تاپ 15.6 اینچی ایسوس مدل Vivobook15 X515MA-BR001-Celeron N4020-8GB DDR4
                             </a>
                             <!-- Rate and Price -->
@@ -728,7 +730,7 @@
                             <span class="product-card_badge">70% تخفیف‌</س>
                         </div>
                         <!-- product img -->
-                        <a href="product-details.html">
+                        <a href="product_details.html">
                             <img class="product-card_img group-hover:opacity-0 absolute" src="{% static "./images/products/3.png" %}"
                                 alt="">
                             <img class="product-card_img opacity-0 group-hover:opacity-100"
@@ -736,7 +738,7 @@
                         </a>
                         <!--  product footer -->
                         <div class="space-y-2">
-                            <a href="product-details.html" class="product-card_link">
+                            <a href="product_details.html" class="product-card_link">
                                 لپ تاپ 15.6 اینچی ایسوس مدل Vivobook15 X515MA-BR001-Celeron N4020-8GB DDR4
                             </a>
                             <!-- Rate and Price -->
@@ -804,7 +806,7 @@
                             <span class="product-card_badge">70% تخفیف‌</س>
                         </div>
                         <!-- product img -->
-                        <a href="product-details.html">
+                        <a href="product_details.html">
                             <img class="product-card_img group-hover:opacity-0 absolute" src="{% static "./images/products/5.webp" %}"
                                 alt="">
                             <img class="product-card_img opacity-0 group-hover:opacity-100"
@@ -812,7 +814,7 @@
                         </a>
                         <!--  product footer -->
                         <div class="space-y-2">
-                            <a href="product-details.html" class="product-card_link">
+                            <a href="product_details.html" class="product-card_link">
                                 لپ تاپ 15.6 اینچی ایسوس مدل Vivobook15 X515MA-BR001-Celeron N4020-8GB DDR4
                             </a>
                             <!-- Rate and Price -->
@@ -880,7 +882,7 @@
                             <span class="product-card_badge">70% تخفیف‌</س>
                         </div>
                         <!-- product img -->
-                        <a href="product-details.html">
+                        <a href="product_details.html">
                             <img class="product-card_img group-hover:opacity-0 absolute" src="{% static "./images/products/7.webp" %}"
                                 alt="">
                             <img class="product-card_img opacity-0 group-hover:opacity-100"
@@ -888,7 +890,7 @@
                         </a>
                         <!--  product footer -->
                         <div class="space-y-2">
-                            <a href="product-details.html" class="product-card_link">
+                            <a href="product_details.html" class="product-card_link">
                                 لپ تاپ 15.6 اینچی ایسوس مدل Vivobook15 X515MA-BR001-Celeron N4020-8GB DDR4
                             </a>
                             <!-- Rate and Price -->
@@ -956,7 +958,7 @@
                             <span class="product-card_badge">70% تخفیف‌</س>
                         </div>
                         <!-- product img -->
-                        <a href="product-details.html">
+                        <a href="product_details.html">
                             <img class="product-card_img group-hover:opacity-0 absolute" src="{% static "./images/products/1.png" %}"
                                 alt="">
                             <img class="product-card_img opacity-0 group-hover:opacity-100"
@@ -964,7 +966,7 @@
                         </a>
                         <!--  product footer -->
                         <div class="space-y-2">
-                            <a href="product-details.html" class="product-card_link">
+                            <a href="product_details.html" class="product-card_link">
                                 لپ تاپ 15.6 اینچی ایسوس مدل Vivobook15 X515MA-BR001-Celeron N4020-8GB DDR4
                             </a>
                             <!-- Rate and Price -->
@@ -1032,7 +1034,7 @@
                             <span class="product-card_badge">70% تخفیف‌</س>
                         </div>
                         <!-- product img -->
-                        <a href="product-details.html">
+                        <a href="product_details.html">
                             <img class="product-card_img group-hover:opacity-0 absolute" src="{% static "./images/products/3.png" %}"
                                 alt="">
                             <img class="product-card_img opacity-0 group-hover:opacity-100"
@@ -1040,7 +1042,7 @@
                         </a>
                         <!--  product footer -->
                         <div class="space-y-2">
-                            <a href="product-details.html" class="product-card_link">
+                            <a href="product_details.html" class="product-card_link">
                                 لپ تاپ 15.6 اینچی ایسوس مدل Vivobook15 X515MA-BR001-Celeron N4020-8GB DDR4
                             </a>
                             <!-- Rate and Price -->
@@ -1461,4 +1463,5 @@
 {% block extra_js %}
 <script src="{% static "products/js/productDetails.js" %}"></script>
 <script src="{% static "products/js/slider.js" %}"></script>
+<script src="{% static "products/js/fortest.js" %}"></script>
 {% endblock extra_js %}
