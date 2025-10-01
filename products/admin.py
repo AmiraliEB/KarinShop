@@ -6,76 +6,74 @@ class ProductImageInline(admin.TabularInline):
     model = models.ProductImage
     extra = 1
 
+class ProductInline(admin.TabularInline):
+    model = models.Product
+    extra = 0  
+    fields = ('price', 'discount_price', 'stock', 'is_available', 'color', 'attribute_values')
+    readonly_fields = ('is_available',)
+    filter_horizontal = ('color', 'attribute_values')
+
+class AttributeRuleInline(admin.TabularInline):
+    model = models.AttributeRule
+    extra = 1
+    autocomplete_fields = ['category', 'brand']
+
 @admin.register(models.ParentProduct)
 class ParentProductAdmin(admin.ModelAdmin):
-    list_display = ('name','category','brand','slug')
-    readonly_fields = ('slug','datetime_created','datetime_modified')
-    inlines = [ProductImageInline]
+    list_display = ('name', 'category', 'brand')
+    list_filter = ('category', 'brand', 'datetime_created')
     search_fields = ('name', 'category__name', 'brand__name')
+    prepopulated_fields = {'slug': ('name',)}
+    readonly_fields = ('slug','datetime_created','datetime_modified')
+    inlines = [ProductImageInline,ProductInline]
 
     fieldsets = (
-        (None, {
-            'fields':('name','category','brand',)
-        }),
-        (None, {
-            'fields':('slug',)
-        }),
-        (None, {
-            'fields':('datetime_created','datetime_modified',)
-        })
+        (None, {'fields': ('name', 'category', 'brand')}),
+        ('Advanced Options', {'fields': ('slug', 'datetime_created', 'datetime_modified')}),
     )
+    readonly_fields = ('datetime_created', 'datetime_modified')
 
 
 @admin.register(models.Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('id','parent_product','slug')
-    search_fields = ('name', 'description')
-    readonly_fields = ('slug','datetime_created', 'datetime_modified')
+    list_display =('id', 'parent_product', 'full_name', 'price', 'stock', 'is_available')
+    list_display_links = ('parent_product',)
+    list_filter = ('is_available', 'parent_product__category', 'parent_product__brand')
+    search_fields = ('parent_product__name', 'id')
+    readonly_fields = ('full_name', 'datetime_created', 'datetime_modified', 'is_available')
     autocomplete_fields = ('parent_product',)
     filter_horizontal = ('color', 'attribute_values',)
-    fieldsets = (
-        (None, {
-            'fields': ('parent_product',)
-        }),
-        (None, {
-            'fields': ('price','discount_price', 'stock')
-        }),
-        (None, {
-            'fields': ('is_available', 'is_amazing', 'is_best_selling')
-        }),
-        (None, {
-            'fields': ('color', 'attribute_values')
-        }),
-        (None, {
-            'fields': ('datetime_created', 'datetime_modified')
-        }),
-    )
+    list_select_related = ('parent_product',)
+
+    def full_name(self, obj):
+        return obj.full_name
+    full_name.short_description = 'نام کامل محصول'
 
 @admin.register(models.ProductCategory)
 class ProductCategoryAdmin(admin.ModelAdmin):
-    list_display = ('name','code', 'parent')
+    list_display = ('name', 'code', 'parent')
+    search_fields = ('name', 'code')
+    prepopulated_fields = {'slug': ('name',)}
+
+@admin.register(models.Attribute)
+class AttributeAdmin(admin.ModelAdmin):
+    list_display = ('name',)
     search_fields = ('name',)
-    readonly_fields = ('slug',)
+    inlines = [AttributeRuleInline]
 
 @admin.register(models.AttributeValue)
 class AttributeValueAdmin(admin.ModelAdmin):
     list_display = ('attribute', 'value')
     search_fields = ('value', 'attribute__name')
+    list_filter = ('attribute',)
     ordering = ('attribute__name', 'value')
-
-class AttributeValueInline(admin.TabularInline):
-    model = models.AttributeValue
-    extra = 1
-    
-@admin.register(models.Attribute)
-class AttributeAdmin(admin.ModelAdmin):
-    list_display = ('name',)
-    search_fields = ('name',)
-    inlines = [AttributeValueInline]
 
 @admin.register(models.Color)
 class ColorAdmin(admin.ModelAdmin):
     list_display = ('name',)
     search_fields = ('name',)
 
-admin.site.register(models.Brand)
+@admin.register(models.Brand)
+class BrandAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    search_fields = ('name',)
