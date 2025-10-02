@@ -136,3 +136,26 @@ closeSliderModal.addEventListener('click', () => {
     sliderModal.classList.remove('active')
     overlayProductPage.classList.remove('active')
 })
+
+// SHOW MORE SPECIFICATIONS
+const moreSpecsBtn = document.querySelector('.more-specs-btn');
+const moreSpecsText = document.querySelector('.more-specs-text');
+const moreSpecsIcon = document.querySelector('.more-specs-icon');
+const hiddenSpecItems = document.querySelectorAll('.hidden-spec-item');
+
+if (moreSpecsBtn) {
+    moreSpecsBtn.addEventListener('click', () => {
+        hiddenSpecItems.forEach(item => {
+            item.classList.toggle('hidden');
+            item.classList.toggle('block');
+        });
+
+        if (moreSpecsText.innerHTML === 'مشاهده بیشتر') {
+            moreSpecsText.innerHTML = 'مشاهده کمتر';
+            moreSpecsIcon.classList.add('rotate-180');
+        } else {
+            moreSpecsText.innerHTML = 'مشاهده بیشتر';
+            moreSpecsIcon.classList.remove('rotate-180');
+        }
+    });
+}

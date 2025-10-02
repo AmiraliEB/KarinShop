@@ -580,7 +580,7 @@ filterModalClose?.addEventListener('click'  , ()=> {
 })
 
 
-// ========================== PRELOADER LOGIC (FINAL VERSION) =============================
+// ========================== PRELOADER =============================
 window.addEventListener('load', function() {
     const preloaderWrapper = document.getElementById('preloader-wrapper'); 
     const pageContent = document.getElementById('page-content'); 

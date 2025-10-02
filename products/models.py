@@ -7,20 +7,13 @@ from django.core.exceptions import ValidationError
 from django.db.models.signals import m2m_changed
 from django.dispatch import receiver
 
-#TODO:parent dont need slug so signal should remove and modifie product slug
 class ParentProduct(models.Model):
     name = models.CharField(max_length=255, verbose_name=_("parent product name"))
     category = models.ForeignKey('ProductCategory', on_delete=models.PROTECT, blank=True, null=True, related_name='product_parents', verbose_name=_("category"))
     brand = models.ForeignKey('Brand', on_delete=models.PROTECT, blank=True, null=True, related_name='product_parents', verbose_name=_("brand"))
-    slug = models.SlugField(max_length=255, unique=True, verbose_name=_("slug"))
     
     datetime_created = models.DateTimeField(auto_now_add=True, verbose_name=_("creation date"))
     datetime_modified = models.DateTimeField(auto_now=True, verbose_name=_("last modified date"))
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -61,7 +54,7 @@ class Product(models.Model):
 
     @property
     def full_name(self):
-        base_name = f'{self.parent_product.category} {self.parent_product.brand} مدل {self.parent_product.name}'
+        base_name = f'{self.parent_product.category} {self.parent_product.brand} {self.parent_product.name}'
         
         product_category = self.parent_product.category
         product_brand = self.parent_product.brand
@@ -95,11 +88,11 @@ class Product(models.Model):
             attr_name = value.attribute.name
 
             if attr_name == 'حافظه داخلی':
-                storage_value_str = f'{attr_name} {value.value}'
+                storage_value_str = f'{value.value}'
             elif attr_name == 'رم':
-                ram_value_str = f'{attr_name} {value.value}'
+                ram_value_str = f'{value.value}'
             else:
-                other_parts.append(f'{attr_name} {value.value}')
+                other_parts.append(f'{value.value}')
 
         final_parts = []
         if storage_value_str:
@@ -115,8 +108,6 @@ class Product(models.Model):
     def save(self, *args, **kwargs):
         self.is_available = self.stock > 0
         super().save(*args, **kwargs)
-
-
 
 
 def product_image_upload_to(instance, filename):
@@ -138,17 +129,11 @@ class ProductImage(models.Model):
 class ProductCategory(models.Model):
     name = models.CharField(max_length=255, verbose_name=_("category name"))
     code = models.CharField(max_length=50, unique=True, verbose_name=_("category code"))
-    slug = models.SlugField(max_length=255, unique=True, verbose_name=_("slug"))
     parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name='children', verbose_name=_("parent category"))
 
 
     def __str__(self):
         return self.name
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = _('product category')
@@ -158,7 +143,7 @@ class ProductCategory(models.Model):
 class Attribute(models.Model):
     name = models.CharField(max_length=255, verbose_name=_("attribute name"))
     categories = models.ManyToManyField(ProductCategory, related_name='attributes', verbose_name=_("related categories"),through='AttributeRule')
-
+    attribute_category = models
     def __str__(self):
         return self.name
 
@@ -177,12 +162,23 @@ class AttributeRule(models.Model):
     class Meta:
         verbose_name = _("Attribute Rule")
         verbose_name_plural = _("Attribute Rules")
-        unique_together = ('attribute','category','brand')
+        constraints = [
+            models.UniqueConstraint(
+                fields=['attribute', 'category', 'brand'], 
+                name='unique_attribute_category_brand'
+            ),
+            models.UniqueConstraint(
+                fields=['attribute', 'category'], 
+                condition=Q(brand__isnull=True), 
+                name='unique_attribute_category_when_brand_is_null'
+            )
+        ]
         
-        def __str__(self):
-            if self.brand:
-                return f"{self.attribute.name} for {self.category.name} - {self.brand.name}"
-            return f"{self.attribute.name} for {self.category.name}"
+        
+    def __str__(self):
+        if self.brand:
+            return f"{self.attribute.name} برای {self.category.name} {self.brand.name}"
+        return f"{self.attribute.name} برای {self.category.name}"
     
 class AttributeValue(models.Model):
     attribute = models.ForeignKey(Attribute, on_delete=models.CASCADE, related_name='values', verbose_name=_("attribute"))
@@ -194,7 +190,11 @@ class AttributeValue(models.Model):
         verbose_name = _('attribute value')
         verbose_name_plural = _('attribute values')
         unique_together = ('value', 'attribute')
-        ordering = ['attribute']
+        ordering = ['attribute__id']
+
+class AttributeCategory(models.Model):
+    name = models.CharField(max_length=255, verbose_name=_("category name"))
+    code = models.CharField(max_length=50, unique=True, verbose_name=_("category code"))
 
 class Color(models.Model):
     name = models.CharField(max_length=50, verbose_name=_("color name"))
@@ -209,25 +209,3 @@ class Brand(models.Model):
 
     def __str__(self):
         return self.name
-    
-from django.db.models.signals import m2m_changed
-from django.dispatch import receiver
-from django.utils.text import slugify
-
-@receiver(m2m_changed, sender=Product.attribute_values.through)
-def update_product_slug_on_attribute_change(sender, instance, action, **kwargs):
-    if action == "post_add" or action == "post_remove" or action == "post_clear":
-        
-        final_slug_parts = [slugify(instance.parent_product.name)]
-            
-        storage_value_obj = instance.attribute_values.filter(attribute__name='حافظه داخلی').first()
-        ram_value_obj = instance.attribute_values.filter(attribute__name='رم').first()
-        if storage_value_obj:
-            final_slug_parts.append(slugify(storage_value_obj.value))
-        if ram_value_obj:
-            final_slug_parts.append(slugify(ram_value_obj.value))
-        final_slug = '-'.join(final_slug_parts)
-
-        if instance.slug != final_slug:
-            Product.objects.filter(pk=instance.pk).update(slug=final_slug)
-            instance.slug = final_slug

@@ -1105,31 +1105,37 @@
                     </a>
                 </p>
             </div>
-            <div class="tab-content tab2 hidden w-full lg:w-[50%]">
-                <h2 class="font-DanaDemiBold border-b-2 border-blue-500 w-fit p-1 text-lg">مشخصات کلی
-                </h2>
-                <div class="p-4 my-5 w-full mx-auto flex justify-center items-center gap-x-20">
-                    <ul class="space-y-3 text-gray-500 dark:text-gray-300 lg:w-2/4 child:pt-2">
-                        <li>مدل</li>
-                        <li>نمایشگر</li>
-                        <li>چیپست</li>
-                        <li>دوربین</li>
-                        <li>باتری</li>
-                    </ul>
-                    <ul class="space-y-3 text-gray-800 dark:text-gray-200 lg:w-2/4 divide-y divide-gray-200 dark:divide-gray-700 font-DanaMedium child:line-clamp-1">
-                        <li class="pt-2">آیفون ۱۶ پرو</li>
-                        <li class="pt-2">6.3 اینچ LTPO OLED، 120Hz</li>
-                        <li class="pt-2">Apple A18 Pro</li>
-                        <li class="pt-2">چهارگانه: 48 + 12 + 12 + TOF 3D</li>
-                        <li class="pt-2">باتری ۳۵۰۰ میلی‌آمپر با شارژ سریع</li>
-                    </ul>
-                </div>  
-                <a href="#" class="flex gap-x-1 items-center text-blue-400">
-                    مشاهده بیشتر  
-                    <svg class="size-4">
-                        <use href="#chevron-left" />
-                    </svg>
-                </a>
+            <div class="tab-content tab2 hidden w-full">
+                <h2 class="font-DanaDemiBold border-b-2 border-blue-500 w-fit p-1 text-lg">مشخصات</h2>
+                <h2 class="font-DanaDemiBold border-b-2 border-blue-500 w-fit p-1 text-lg">مشخصات کلی</h2>
+
+                <div class="my-5 w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    {% for value in product.attribute_values.all %}
+                        <div class="spec-item py-4 {% if forloop.counter > 5 %}hidden hidden-spec-item{% endif %}">
+                            <p class="text-sm text-gray-500 dark:text-gray-400">{{ value.attribute.name }}:</p>
+                            <p class="font-DanaMedium text-gray-800 dark:text-gray-200 mt-2">{{ value.value }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+                <h2 class="font-DanaDemiBold border-b-2 border-blue-500 w-fit p-1 text-lg">مشخصات کلی</h2>
+
+                <div class="my-5 w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    {% for value in product.attribute_values.all %}
+                        <div class="spec-item py-4 {% if forloop.counter > 5 %}hidden hidden-spec-item{% endif %}">
+                            <p class="text-sm text-gray-500 dark:text-gray-400">{{ value.attribute.name }}:</p>
+                            <p class="font-DanaMedium text-gray-800 dark:text-gray-200 mt-2">{{ value.value }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+                
+                {% if product.attribute_values.all|length > 5 %}
+                    <button class="more-specs-btn flex gap-x-1 items-center text-blue-400">
+                        <span class="more-specs-text">مشاهده بیشتر</span>
+                        <svg class="size-4 more-specs-icon transition-transform">
+                            <use href="#chevron"></use>
+                        </svg>
+                    </button>
+                {% endif %}
             </div>
             <div class="tab-content tab3 hidden w-full">
                 <div class="flex items-center gap-x-2 mb-6">

@@ -18,12 +18,16 @@ class AttributeRuleInline(admin.TabularInline):
     extra = 1
     autocomplete_fields = ['category', 'brand']
 
+class AttributeValueInline(admin.TabularInline):
+    model = models.AttributeValue
+    extra = 1 
+
+
 @admin.register(models.ParentProduct)
 class ParentProductAdmin(admin.ModelAdmin):
     list_display = ('name', 'category', 'brand')
     list_filter = ('category', 'brand', 'datetime_created')
     search_fields = ('name', 'category__name', 'brand__name')
-    prepopulated_fields = {'slug': ('name',)}
     readonly_fields = ('slug','datetime_created','datetime_modified')
     inlines = [ProductImageInline,ProductInline]
 
@@ -53,13 +57,12 @@ class ProductAdmin(admin.ModelAdmin):
 class ProductCategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'code', 'parent')
     search_fields = ('name', 'code')
-    prepopulated_fields = {'slug': ('name',)}
 
 @admin.register(models.Attribute)
 class AttributeAdmin(admin.ModelAdmin):
-    list_display = ('name',)
+    list_display = ('id','name',)
     search_fields = ('name',)
-    inlines = [AttributeRuleInline]
+    inlines = [AttributeRuleInline,AttributeValueInline]
 
 @admin.register(models.AttributeValue)
 class AttributeValueAdmin(admin.ModelAdmin):
@@ -77,3 +80,5 @@ class ColorAdmin(admin.ModelAdmin):
 class BrandAdmin(admin.ModelAdmin):
     list_display = ('name',)
     search_fields = ('name',)
+
+admin.site.register(models.AttributeCategory)
