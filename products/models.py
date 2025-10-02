@@ -131,6 +131,12 @@ class ProductCategory(models.Model):
     code = models.CharField(max_length=50, unique=True, verbose_name=_("category code"))
     parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name='children', verbose_name=_("parent category"))
 
+    attribute_categories = models.ManyToManyField(
+        'AttributeCategory',
+        blank=True,
+        verbose_name=_("attribute categories")
+    )
+
 
     def __str__(self):
         return self.name
@@ -142,8 +148,17 @@ class ProductCategory(models.Model):
 
 class Attribute(models.Model):
     name = models.CharField(max_length=255, verbose_name=_("attribute name"))
-    categories = models.ManyToManyField(ProductCategory, related_name='attributes', verbose_name=_("related categories"),through='AttributeRule')
-    attribute_category = models
+    product_category = models.ManyToManyField(ProductCategory, related_name='attributes', verbose_name=_("related categories"),through='AttributeRule')
+    
+    attribute_categoy = models.ForeignKey(
+        'AttributeCategory',
+        related_name='attributes',
+        on_delete=models.PROTECT,
+        null=True,
+        blank=False,
+        verbose_name=_("attribute category")
+    )
+
     def __str__(self):
         return self.name
 
@@ -194,7 +209,14 @@ class AttributeValue(models.Model):
 
 class AttributeCategory(models.Model):
     name = models.CharField(max_length=255, verbose_name=_("category name"))
-    code = models.CharField(max_length=50, unique=True, verbose_name=_("category code"))
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _('attribute category')
+        verbose_name_plural = _('attribute categories')
+        ordering = ['name']
 
 class Color(models.Model):
     name = models.CharField(max_length=50, verbose_name=_("color name"))
