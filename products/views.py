@@ -1,9 +1,11 @@
+from collections import defaultdict
 from django.shortcuts import render
 from django.urls import reverse
 from django.views import generic
-from products.models import Product, ProductImage
+from products.models import AttributeValue, Product, AttributeCategory
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.text import slugify
+from django.db.models import Prefetch
 
 def post_redirect_view(request, pk):
     product_obj = get_object_or_404(Product, pk=pk)
@@ -25,9 +27,17 @@ class ProductDetailView(generic.DetailView):
             'parent_product__brand',
             'parent_product__category'
         ).prefetch_related(
+                Prefetch(
+                'attribute_values',
+                queryset=AttributeValue.objects.select_related(
+                    'attribute__attribute_category'  
+                ).order_by(
+                    'attribute__attribute_category__id'  
+                ),
+                to_attr='sorted_attribute_values' 
+            ),
             'parent_product__images',
-            'attribute_values__attribute',
-            'color'
+            'color',
         )
 
     def get_context_data(self, **kwargs):
@@ -40,6 +50,12 @@ class ProductDetailView(generic.DetailView):
             discount_amount = product.price - product.discount_price
             percentage = (discount_amount / product.price) * 100
             discount_percentage = round(percentage) 
-            
         context['discount_percentage'] = discount_percentage
+
+        grouped_attributes = defaultdict(list)
+
+        for value_obj in self.object.sorted_attribute_values:
+            category = value_obj.attribute.attribute_category
+            grouped_attributes[category].append(value_obj)
+        context['grouped_attributes'] = dict(grouped_attributes)
         return context

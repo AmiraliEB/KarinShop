@@ -150,7 +150,7 @@ class Attribute(models.Model):
     name = models.CharField(max_length=255, verbose_name=_("attribute name"))
     product_category = models.ManyToManyField(ProductCategory, related_name='attributes', verbose_name=_("related categories"),through='AttributeRule')
     
-    attribute_categoy = models.ForeignKey(
+    attribute_category = models.ForeignKey(
         'AttributeCategory',
         related_name='attributes',
         on_delete=models.PROTECT,
@@ -165,7 +165,7 @@ class Attribute(models.Model):
     class Meta:
         verbose_name = _('attribute')
         verbose_name_plural = _('attributes')
-        ordering = ['name']
+        ordering = ['attribute_category']
 
 class AttributeRule(models.Model):
     attribute = models.ForeignKey("Attribute", verbose_name=_("attribute"), on_delete=models.CASCADE)
@@ -216,7 +216,7 @@ class AttributeCategory(models.Model):
     class Meta:
         verbose_name = _('attribute category')
         verbose_name_plural = _('attribute categories')
-        ordering = ['name']
+        ordering = ['id']
 
 class Color(models.Model):
     name = models.CharField(max_length=50, verbose_name=_("color name"))

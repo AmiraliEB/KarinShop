@@ -1106,28 +1106,18 @@
                 </p>
             </div>
             <div class="tab-content tab2 hidden w-full">
-                <h2 class="font-DanaDemiBold border-b-2 border-blue-500 w-fit p-1 text-lg">مشخصات</h2>
-                <h2 class="font-DanaDemiBold border-b-2 border-blue-500 w-fit p-1 text-lg">مشخصات کلی</h2>
-
+                {% for category , value_list in grouped_attributes.items %}
+                <h2 class="font-DanaDemiBold border-b-2 border-blue-500 w-fit p-1 text-lg">{{category}}</h2>
                 <div class="my-5 w-full divide-y divide-gray-200 dark:divide-gray-700">
-                    {% for value in product.attribute_values.all %}
-                        <div class="spec-item py-4 {% if forloop.counter > 5 %}hidden hidden-spec-item{% endif %}">
+                    {% for value in value_list %}
+                        {# --- این خط اصلاح شده است --- #}
+                        <div class="spec-item py-4 {% if forloop.parentloop.counter > 1 or forloop.counter > 5 %}hidden hidden-spec-item{% endif %}">
                             <p class="text-sm text-gray-500 dark:text-gray-400">{{ value.attribute.name }}:</p>
                             <p class="font-DanaMedium text-gray-800 dark:text-gray-200 mt-2">{{ value.value }}</p>
                         </div>
                     {% endfor %}
                 </div>
-                <h2 class="font-DanaDemiBold border-b-2 border-blue-500 w-fit p-1 text-lg">مشخصات کلی</h2>
-
-                <div class="my-5 w-full divide-y divide-gray-200 dark:divide-gray-700">
-                    {% for value in product.attribute_values.all %}
-                        <div class="spec-item py-4 {% if forloop.counter > 5 %}hidden hidden-spec-item{% endif %}">
-                            <p class="text-sm text-gray-500 dark:text-gray-400">{{ value.attribute.name }}:</p>
-                            <p class="font-DanaMedium text-gray-800 dark:text-gray-200 mt-2">{{ value.value }}</p>
-                        </div>
-                    {% endfor %}
-                </div>
-                
+                {% endfor %}
                 {% if product.attribute_values.all|length > 5 %}
                     <button class="more-specs-btn flex gap-x-1 items-center text-blue-400">
                         <span class="more-specs-text">مشاهده بیشتر</span>

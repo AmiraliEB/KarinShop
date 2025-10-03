@@ -60,7 +60,7 @@ class ProductCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(models.Attribute)
 class AttributeAdmin(admin.ModelAdmin):
-    list_display = ('id','name',)
+    list_display = ('name','attribute_category')
     search_fields = ('name',)
     inlines = [AttributeRuleInline,AttributeValueInline]
 
