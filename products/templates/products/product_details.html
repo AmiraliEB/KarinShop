@@ -4,6 +4,7 @@
 
 {% block title %}جزئیات محصول{% endblock title %}
 {% block content %}
+    {% include 'partials/header.html' %}
     <!-- ALL ICONS  -->
     <svg class="hidden">
         <symbol id="share" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
@@ -1466,7 +1467,7 @@
             </div>
         </section>
     </main>
-
+    {% include 'partials/footer.html' %} 
 {% endblock content %}
 {% block extra_js %}
 <script src="{% static "products/js/productDetails.js" %}"></script>

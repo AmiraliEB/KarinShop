@@ -27,16 +27,13 @@
 <body>
     {% include "partials/loading.html" %}
 
-    <div id="page-content" class="invisible">
-    
-        {% include 'partials/header.html' %}  
+    <div id="page-content" class="invisible">  
 
         <main> 
             {% block content %}
             {% endblock %}
         </main>
 
-        {% include 'partials/footer.html' %} 
 
     </div> <div class="overlay"></div>
     <div class="search-overlay"></div>
