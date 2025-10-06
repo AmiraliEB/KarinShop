@@ -93,14 +93,16 @@
             <!--  Action -->
             <div class="flex items-center gap-x-3">
                 <!-- LOGIN -->
-                <button class="hidden flex-center py-2 px-4  app-border rounded-full app-hover">
-                    <a href="#" class="flex items-center gap-x-2">
+                {% if not user.is_authenticated %}
+                <button class="flex-center py-2 px-4  app-border rounded-full app-hover">
+                    <a href="{% url "account_login" %}" class="flex items-center gap-x-2">
                         <p>ورود | ثبت‌نام</p>
                         <svg class="size-5">
                             <use href="#arrow-left-end" />
                         </svg>
                     </a>
                 </button>
+                {% else %}
                 <!-- Account Btn -->
                 <button class="group relative flex-center py-2 px-4 app-border rounded-full app-hover delay-75">
                     <a href="dashboard.html"  class="flex items-center gap-x-1">
@@ -141,6 +143,7 @@
                         </a>
                     </div>
                 </button>
+                {% endif %}
                 <!-- Toggle theme -->
                 <button class="toggle-theme flex-center p-2 app-border rounded-full app-hover">
                     <svg class="inline-block dark:hidden size-6">
