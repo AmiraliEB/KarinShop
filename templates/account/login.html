@@ -1,5 +1,8 @@
 {% extends "_base.html" %}
 {% block content %}
+
+{% comment %} TODO:fix screen match {% endcomment %}
+
 <!-- ALL ICONS -->
 <svg class="hidden">
   <symbol id="moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
@@ -48,7 +51,9 @@
       </a>
     </div>
     <div class="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
-      <form class="space-y-5" action="{% url "account_login" %}" method="POST">
+      {% include "partials/_messages.html" %}
+      <p class="mb-2 text-gray-800 dark:text-gray-100 font-DanaMedium text-lg">ورود </p>
+      <form class="space-y-5" action="{{action_url}}" method="POST">
         {% csrf_token %}
         {% if form.non_field_errors %}
         <div class="rounded-md bg-red-50 p-4">
@@ -62,24 +67,18 @@
         </div>
         {% endif %}
         <div>
-          <label for="email" class="block text-sm/8 font-medium text-gray-500 dark:text-gray-300">
-            ایمیل خود را وارد کنید </label>
-          <div class="mt-2">
+          <div class="mt-5">
             {{form.login}}
           </div>
           {% for error in form.login.errors %}
-            <p class="">{{ error }}</p>
+            <p class="mt-2 text-sm text-red-600">{{ error }}</p>
           {% endfor %}
-          <label for="password" class=" mt-4 block text-sm/6 font-medium text-gray-500 dark:text-gray-300">
-            رمزعبور خود را وارد کنید</label>
-          <div class="mt-2">
+          <div class="mt-3">
             {{form.password}}
           </div>
           {% for error in form.password.errors %}
             <p class="mt-2 text-sm text-red-600">{{ error }}</p>
           {% endfor %}
-          <!-- ERRORE -->
-          <p class="text-error"></p>
         </div>
         {% if redirect_field_value %}
         <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
@@ -92,7 +91,7 @@
         <a class='text-blue-400' href="{{ signup_url }}">هنوز ثبت‌نام نکرده‌اید؟</a>
       </p>
       <p class="mt-3 text-right text-sm/6 text-gray-500 dark:text-gray-300">
-        <a class='text-blue-400'href="{{ password_reset_url }}">رمز عبور خود را فراموش کرده‌اید؟</a>
+        <a class='text-blue-400'href="{% url "account_reset_password" %}">رمز عبور خود را فراموش کرده‌اید؟</a>
       </p>
       
       <p class="mt-8 text-center text-sm/6 text-gray-500 dark:text-gray-300">

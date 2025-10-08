@@ -248,7 +248,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!value) {
       return "این فیلد نمی‌تواند خالی باشد";
     } else if (!emailPattern.test(value) && !phonePattern.test(value)) {
-      return "لطفا ایمیل یا شماره موبایل معتبر وارد کنید";
+      return "لطفا ایمیل معتبر وارد کنید";
     }
     return "";
   }

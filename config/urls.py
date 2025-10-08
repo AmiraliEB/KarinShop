@@ -19,10 +19,15 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+from accounts.views import CustomSignupView, CustomPasswordResetDoneView, CustomPasswordResetView
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('core.urls')),
     path('', include('products.urls')),
+    path('accounts/signup/', CustomSignupView.as_view(), name='account_signup'),
+    path('accounts/password/reset', CustomPasswordResetView.as_view(), name='account_reset_password'),
+    path('password/reset/done/', CustomPasswordResetDoneView.as_view(), name='account_password_reset_completed'),
     path('accounts/', include('allauth.urls')),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

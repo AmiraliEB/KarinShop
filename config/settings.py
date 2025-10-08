@@ -152,12 +152,19 @@ USE_TZ = True
 
 #allauth
 ACCOUNT_SESSION_REMEMBER = True
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_LOGIN_METHODS = {'email'}
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_LOGIN_BY_CODE_ENABLED = True
+ACCOUNT_SIGNUP_REDIRECT_URL = '/'
+
 LOGIN_REDIRECT_URL = '/' 
 LOGOUT_REDIRECT_URL = '/'
 
 ACCOUNT_FORMS = {
     'login': 'accounts.forms.CustomLoginForm',
-    'signup':'accounts.forms.CustomSignupForm'}
+    'signup':'accounts.forms.CustomSignupForm',
+    'reset_password': 'accounts.forms.CustomResetPasswordForm',    }
+
+#email
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
