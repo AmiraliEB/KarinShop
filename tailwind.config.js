@@ -66,6 +66,15 @@ module.exports = {
         "MorabbaLight": "Morabba Light",
         "MorabbaMedium": "Morabba Medium",
         "MorabbaBold": "Morabba Bold",
+      },
+      keyframes: {
+        progress: {
+          '0%': { width: '100%' },
+          '100%': { width: '0%' },
+        }
+      },
+      animation: {
+        progress: 'progress 12s linear forwards',
       }
     },
   },

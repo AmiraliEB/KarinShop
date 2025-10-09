@@ -157,6 +157,7 @@ ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_LOGIN_BY_CODE_ENABLED = True
 ACCOUNT_SIGNUP_REDIRECT_URL = '/'
+ACCOUNT_PASSWORD_RESET_REDIRECT_URL = '/'
 
 LOGIN_REDIRECT_URL = '/' 
 LOGOUT_REDIRECT_URL = '/'
@@ -168,3 +169,5 @@ ACCOUNT_FORMS = {
 
 #email
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+ACCOUNT_ADAPTER = 'accounts.adapter.CustomAccountAdapter'

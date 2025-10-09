@@ -79,7 +79,7 @@
       </div>
       {% endif %}
         <p class="mb-2 text-gray-800 dark:text-gray-100 font-DanaMedium text-lg">فرم ثبت‌نام </p>
-      <form class="space-y-5" action="{{action_url}}" method="POST">
+      <form class="space-y-5" action="{% url "account_signup" %}" method="POST">
         {% csrf_token %}
         {% if form.non_field_errors %}
         <div class="rounded-md bg-red-50 p-4">

@@ -15,20 +15,21 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, reverse_lazy
 from django.conf import settings
 from django.conf.urls.static import static
+from allauth.account.views import PasswordResetView
 
-from accounts.views import CustomSignupView, CustomPasswordResetDoneView, CustomPasswordResetView
+from accounts.views import CustomPasswordResetDoneView, CustomEmailVerificationSentView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('accounts/password/reset', PasswordResetView.as_view(success_url=reverse_lazy('account_login')), name='account_reset_password'),
+    path('accounts/password/reset/done/', CustomPasswordResetDoneView.as_view(), name='account_password_reset_completed'),
+    path('accounts/confirm-email/', CustomEmailVerificationSentView.as_view(), name='account_email_verification_sent'),
+    path('accounts/', include('allauth.urls')),
     path('', include('core.urls')),
     path('', include('products.urls')),
-    path('accounts/signup/', CustomSignupView.as_view(), name='account_signup'),
-    path('accounts/password/reset', CustomPasswordResetView.as_view(), name='account_reset_password'),
-    path('password/reset/done/', CustomPasswordResetDoneView.as_view(), name='account_password_reset_completed'),
-    path('accounts/', include('allauth.urls')),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 #TODO: Remove in production
