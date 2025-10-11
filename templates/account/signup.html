@@ -111,6 +111,9 @@
             <label for="{{form.password2.id_for_label}}" class="block text-sm/6 font-medium text-gray-500 dark:text-gray-300">تکرار رمز عبور</label>
             {{form.password2}}
           </div>
+          <small class="mt-2 block text-sm/6 font-medium text-gray-500 dark:text-gray-300">
+    💡      <b>نکته:</b> می‌توانید از حروف فارسی برای ساخت رمز عبور قوی‌تر و به‌یادماندنی‌تر استفاده کنید.
+          </small>
           {% for error in form.password2.errors %}
             <p class="mt-2 text-sm text-red-600">{{ error }}</p>
           {% endfor %}
