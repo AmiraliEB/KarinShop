@@ -4,9 +4,8 @@
     <div x-data="{ show: true }" 
         x-show="show" 
         x-transition
-        x-init="setTimeout(() => show = false, 12000)"
+        x-init="setTimeout(() => show = false, 10000)"
         class="rounded-md shadow-lg mb-4 relative overflow-hidden
-        {# --- منطق جدید رنگ‌بندی با کنتراست بالا --- #}
         {% if message.tags == 'success' %} bg-green-500 text-white
         {% elif message.tags == 'error' %} bg-red-600 text-white
         {% elif message.tags == 'warning' %} bg-amber-500 text-white

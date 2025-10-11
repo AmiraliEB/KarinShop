@@ -134,7 +134,7 @@
                             </svg>
                             اطلاعات کاربری
                         </a>
-                        <a href="#"
+                        <a href="{% url "account_logout" %}"
                             class="flex items-center gap-x-2  hover:bg-red-500 dark:hover:bg-red-500 hover:text-gray-100">
                             <svg class="h-5 w-5">
                                 <use href="#arrow-left-end"></use>
@@ -910,6 +910,16 @@
                         </svg>
                         <a href="contact-us.html">تـماس بـا مـا</a>
                     </li>
+                    {% if user.is_authenticated %}
+                    <li class="mobile-menu-item">
+                        <svg class="h-5 w-5">
+                            <use href="#arrow-left-end"></use>
+                        </svg>
+                        <a href="{% url "account_logout" %}">
+                            خروج از حساب
+                        </a>
+                    </li>
+                    {% endif %}
                 </ul>
             </div>
             <!-- Logo -->

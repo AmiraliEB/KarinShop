@@ -451,16 +451,16 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  document.querySelectorAll(".toggle-password").forEach(button => {
-    button.addEventListener("click", function () {
-      const input = this.parentElement.querySelector("input");
-      if (input.type === "password") {
-        input.type = "text";
-      } else {
-        input.type = "password";
-      }
-    });
-  });
+  // document.querySelectorAll(".toggle-password").forEach(button => {
+  //   button.addEventListener("click", function () {
+  //     const input = this.parentElement.querySelector("input");
+  //     if (input.type === "password") {
+  //       input.type = "text";
+  //     } else {
+  //       input.type = "password";
+  //     }
+  //   });
+  // });
 
   confirmPassword?.addEventListener("input", function () {
     if (confirmPassword.value !== passwordInput.value) {

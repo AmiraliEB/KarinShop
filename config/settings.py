@@ -158,16 +158,22 @@ ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_LOGIN_BY_CODE_ENABLED = True
 ACCOUNT_SIGNUP_REDIRECT_URL = '/'
 ACCOUNT_PASSWORD_RESET_REDIRECT_URL = '/'
-
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 LOGIN_REDIRECT_URL = '/' 
 LOGOUT_REDIRECT_URL = '/'
 
+ACCOUNT_ADAPTER = 'accounts.adapter.CustomAccountAdapter'
 ACCOUNT_FORMS = {
     'login': 'accounts.forms.CustomLoginForm',
     'signup':'accounts.forms.CustomSignupForm',
-    'reset_password': 'accounts.forms.CustomResetPasswordForm',    }
+    'reset_password': 'accounts.forms.CustomResetPasswordForm',
+    'reset_password_from_key': 'accounts.forms.CustomResetPasswordForm',}
 
 #email
+#TODO: Change in production
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-ACCOUNT_ADAPTER = 'accounts.adapter.CustomAccountAdapter'
+EMAIL_HOST = os.environ.get('EMAIL_HOST')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587))
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+EMAIL_USE_TLS = False

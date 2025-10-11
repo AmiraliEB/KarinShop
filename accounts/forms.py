@@ -1,7 +1,8 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from allauth.account.forms import SignupForm, LoginForm, ResetPasswordForm
+from allauth.account.forms import SignupForm, LoginForm, ResetPasswordForm, ResetPasswordKeyForm
 from django import forms
 from .models import CustomUser
+#TODO: fix the user inactive loop
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
@@ -51,3 +52,16 @@ class CustomResetPasswordForm(ResetPasswordForm):
             attrs={
                 'class': "block w-full p-3 text-base outline dark:outline-none outline-1 -outline-offset-1 placeholder:text-gray-400  sm:text-sm/6 transition-alltext-gray-800 dark:text-gray-100 dark:bg-gray-900 bg-slate-100 border border-transparent hover:border-slate-200 appearance-none rounded-md outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-blue-400",
                 'placeholder':"ایمیل"})
+        
+class CustomResetPasswordKeyForm(ResetPasswordKeyForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['password1'].widget = forms.PasswordInput(
+            attrs={
+                'class': "p-3 w-full sm:text-sm/6 text-base appearance-none text-gray-800 dark:text-gray-100",
+                'placeholder':"پسورد جدید"})
+        self.fields['password2'].widget = forms.PasswordInput(
+            attrs={
+                'class': "p-3 w-full sm:text-sm/6 text-base appearance-none text-gray-800 dark:text-gray-100",
+                'placeholder':"تکرار رمز عبور*"})

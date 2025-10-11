@@ -1,7 +1,7 @@
 from django.urls import reverse
 from django.shortcuts import redirect
 from django.utils.translation import gettext_lazy as _
-from allauth.account.views import PasswordResetView, PasswordResetDoneView,EmailVerificationSentView
+from allauth.account.views import PasswordResetView, PasswordResetDoneView,EmailVerificationSentView,AccountInactiveView
 from django.contrib import messages
     
 class CustomEmailVerificationSentView(EmailVerificationSentView):
@@ -17,4 +17,9 @@ class CustomPasswordResetView(PasswordResetView):
 class CustomPasswordResetDoneView(PasswordResetDoneView):
     def get(self, request, *args, **kwargs):
         messages.success(self.request, _("لینک بازنشانی رمز عبور برای شما ارسال شد. لطفاً صندوق ورودی و پوشه هرزنامه خود را بررسی نمایید."))
+        return redirect(reverse('account_login'))
+
+class CustomAccountInactiveView(AccountInactiveView):
+    def get(self, request, *args, **kwargs):
+        messages.error(request, _("اکانت شما غیرفعال شده است. لطفا با پشتیبانی تماس بگیرید."))
         return redirect(reverse('account_login'))
