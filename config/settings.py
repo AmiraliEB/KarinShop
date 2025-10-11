@@ -167,7 +167,7 @@ ACCOUNT_FORMS = {
     'login': 'accounts.forms.CustomLoginForm',
     'signup':'accounts.forms.CustomSignupForm',
     'reset_password': 'accounts.forms.CustomResetPasswordForm',
-    'reset_password_from_key': 'accounts.forms.CustomResetPasswordForm',}
+    'reset_password_from_key': 'accounts.forms.CustomResetPasswordKeyForm',    }
 
 #email
 #TODO: Change in production
