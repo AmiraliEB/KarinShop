@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.github',
 ]
 
 
@@ -183,33 +183,9 @@ SOCIALACCOUNT_PROVIDERS = {
         'AUTH_PARAMS': {
             'access_type': 'online',
         }
-    },
-    'facebook': {
-        'METHOD': 'oauth2',
-        'SDK_URL': '//connect.facebook.net/{locale}/sdk.js',
-        'SCOPE': ['email', 'public_profile'],
-        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
-        'INIT_PARAMS': {'cookie': True},
-        'FIELDS': [
-            'id',
-            'email',
-            'name',
-            'first_name',
-            'last_name',
-            'verified',
-            'locale',
-            'timezone',
-            'link',
-            'gender',
-            'updated_time',
-        ],
-        'EXCHANGE_TOKEN': True,
-        'LOCALE_FUNC': lambda request: 'fa_IR',
-        'VERIFIED_EMAIL': False,
-        'VERSION': 'v19.0', 
-        'GRAPH_API_URL': 'https://graph.facebook.com/v19.0',
     }
 }
+SOCIALACCOUNT_LOGIN_ON_GET=True
 
 #email
 #TODO: Change in production
