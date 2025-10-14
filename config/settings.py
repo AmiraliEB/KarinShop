@@ -40,8 +40,12 @@ INSTALLED_APPS = [
     'products',
 
     #third party apps
+    #allauth
     'allauth',
     'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.facebook',
 ]
 
 
@@ -161,6 +165,7 @@ ACCOUNT_PASSWORD_RESET_REDIRECT_URL = '/'
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 LOGIN_REDIRECT_URL = '/' 
 LOGOUT_REDIRECT_URL = '/'
+SITE_ID = 1
 
 ACCOUNT_ADAPTER = 'accounts.adapter.CustomAccountAdapter'
 ACCOUNT_FORMS = {
@@ -168,6 +173,43 @@ ACCOUNT_FORMS = {
     'signup':'accounts.forms.CustomSignupForm',
     'reset_password': 'accounts.forms.CustomResetPasswordForm',
     'reset_password_from_key': 'accounts.forms.CustomResetPasswordKeyForm',    }
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    },
+    'facebook': {
+        'METHOD': 'oauth2',
+        'SDK_URL': '//connect.facebook.net/{locale}/sdk.js',
+        'SCOPE': ['email', 'public_profile'],
+        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+        'INIT_PARAMS': {'cookie': True},
+        'FIELDS': [
+            'id',
+            'email',
+            'name',
+            'first_name',
+            'last_name',
+            'verified',
+            'locale',
+            'timezone',
+            'link',
+            'gender',
+            'updated_time',
+        ],
+        'EXCHANGE_TOKEN': True,
+        'LOCALE_FUNC': lambda request: 'fa_IR',
+        'VERIFIED_EMAIL': False,
+        'VERSION': 'v19.0', 
+        'GRAPH_API_URL': 'https://graph.facebook.com/v19.0',
+    }
+}
 
 #email
 #TODO: Change in production
