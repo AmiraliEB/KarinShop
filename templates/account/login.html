@@ -1,94 +1,41 @@
-{% extends "_base.html" %}
+{% extends "base_account.html" %}
 {% load socialaccount %}
-
-{% block content %}
-
-{% comment %} TODO:fix screen match {% endcomment %}
-
-<!-- ALL ICONS -->
-<svg class="hidden">
-  <symbol id="moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-    <path fill-rule="evenodd"
-      d="M9.528 1.718a.75.75 0 0 1 .162.819A8.97 8.97 0 0 0 9 6a9 9 0 0 0 9 9 8.97 8.97 0 0 0 3.463-.69.75.75 0 0 1 .981.98 10.503 10.503 0 0 1-9.694 6.46c-5.799 0-10.5-4.7-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 0 1 .818.162Z"
-      clip-rule="evenodd" />
-  </symbol>
-  <symbol id="sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-    <path
-      d="M12 2.25a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75ZM7.5 12a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM18.894 6.166a.75.75 0 0 0-1.06-1.06l-1.591 1.59a.75.75 0 1 0 1.06 1.061l1.591-1.59ZM21.75 12a.75.75 0 0 1-.75.75h-2.25a.75.75 0 0 1 0-1.5H21a.75.75 0 0 1 .75.75ZM17.834 18.894a.75.75 0 0 0 1.06-1.06l-1.59-1.591a.75.75 0 1 0-1.061 1.06l1.59 1.591ZM12 18a.75.75 0 0 1 .75.75V21a.75.75 0 0 1-1.5 0v-2.25A.75.75 0 0 1 12 18ZM7.758 17.303a.75.75 0 0 0-1.061-1.06l-1.591 1.59a.75.75 0 0 0 1.06 1.061l1.591-1.59ZM6 12a.75.75 0 0 1-.75.75H3a.75.75 0 0 1 0-1.5h2.25A.75.75 0 0 1 6 12ZM6.697 7.757a.75.75 0 0 0 1.06-1.06l-1.59-1.591a.75.75 0 0 0-1.061 1.06l1.59 1.591Z" />
-  </symbol>
-  </svg>
-</svg>
-
-<section class="relative flex items-center justify-center min-h-screen w-full">
-  <!-- background -->
-  <div class="pointer-events-none absolute inset-0 flex w-full items-center justify-center overflow-hidden 
-[mask-image:radial-gradient(circle_at_center,rgba(255,255,255,1)_0%,rgba(255,255,255,0)_85%)]">
-
-    <svg
-      class="absolute left-0 top-0 h-full w-full stroke-black/10 stroke-[2] 
-  [mask-image:radial-gradient(circle_at_center,rgba(255,255,255,1)_20%,rgba(255,255,255,0)_95%)] dark:stroke-white/10">
-      <rect width="100%" height="100%" stroke-width="0" fill="url(#grid-pattern)"></rect>
-      <defs>
-        <pattern id="grid-pattern" viewBox="0 0 64 64" width="60" height="60" patternUnits="userSpaceOnUse">
-          <path d="M64 0H0V64" fill="none"></path>
-        </pattern>
-      </defs>
-    </svg>
-  </div>
-
-  <div class="relative w-[27rem] mx-5 flex flex-col justify-center py-8 px-4 md:px-8 bg-white dark:bg-gray-800 shadow-md rounded-xl">
-    <div class="flex items-center justify-center">
-      <button class="toggle-theme absolute left-2 top-2 flex-center p-1.5 rounded-full text-gray-300">
-        <svg class="inline-block dark:hidden size-5">
-          <use href="#moon" />
-        </svg>
-        <svg class="hidden dark:inline size-5">
-          <use href="#sun" />
-        </svg>
-      </button>
-      <a href="index.html" class="flex flex-col text-center">
-        <span class="font-MorabbaMedium text-4xl flex items-center">
-          <span class="text-blue-500">کارین</span> شاپ
-        </span>
-      </a>
-    </div>
-    <div class="mt-3 sm:mx-auto sm:w-full sm:max-w-sm">
-      <p class="mb-2 text-gray-800 dark:text-gray-100 font-DanaMedium text-lg">ورود </p>
-      <form class="space-y-5" action="{{action_url}}" method="POST">
-        {% csrf_token %}
-        {% if form.non_field_errors %}
-        <div class="rounded-md bg-red-50 p-4">
-            <div class="text-sm text-red-700">
-                <ul role="list" class="list-disc pl-5 space-y-1">
-                    {% for error in form.non_field_errors %}
-                    <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
+{% block page_title %}ورود | {{block.super}}{% endblock page_title %}
+{% block form_title %}ورود{% endblock form_title %}
+{% block base_content %}
+        <div class="relative mt-4">
+          {{form.login}}
+          <label for="{{form.login.id_for_label}}"
+                class="absolute top-3 right-3 z-10 cursor-text text-gray-400 transition-all duration-200
+                        peer-focus:-top-2 peer-focus:right-2 peer-focus:rounded-md peer-focus:bg-white peer-focus:px-1 peer-focus:text-xs peer-focus:font-medium peer-focus:text-blue-500 dark:peer-focus:bg-gray-800
+                        peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:right-2 peer-[:not(:placeholder-shown)]:rounded-md peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-1 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:font-medium peer-[:not(:placeholder-shown)]:text-gray-600 dark:peer-[:not(:placeholder-shown)]:text-gray-300 dark:peer-[:not(:placeholder-shown)]:bg-gray-800">
+            ایمیل
+          </label>
         </div>
-        {% endif %}
-        <div>
-          <div class="mt-5">
-            <label for="{{form.login.id_for_label}}" class="block text-sm/6 font-medium text-gray-500 dark:text-gray-300">ایمیل</label>
-            {{form.login}}
-          </div>
           {% for error in form.login.errors %}
             <p class="mt-2 text-sm text-red-600">{{ error }}</p>
           {% endfor %}
-          <div class="mt-3">
-            <label for="{{form.password.id_for_label}}" class="block text-sm/6 font-medium text-gray-500 dark:text-gray-300">رمز عبور</label>
-            {{form.password}}
+          <div class="relative mt-3" data-toggle="password">
+              {{ form.password }}
+              <label for="{{form.password.id_for_label}}"
+                    class="absolute top-3 right-3 z-10 cursor-text text-gray-400 transition-all duration-200
+                            peer-focus:-top-2 peer-focus:right-2 peer-focus:rounded-md peer-focus:bg-white peer-focus:px-1 peer-focus:text-xs peer-focus:font-medium peer-focus:text-blue-500 dark:peer-focus:bg-gray-800
+                            peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:right-2 peer-[:not(:placeholder-shown)]:rounded-md peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-1 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:font-medium peer-[:not(:placeholder-shown)]:text-gray-600 dark:peer-[:not(:placeholder-shown)]:text-gray-300 dark:peer-[:not(:placeholder-shown)]:bg-gray-800">
+                رمز عبور 
+              </label>
+              <button type="button" class="absolute inset-y-0 left-3 z-10 flex items-center toggle-password">
+                  <svg class="size-5 text-gray-500">
+                      <use href="#eye"></use>
+                  </svg>
+              </button>
           </div>
           {% for error in form.password.errors %}
             <p class="mt-2 text-sm text-red-600">{{ error }}</p>
           {% endfor %}
-          <p class="mt-2 text-right text-sm/6 text-gray-500 dark:text-gray-300 font-DanaMedium hover:underline">
+          <p class="mt-2 mb-4 text-right text-sm/6 text-gray-500 dark:text-gray-300 font-DanaMedium hover:underline">
             <a class='text-blue-400'href="{% url "account_reset_password" %}">فراموشی رمز عبور؟</a>
           </p>
         </div>
-        {% if redirect_field_value %}
-        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-        {% endif %}
         <div>
           <button class="submit-btn">ورود</button>
         </div>
@@ -108,7 +55,7 @@
             <div class="w-full border-t border-gray-300 dark:border-gray-600"></div>
           </div>
           <div class="relative flex justify-center text-sm">
-            <span class="bg-white dark:bg-gray-800 px-2 text-gray-500 dark:text-gray-400 font-DanaMedium">یا ادامه با</span>
+            <span class="bg-white dark:bg-gray-800 px-2 text-gray-500 dark:text-gray-400 font-DanaMedium">یا ورود با</span>
           </div>
         </div>
 
@@ -137,4 +84,4 @@
     </div>
   </div>
 </section>
-{% endblock content %}
+{% endblock base_content %}

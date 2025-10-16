@@ -403,53 +403,58 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 // NEW PASSWORD
-document.addEventListener("DOMContentLoaded", function () {
-  const passwordInput = document.getElementById("passwordInput");
-  const confirmPassword = document.getElementById("confirmPassword");
-  const bar1 = document.getElementById("bar1");
-  const bar2 = document.getElementById("bar2");
-  const bar3 = document.getElementById("bar3");
+// document.addEventListener("DOMContentLoaded", function () {
+//   const passwordInput = document.getElementById("passwordInput");
+//   const confirmPassword = document.getElementById("confirmPassword");
+//   const bar1 = document.getElementById("bar1");
+//   const bar2 = document.getElementById("bar2");
+//   const bar3 = document.getElementById("bar3");
 
-  const lengthCheck = document.getElementById("lengthCheck");
-  const numberCheck = document.getElementById("numberCheck");
-  const uppercaseCheck = document.getElementById("uppercaseCheck");
+//   const lengthCheck = document.getElementById("lengthCheck");
+//   const numberCheck = document.getElementById("numberCheck");
+//   const uppercaseCheck = document.getElementById("uppercaseCheck");
 
-  passwordInput?.addEventListener("input", function () {
-    let password = passwordInput.value;
-    let isLengthValid = password.length >= 8;
-    let hasNumber = /[0-9]/.test(password);
-    let hasUppercase = /[A-Z]/.test(password);
+//   passwordInput?.addEventListener("input", function () {
+//     let password = passwordInput.value;
+//     let isLengthValid = password.length >= 8;
+//     let hasNumber = /[0-9]/.test(password);
+//     let hasUppercase = /[A-Z]/.test(password);
 
-    updateRequirement(lengthCheck, isLengthValid);
-    updateRequirement(numberCheck, hasNumber);
-    updateRequirement(uppercaseCheck, hasUppercase);
+//     updateRequirement(lengthCheck, isLengthValid);
+//     updateRequirement(numberCheck, hasNumber);
+//     updateRequirement(uppercaseCheck, hasUppercase);
 
-    let strength = isLengthValid + hasNumber + hasUppercase;
+//     let strength = isLengthValid + hasNumber + hasUppercase;
 
-    resetBars();
+//     resetBars();
 
-    if (strength === 1) {
-      bar1.classList.replace("bg-gray-300", "bg-red-500");
-    } else if (strength === 2) {
-      bar1.classList.replace("bg-gray-300", "bg-amber-400");
-      bar2.classList.replace("bg-gray-300", "bg-amber-400");
-    } else if (strength === 3) {
-      bar1.classList.replace("bg-gray-300", "bg-green-500");
-      bar2.classList.replace("bg-gray-300", "bg-green-500");
-      bar3.classList.replace("bg-gray-300", "bg-green-500");
-    }
-  });
+//     if (strength === 1) {
+//       bar1.classList.replace("bg-gray-300", "bg-red-500");
+//     } else if (strength === 2) {
+//       bar1.classList.replace("bg-gray-300", "bg-amber-400");
+//       bar2.classList.replace("bg-gray-300", "bg-amber-400");
+//     } else if (strength === 3) {
+//       bar1.classList.replace("bg-gray-300", "bg-green-500");
+//       bar2.classList.replace("bg-gray-300", "bg-green-500");
+//       bar3.classList.replace("bg-gray-300", "bg-green-500");
+//     }
+//   });
 
-  function updateRequirement(element, isValid) {
-    element.style.display = isValid ? "none" : "flex";
-  }
+//   function updateRequirement(element, isValid) {
+//     element.style.display = isValid ? "none" : "flex";
+//   }
 
-  function resetBars() {
-    [bar1, bar2, bar3].forEach(bar => {
-      bar.classList.remove("bg-red-500", "bg-amber-400", "bg-green-500");
-      bar.classList.add("bg-gray-300");
-    });
-  }
+//   function resetBars() {
+//     [bar1, bar2, bar3].forEach(bar => {
+//       bar.classList.remove("bg-red-500", "bg-amber-400", "bg-green-500");
+//       bar.classList.add("bg-gray-300");
+//     });
+//   }
+
+
+
+
+
 
   // document.querySelectorAll(".toggle-password").forEach(button => {
   //   button.addEventListener("click", function () {
@@ -462,14 +467,14 @@ document.addEventListener("DOMContentLoaded", function () {
   //   });
   // });
 
-  confirmPassword?.addEventListener("input", function () {
-    if (confirmPassword.value !== passwordInput.value) {
-      confirmPassword.setCustomValidity("رمز عبور تطابق ندارد");
-    } else {
-      confirmPassword.setCustomValidity("");
-    }
-  });
-});
+//   confirmPassword?.addEventListener("input", function () {
+//     if (confirmPassword.value !== passwordInput.value) {
+//       confirmPassword.setCustomValidity("رمز عبور تطابق ندارد");
+//     } else {
+//       confirmPassword.setCustomValidity("");
+//     }
+//   });
+// });
 
 
 // accordion
@@ -600,3 +605,73 @@ window.addEventListener('load', function() {
     }
 });
 
+
+// NEW PASSWORD
+document.addEventListener("DOMContentLoaded", function () {
+  const passwordInput = document.getElementById("passwordInput");
+  if (!passwordInput) return; 
+
+  const confirmPassword = document.getElementById("confirmPassword");
+  const bar1 = document.getElementById("bar1");
+  const bar2 = document.getElementById("bar2");
+  const bar3 = document.getElementById("bar3");
+  const lengthCheck = document.getElementById("lengthCheck");
+  const numberCheck = document.getElementById("numberCheck");
+  const uppercaseCheck = document.getElementById("uppercaseCheck");
+
+  function validatePassword() {
+    const password = passwordInput.value;
+    const isLengthValid = password.length >= 8;
+    const hasNumber = /[0-9]/.test(password);
+    const hasUppercase = /[A-Z]/.test(password);
+
+    updateRequirement(lengthCheck, isLengthValid);
+    updateRequirement(numberCheck, hasNumber);
+    updateRequirement(uppercaseCheck, hasUppercase);
+
+    const strength = isLengthValid + hasNumber + hasUppercase;
+    resetBars();
+    if (strength === 1) {
+      bar1.classList.replace("bg-gray-300", "bg-red-500");
+    } else if (strength === 2) {
+      bar1.classList.replace("bg-gray-300", "bg-amber-400");
+      bar2.classList.replace("bg-gray-300", "bg-amber-400");
+    } else if (strength === 3) {
+      bar1.classList.replace("bg-gray-300", "bg-green-500");
+      bar2.classList.replace("bg-gray-300", "bg-green-500");
+      bar3.classList.replace("bg-gray-300", "bg-green-500");
+    }
+  }
+
+  function updateRequirement(element, isValid) {
+    const icon = element.querySelector("svg use");
+    if (isValid) {
+      element.classList.remove("text-gray-400");
+      element.classList.add("text-green-500");
+      icon.setAttribute("href", "#check-circle");
+    } else {
+      element.classList.remove("text-green-500");
+      element.classList.add("text-gray-400");
+      icon.setAttribute("href", "#circle-dot");
+    }
+  }
+
+  function resetBars() {
+    [bar1, bar2, bar3].forEach(bar => {
+      bar.classList.remove("bg-red-500", "bg-amber-400", "bg-green-500");
+      bar.classList.add("bg-gray-300");
+    });
+  }
+
+  passwordInput.addEventListener("input", validatePassword);
+
+  confirmPassword?.addEventListener("input", function () {
+    if (confirmPassword.value !== passwordInput.value) {
+      confirmPassword.setCustomValidity("رمزهای عبور با یکدیگر مطابقت ندارند.");
+    } else {
+      confirmPassword.setCustomValidity("");
+    }
+  });
+
+  setTimeout(validatePassword, 100);
+});

@@ -20,7 +20,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from allauth.account.views import PasswordResetView
 
-from accounts.views import CustomAccountInactiveView, CustomPasswordResetDoneView, CustomEmailVerificationSentView
+from accounts.views import CustomAccountInactiveView, CustomPasswordResetDoneView, CustomEmailVerificationSentView, CustomPasswordResetFromKeyDoneView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,6 +28,7 @@ urlpatterns = [
     path('accounts/password/reset/done/', CustomPasswordResetDoneView.as_view(), name='account_password_reset_completed'),
     path('accounts/confirm-email/', CustomEmailVerificationSentView.as_view(), name='account_email_verification_sent'),
     path("accounts/inactive/", CustomAccountInactiveView.as_view(), name="account_inactive"),
+    path("accounts/password/reset/key/done/",CustomPasswordResetFromKeyDoneView.as_view(),name="account_reset_password_from_key_done"),
     path('accounts/', include('allauth.urls')),
     path('', include('core.urls')),
     path('', include('products.urls')),

@@ -22,13 +22,14 @@ class CustomLoginForm(LoginForm):
 
         self.fields['login'].widget = forms.TextInput(
             attrs={
-                'class': "block w-full p-3 text-base outline dark:outline-none outline-1 -outline-offset-1 placeholder:text-gray-400  sm:text-sm/6 transition-alltext-gray-800 dark:text-gray-100 dark:bg-gray-900 bg-slate-100 border border-transparent hover:border-slate-200 appearance-none rounded-md outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-blue-400",
-                'placeholder':"ایمیل"
+                'class': "peer inline-block w-full p-3 text-base outline dark:outline-none outline-1 -outline-offset-1 placeholder:text-transparent sm:text-sm/6 transition-all text-gray-800 dark:text-gray-100 dark:bg-gray-900 bg-slate-100 border border-transparent hover:border-slate-200 appearance-none rounded-md outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-blue-400",
+                'placeholder':" "
             })
         self.fields['password'].widget = forms.PasswordInput(
             attrs={
-                'class': "block w-full p-3 text-base outline dark:outline-none outline-1 -outline-offset-1 placeholder:text-gray-400  sm:text-sm/6 transition-alltext-gray-800 dark:text-gray-100 dark:bg-gray-900 bg-slate-100 border border-transparent hover:border-slate-200 appearance-none rounded-md outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-blue-400",
-                'placeholder':'رمز عبور'
+                'class': "peer w-full p-3 text-base outline dark:outline-none outline-1 -outline-offset-1 placeholder:text-transparent sm:text-sm/6 transition-all text-gray-800 dark:text-gray-100 dark:bg-gray-900 bg-slate-100 border border-transparent hover:border-slate-200 appearance-none rounded-md outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-blue-400",
+                'placeholder':' ',
+                'id' : 'passwordInput'
             })
 class CustomSignupForm(SignupForm):
     def __init__(self, *args, **kwargs):
@@ -36,18 +37,18 @@ class CustomSignupForm(SignupForm):
 
         self.fields['email'].widget = forms.TextInput(
             attrs={
-                'class': "block w-full p-3 text-base outline dark:outline-none outline-1 -outline-offset-1 placeholder:text-gray-400  sm:text-sm/6 transition-alltext-gray-800 dark:text-gray-100 dark:bg-gray-900 bg-slate-100 border border-transparent hover:border-slate-200 appearance-none rounded-md outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-blue-400",
-                'placeholder':"ایمیل"
+                'class': "peer inline-block w-full p-3 text-base outline dark:outline-none outline-1 -outline-offset-1 placeholder:text-transparent sm:text-sm/6 transition-all text-gray-800 dark:text-gray-100 dark:bg-gray-900 bg-slate-100 border border-transparent hover:border-slate-200 appearance-none rounded-md outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-blue-400",
+                'placeholder':" "
             })
         self.fields['password1'].widget = forms.PasswordInput(
             attrs={
-                'class': "block w-full p-3 text-base outline dark:outline-none outline-1 -outline-offset-1 placeholder:text-gray-400  sm:text-sm/6 transition-alltext-gray-800 dark:text-gray-100 dark:bg-gray-900 bg-slate-100 border border-transparent hover:border-slate-200 appearance-none rounded-md outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-blue-400",
-                'placeholder':'رمز عبور'
+                'class': "peer w-full p-3 text-base outline dark:outline-none outline-1 -outline-offset-1 placeholder:text-transparent sm:text-sm/6 transition-all text-gray-800 dark:text-gray-100 dark:bg-gray-900 bg-slate-100 border border-transparent hover:border-slate-200 appearance-none rounded-md outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-blue-400",
+                'placeholder':' '
             })
         self.fields['password2'].widget = forms.PasswordInput(
             attrs={
-                'class': "block w-full p-3 text-base outline dark:outline-none outline-1 -outline-offset-1 placeholder:text-gray-400  sm:text-sm/6 transition-alltext-gray-800 dark:text-gray-100 dark:bg-gray-900 bg-slate-100 border border-transparent hover:border-slate-200 appearance-none rounded-md outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-blue-400",
-                'placeholder':'رمز عبور (تکرار)'
+                'class': "peer w-full p-3 text-base outline dark:outline-none outline-1 -outline-offset-1 placeholder:text-transparent sm:text-sm/6 transition-all text-gray-800 dark:text-gray-100 dark:bg-gray-900 bg-slate-100 border border-transparent hover:border-slate-200 appearance-none rounded-md outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-blue-400",
+                'placeholder':' '
             })
 
 class CustomResetPasswordForm(ResetPasswordForm):
@@ -56,8 +57,8 @@ class CustomResetPasswordForm(ResetPasswordForm):
 
         self.fields['email'].widget = forms.TextInput(
             attrs={
-                'class': "block w-full p-3 text-base outline dark:outline-none outline-1 -outline-offset-1 placeholder:text-gray-400  sm:text-sm/6 transition-alltext-gray-800 dark:text-gray-100 dark:bg-gray-900 bg-slate-100 border border-transparent hover:border-slate-200 appearance-none rounded-md outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-blue-400",
-                'placeholder':"ایمیل"
+                'class': "peer inline-block w-full p-3 text-base outline dark:outline-none outline-1 -outline-offset-1 placeholder:text-transparent sm:text-sm/6 transition-all text-gray-800 dark:text-gray-100 dark:bg-gray-900 bg-slate-100 border border-transparent hover:border-slate-200 appearance-none rounded-md outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-blue-400",
+                'placeholder':" "
             })
     def clean_email(self):
         email = self.cleaned_data["email"].lower()
@@ -83,14 +84,14 @@ class CustomResetPasswordKeyForm(ResetPasswordKeyForm):
 
         self.fields['password1'].widget = forms.PasswordInput(
             attrs={
-                'class': "p-3 w-full sm:text-sm/6 text-base appearance-none text-gray-800 dark:text-gray-100",
-                'placeholder':"پسورد جدید",
+                'class': "peer w-full p-3 text-base outline dark:outline-none outline-1 -outline-offset-1 placeholder:text-transparent sm:text-sm/6 transition-all text-gray-800 dark:text-gray-100 dark:bg-gray-900 bg-slate-100 border border-transparent hover:border-slate-200 appearance-none rounded-md outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-blue-400",
+                'placeholder':" ",
                 'id' : 'passwordInput'
             })
         self.fields['password2'].widget = forms.PasswordInput(
             attrs={
-                'class': "p-3 w-full sm:text-sm/6 text-base appearance-none text-gray-800 dark:text-gray-100",
-                'placeholder':"تکرار رمز عبور*",
+                'class': "peer w-full p-3 text-base outline dark:outline-none outline-1 -outline-offset-1 placeholder:text-transparent sm:text-sm/6 transition-all text-gray-800 dark:text-gray-100 dark:bg-gray-900 bg-slate-100 border border-transparent hover:border-slate-200 appearance-none rounded-md outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-blue-400",
+                'placeholder':" ",
                 'id' : 'confirmPassword'
             })
         

@@ -1,9 +1,9 @@
 from django.urls import reverse
 from django.shortcuts import redirect
 from django.utils.translation import gettext_lazy as _
-from allauth.account.views import PasswordResetView, PasswordResetDoneView,EmailVerificationSentView,AccountInactiveView
+from allauth.account.views import PasswordResetView, PasswordResetDoneView,EmailVerificationSentView,AccountInactiveView,PasswordResetFromKeyDoneView
 from django.contrib import messages
-    
+#TODO: bug:user can get message with get method on any custom views
 class CustomEmailVerificationSentView(EmailVerificationSentView):
     def get(self, form):
         messages.success(self.request, _("یک ایمیل برای شما فرستاده شده است. لطفا برای فعال سازی اکانت, صندوق ورودی ایمیل خود را بررسی کنید."))
@@ -22,4 +22,8 @@ class CustomPasswordResetDoneView(PasswordResetDoneView):
 class CustomAccountInactiveView(AccountInactiveView):
     def get(self, request, *args, **kwargs):
         messages.error(request, _("اکانت شما غیرفعال شده است. لطفا با پشتیبانی تماس بگیرید."))
+        return redirect(reverse('account_login'))
+
+class CustomPasswordResetFromKeyDoneView(PasswordResetFromKeyDoneView):
+    def get(self, request, *args, **kwargs):
         return redirect(reverse('account_login'))
