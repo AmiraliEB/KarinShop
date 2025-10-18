@@ -20,15 +20,15 @@ from django.conf import settings
 from django.conf.urls.static import static
 from allauth.account.views import PasswordResetView
 
-from accounts.views import CustomAccountInactiveView, CustomPasswordResetDoneView, CustomEmailVerificationSentView, CustomPasswordResetFromKeyDoneView
+from accounts.views import CustomAccountInactiveView, CustomPasswordResetFromKeyDoneView, ResendConfirmationEmailView, ResendConfirmationEmailDoneView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/password/reset', PasswordResetView.as_view(success_url=reverse_lazy('account_login')), name='account_reset_password'),
-    path('accounts/password/reset/done/', CustomPasswordResetDoneView.as_view(), name='account_password_reset_completed'),
-    path('accounts/confirm-email/', CustomEmailVerificationSentView.as_view(), name='account_email_verification_sent'),
     path("accounts/inactive/", CustomAccountInactiveView.as_view(), name="account_inactive"),
     path("accounts/password/reset/key/done/",CustomPasswordResetFromKeyDoneView.as_view(),name="account_reset_password_from_key_done"),
+    path('accounts/resend-confirmation/', ResendConfirmationEmailView.as_view(), name='account_resend_confirmation'),
+    path('accounts/resend-confirmation/done/', ResendConfirmationEmailDoneView.as_view() , name='account_resend_confirmation_done'),
     path('accounts/', include('allauth.urls')),
     path('', include('core.urls')),
     path('', include('products.urls')),

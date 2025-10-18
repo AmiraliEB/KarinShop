@@ -95,4 +95,15 @@ class CustomResetPasswordKeyForm(ResetPasswordKeyForm):
                 'id' : 'confirmPassword'
             })
         
-    
+class ResendConfirmationEmailForm(forms.Form):
+
+    email = forms.EmailField(
+        label="ایمیل",
+        widget=forms.TextInput(
+            attrs={
+                'class': "peer inline-block w-full p-3 text-base outline dark:outline-none outline-1 -outline-offset-1 placeholder:text-transparent sm:text-sm/6 transition-all text-gray-800 dark:text-gray-100 dark:bg-gray-900 bg-slate-100 border border-transparent hover:border-slate-200 appearance-none rounded-md outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-blue-400",
+                'placeholder': " ",
+                'type': 'email'
+            }
+        )
+    )
