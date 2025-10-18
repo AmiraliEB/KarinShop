@@ -34,10 +34,10 @@
           {% endfor %}
           <p class="mt-2 mb-4 text-right text-sm/6 text-gray-500 dark:text-gray-300 font-DanaMedium hover:underline">
             <a class='text-blue-400'href="{% url "account_reset_password" %}">فراموشی رمز عبور؟</a>
-          </p>
+          </p>  
         </div>
         <div>
-          <button class="submit-btn">ورود</button>
+          <button type='submit' class="submit-btn">ورود</button>
         </div>
         </form>
 
@@ -78,9 +78,13 @@
             <span class=>گیت‌هاب</span>
           </a>
         </div>
-      <p class="mt-6 text-center text-sm/6 text-gray-500 dark:text-gray-300">
-        ورود شما به معنای پذیرش <span class="text-blue-400">قوانین سایت</span> است
-      </p>
+        <p class="mt-6 text-center text-sm/6 text-gray-500 dark:text-gray-300">
+          ورود شما به معنای پذیرش 
+          <button type="button" id="openTermsModal" class="font-DanaMedium text-blue-400 hover:underline focus:outline-none">
+              قوانین سایت
+          </button>
+          است
+        </p>
     </div>
   </div>
 </section>

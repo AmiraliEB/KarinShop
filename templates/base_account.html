@@ -89,5 +89,39 @@
         {% endif %}
         {% block base_content %}
         {% endblock base_content %}
+        {% comment %} rule {% endcomment %}
+        <div id="termsModal" class="fixed inset-0 z-40 hidden items-center justify-center bg-black/50 p-4">
+            
+            <div id="termsModalBackdrop" class="absolute inset-0"></div>
+
+            <div class="relative w-full max-w-lg rounded-lg bg-white p-6 shadow-lg dark:bg-gray-800">
+            
+                <div class="flex items-center justify-between">
+                    <h2 class="text-lg font-DanaMedium text-gray-900 dark:text-gray-100">
+                    قوانین و مقررات 
+                    </h2>
+                    <button type="button" id="closeTermsModal" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                    <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                    </button>
+                </div>
+
+                <div class="prose prose-sm mt-4 max-w-none text-right text-gray-600 dark:text-gray-300 leading-relaxed">
+                    <p>به «کارین شاپ» خوش آمدید! ثبت‌نام یا ورود شما به این وب‌سایت به معنای پذیرش کامل شرایط زیر است.</p>
+                    
+                    <h3 class="dark:text-gray-200 mt-4">۱. پروژه دمو (Portfolio Project)</h3>
+                    <p>این وب‌سایت به عنوان یک پروژه دمو و برای نمایش مهارت‌های فنی توسعه داده شده است. لطفاً از وارد کردن هرگونه اطلاعات حساس بانکی خودداری فرمایید.</p>
+                    
+                    <h3 class="dark:text-gray-200 mt-4">۲. حساب کاربری</h3>
+                    <p>شما مسئول حساب خود هستید. تمام فعالیت‌هایی که از طریق حساب شما انجام می‌شود، به عهده شما خواهد بود.</p>
+                    
+                    <h3 class="dark:text-gray-200 mt-4">۳. استفاده مجاز</h3>
+                    <p>استفاده از این سرویس برای هرگونه فعالیت غیرقانونی، مخرب، یا ایجاد مزاحمت برای سایر کاربران اکیداً ممنوع است.</p>
+                </div>
+
+            </div>
+        </div>
       </div>
+
 {% endblock content %}

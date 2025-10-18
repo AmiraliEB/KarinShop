@@ -675,3 +675,30 @@ document.addEventListener("DOMContentLoaded", function () {
 
   setTimeout(validatePassword, 100);
 });
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  const openButton = document.getElementById("openTermsModal");
+  const modal = document.getElementById("termsModal");
+  const closeButton = document.getElementById("closeTermsModal");
+  const backdrop = document.getElementById("termsModalBackdrop");
+
+  if (!openButton || !modal || !closeButton || !backdrop) {
+    return;
+  }
+
+  openButton.addEventListener("click", function () {
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+  });
+
+  closeButton.addEventListener("click", function () {
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+  });
+
+  backdrop.addEventListener("click", function () {
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+  });
+});
