@@ -2,6 +2,7 @@
 {% load static %}
 {% load humanize %}
 
+{% block page_title %}خرید {{product.full_name}}{% endblock page_title %}
 {% block title %}جزئیات محصول{% endblock title %}
 {% block content %}
     {% include 'partials/header.html' %}
@@ -1106,17 +1107,19 @@
                     </a>
                 </p>
             </div>
+            {% comment %} TODO:fix line {% endcomment %}
             <div class="tab-content tab2 hidden w-full">
                 {% for category , value_list in grouped_attributes.items %}
-                <h2 class="font-DanaDemiBold border-b-2 border-blue-500 w-fit p-1 text-lg">{{category}}</h2>
-                <div class="my-5 w-full divide-y divide-gray-200 dark:divide-gray-700">
-                    {% for value in value_list %}
-                        {# --- این خط اصلاح شده است --- #}
-                        <div class="spec-item py-4 {% if forloop.parentloop.counter > 1 or forloop.counter > 5 %}hidden hidden-spec-item{% endif %}">
-                            <p class="text-sm text-gray-500 dark:text-gray-400">{{ value.attribute.name }}:</p>
-                            <p class="font-DanaMedium text-gray-800 dark:text-gray-200 mt-2">{{ value.value }}</p>
-                        </div>
-                    {% endfor %}
+                <div class="spec-category-group px-4 {% if not forloop.first %}hidden hidden-spec-category-group{% endif %}">
+                    <h2 class="font-DanaDemiBold border-b-2 border-blue-500 w-fit p-1 text-lg">{{category}}</h2>
+                    <div class="my-5 w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        {% for value in value_list %}
+                            <div class="spec-item py-4 {% if forloop.parentloop.first and forloop.counter > 5 %}hidden hidden-spec-item{% endif %}">
+                                <p class="text-sm text-gray-500 dark:text-gray-400">{{ value.attribute.name }}:</p>
+                                <p class="font-DanaMedium text-gray-800 dark:text-gray-200 mt-2">{{ value.value }}</p>
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
                 {% endfor %}
                 {% if product.attribute_values.all|length > 5 %}
@@ -1140,53 +1143,95 @@
     
                 <div class="w-full flex flex-col md:flex-row items-start gap-10">
                     <!-- SUBMIT COMMENT -->
-                    <div class="lg:w-1/4 flex flex-col w-full ">
+                    <div class=" items-start ">
                         <p class="font-DanaMedium text-lg mb-2">ثبت دیدگاه</p>
-                        <input type="text" placeholder="عنوان" class="tailwind-input">
+                        
+                        <div class="flex flex-col items-start mb-4">
+                            <p class="text-gray-500 dark:text-white text-sm mb-2">امتیاز شما:</p>
+                            <div id="rating-stars-container" class="flex items-center" dir="ltr">
+                                <svg class="w-6 h-6 text-gray-300 dark:text-gray-600 cursor-pointer rating-star" data-value="1">
+                                    <use href="#start"></use>
+                                </svg>
+                                <svg class="w-6 h-6 text-gray-300 dark:text-gray-600 cursor-pointer rating-star" data-value="2">
+                                    <use href="#start"></use>
+                                </svg>
+                                <svg class="w-6 h-6 text-gray-300 dark:text-gray-600 cursor-pointer rating-star" data-value="3">
+                                    <use href="#start"></use>
+                                </svg>
+                                <svg class="w-6 h-6 text-gray-300 dark:text-gray-600 cursor-pointer rating-star" data-value="4">
+                                    <use href="#start"></use>
+                                </svg>
+                                <svg class="w-6 h-6 text-gray-300 dark:text-gray-600 cursor-pointer rating-star" data-value="5">
+                                    <use href="#start"></use>
+                                </svg>
+                            </div>
+                        </div>
+                        <input type="hidden" name="rating" id="rating-value" value="0">
+                        
+                        <input type="text" placeholder="عنوان" class="tailwind-input w-full">
                         <p class="text-gray-500 dark:text-white text-sm mb-4">این محصول را به دیگران پیشنهاد : </p>
+                        
                         <div class="grid grid-cols-12 child:col-span-6 gap-4 child:w-full  child:flex child:items-center child:justify-center child:gap-x-2 child:rounded-lg child:shadow child:py-2 mb-5 child:font-DanaMedium child:duration-300 
                             child:transition-all">
                             <button
-                                class="text-green-600 ring-transparent ring-1 focus:ring-green-600 dark:ring-white/20 dark:focus:ring-green-600">
+                                id="recommend-btn" class="text-green-600 ring-transparent ring-1 focus:ring-green-600 dark:ring-white/20 dark:focus:ring-green-600">
                                 <svg class="w-5 h-5">
                                     <use href="#hand-up"></use>
                                 </svg>
                                 میکنم
                             </button>
                             <button
-                                class="text-red-500 ring-transparent ring-1 focus:ring-[#EF4343] dark:ring-white/20 dark:focus:ring-[#EF4343]">
+                                id="dont-recommend-btn" class="text-red-500 ring-transparent ring-1 focus:ring-[#EF4343] dark:ring-white/20 dark:focus:ring-[#EF4343]">
                                 <svg class="w-5 h-5">
                                     <use href="#hand-down"></use>
                                 </svg>
                                 نمیکنم
                             </button>
                         </div>
-                        <textarea class="h-24 tailwind-input" placeholder="متن دیدگاه"></textarea>
-                        <button class="rounded-lg p-2 bg-blue-500 hover:bg-blue-600 text-white transition-all">ثبت</button>
+                        
+                        <textarea class="h-24 tailwind-input w-full" placeholder="متن دیدگاه"></textarea>
+                        <button class="rounded-lg p-2 bg-blue-500 hover:bg-blue-600 text-white transition-all w-full">ثبت</button>
                     </div>
     
                     <!-- ALL COMMENTS -->
                     <ul class="lg:w-3/4 flex flex-col gap-y-2 child:w-full ">
                         <!-- COMMENT ITEMS -->
                         <li class="child:flex py-4 border-b border-gray-200 dark:border-b-gray-200/20 child:border-white/20">
-                            <!-- TITLE -->
-                            <div class="flex items-center gap-x-2">
+                            <div class="flex flex-wrap items-center gap-x-2">
                                 <h2 class="font-DanaMedium text-lg mb-1">عملکرد سریع و روان</h2>
                                 <span class="px-2 py-1 mb-2 rounded-lg bg-blue-500 text-white text-xs">خریدار</span>
                             </div>
-                            <!-- COOMENT TEXT -->
-                            <div class="flex-col">
-                                <h2 class="flex items-center gap-x-1 text-green-500 mb-4">
-                                    <svg class="w-4 h-4">
+                            
+                            <div class="flex-col items-start">
+                                <h2 class="flex items-center gap-x-1 text-green-500 mb-2"> <svg class="w-4 h-4">
                                         <use href="#hand-up"></use>
                                     </svg>
                                     پیشنهاد میشود
                                 </h2>
+
+                                <div class="flex items-center mb-4" dir="ltr">
+                                    <svg class="w-4 h-4 text-yellow-400">
+                                        <use href="#start"></use>
+                                    </svg>
+                                    <svg class="w-4 h-4 text-yellow-400">
+                                        <use href="#start"></use>
+                                    </svg>
+                                    <svg class="w-4 h-4 text-yellow-400">
+                                        <use href="#start"></use>
+                                    </svg>
+                                    <svg class="w-4 h-4 text-yellow-400">
+                                        <use href="#start"></use>
+                                    </svg>
+                                    <svg class="w-4 h-4 text-gray-300 dark:text-gray-600">
+                                        <use href="#start"></use>
+                                    </svg>
+                                </div>
+
                                 <p class="text-gray-500 dark:text-gray-200 mb-2 line-clamp-2">
                                     موبایل بسیار سریعی هست، اجرای برنامه‌ها بدون لگ انجام میشه. کیفیت ساخت بدنه هم عالیه.
                                 </p>
                             </div>
-                            <!-- COMMENT FOOTER -->
+
                             <div class="mt-2 lg:mt-0 flex-col lg:flex-row gap-y-2 lg:items-center justify-between">
                                 <div class="flex items-center gap-x-4 text-gray-400 text-sm">
                                     <p>11 بهمن 1402</p>

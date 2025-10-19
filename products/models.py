@@ -1,11 +1,12 @@
 from django.db import models
 from django.db.models import Q
-from django.urls import reverse
-from django.utils.text import slugify
-from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
-from django.db.models.signals import m2m_changed
-from django.dispatch import receiver
+from django.core.validators import MinValueValidator, MaxValueValidator
+from django.utils.translation import gettext_lazy as _
+from django.urls import reverse
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class ParentProduct(models.Model):
     name = models.CharField(max_length=255, verbose_name=_("parent product name"))
@@ -231,3 +232,28 @@ class Brand(models.Model):
 
     def __str__(self):
         return self.name
+
+
+
+
+class Comments(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='comments', verbose_name=_("product"))
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments', verbose_name=_("user"))
+    
+    title = models.CharField(_("title"), max_length=200)
+    content = models.TextField(verbose_name=_("comment content"))
+    rating = models.PositiveSmallIntegerField(verbose_name=_("rating"),validators=[MinValueValidator(1), MaxValueValidator(5)])
+    
+    is_recommend = models.BooleanField(default=True, verbose_name=_("recommends product?"), null=True, blank=True)
+    is_approved = models.BooleanField(default=False, verbose_name=_("is approved by admin?"))
+    
+    datetime_created = models.DateTimeField(auto_now_add=True, verbose_name=_("creation date"))
+    datetime_modified = models.DateTimeField(auto_now=True, verbose_name=_("last modified date"))
+
+    class Meta:
+        verbose_name = _("Comment")
+        verbose_name_plural = _("Comments")
+        ordering = ['-datetime_created'] 
+
+    def __str__(self):
+        return f"Comment by {self.user} on {self.product}"

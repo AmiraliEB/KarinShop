@@ -142,12 +142,18 @@ const moreSpecsBtn = document.querySelector('.more-specs-btn');
 const moreSpecsText = document.querySelector('.more-specs-text');
 const moreSpecsIcon = document.querySelector('.more-specs-icon');
 const hiddenSpecItems = document.querySelectorAll('.hidden-spec-item');
+const hiddenSpecCategoryGroups = document.querySelectorAll('.hidden-spec-category-group');
 
 if (moreSpecsBtn) {
     moreSpecsBtn.addEventListener('click', () => {
         hiddenSpecItems.forEach(item => {
             item.classList.toggle('hidden');
-            item.classList.toggle('block');
+            item.classList.toggle('block'); 
+        });
+
+        hiddenSpecCategoryGroups.forEach(group => {
+            group.classList.toggle('hidden');
+            group.classList.toggle('block'); 
         });
 
         if (moreSpecsText.innerHTML === 'مشاهده بیشتر') {
@@ -159,3 +165,59 @@ if (moreSpecsBtn) {
         }
     });
 }
+// ===================================================
+// INTERACTIVE RATING STARS FOR COMMENT FORM
+// ===================================================
+document.addEventListener("DOMContentLoaded", () => {
+    const starsContainer = document.getElementById("rating-stars-container");
+    const ratingStars = document.querySelectorAll(".rating-star");
+    const ratingValueInput = document.getElementById("rating-value");
+    const recommendBtn = document.getElementById("recommend-btn");
+    const dontRecommendBtn = document.getElementById("dont-recommend-btn");
+
+    if (!starsContainer || !ratingStars.length || !ratingValueInput || !recommendBtn || !dontRecommendBtn) {
+        return;
+    }
+
+    let currentRating = 0; 
+
+    const updateStars = (value) => {
+        ratingStars.forEach(star => {
+            const starValue = parseInt(star.getAttribute("data-value"));
+            if (starValue <= value) {
+                star.classList.remove("text-gray-300", "dark:text-gray-600");
+                star.classList.add("text-yellow-400");
+            } else {
+                star.classList.remove("text-yellow-400");
+                star.classList.add("text-gray-300", "dark:text-gray-600");
+            }
+        });
+    };
+
+    ratingStars.forEach(star => {
+        star.addEventListener("mouseover", () => {
+            const hoverValue = parseInt(star.getAttribute("data-value"));
+            updateStars(hoverValue); 
+        });
+
+        star.addEventListener("click", () => {
+            currentRating = parseInt(star.getAttribute("data-value"));
+            ratingValueInput.value = currentRating; 
+            updateStars(currentRating); 
+
+            const recommendActiveClasses = ["ring-green-600", "dark:ring-green-600"];
+            const dontRecommendActiveClasses = ["ring-[#EF4343]", "dark:ring-[#EF4343]"];
+            
+            const defaultRingClasses = ["ring-transparent", "dark:ring-white/20"];
+
+            recommendBtn.classList.remove(...recommendActiveClasses);
+            recommendBtn.classList.add(...defaultRingClasses);
+            
+            dontRecommendBtn.classList.remove(...dontRecommendActiveClasses);
+            dontRecommendBtn.classList.add(...defaultRingClasses);
+        });
+    });
+    starsContainer.addEventListener("mouseout", () => {
+        updateStars(currentRating); 
+    });
+});
