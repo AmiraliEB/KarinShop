@@ -1143,9 +1143,11 @@
     
                 <div class="w-full flex flex-col md:flex-row items-start gap-10">
                     <!-- SUBMIT COMMENT -->
+                    
                     <div class=" items-start ">
                         <p class="font-DanaMedium text-lg mb-2">ثبت دیدگاه</p>
-                        
+                        <form action="" method="post">
+                            {% csrf_token %}
                         <div class="flex flex-col items-start mb-4">
                             <p class="text-gray-500 dark:text-white text-sm mb-2">امتیاز شما:</p>
                             <div id="rating-stars-container" class="flex items-center" dir="ltr">
@@ -1174,14 +1176,14 @@
                         <div class="grid grid-cols-12 child:col-span-6 gap-4 child:w-full  child:flex child:items-center child:justify-center child:gap-x-2 child:rounded-lg child:shadow child:py-2 mb-5 child:font-DanaMedium child:duration-300 
                             child:transition-all">
                             <button
-                                id="recommend-btn" class="text-green-600 ring-transparent ring-1 focus:ring-green-600 dark:ring-white/20 dark:focus:ring-green-600">
+                                id="recommend-btn" class="text-green-600 ring-transparent ring-1 focus:ring-green-600 dark:ring-white/20 dark:focus:ring-green-600" type='button'>
                                 <svg class="w-5 h-5">
                                     <use href="#hand-up"></use>
                                 </svg>
                                 میکنم
                             </button>
                             <button
-                                id="dont-recommend-btn" class="text-red-500 ring-transparent ring-1 focus:ring-[#EF4343] dark:ring-white/20 dark:focus:ring-[#EF4343]">
+                                id="dont-recommend-btn" class="text-red-500 ring-transparent ring-1 focus:ring-[#EF4343] dark:ring-white/20 dark:focus:ring-[#EF4343]" type='button'>
                                 <svg class="w-5 h-5">
                                     <use href="#hand-down"></use>
                                 </svg>
@@ -1190,9 +1192,9 @@
                         </div>
                         
                         <textarea class="h-24 tailwind-input w-full" placeholder="متن دیدگاه"></textarea>
-                        <button class="rounded-lg p-2 bg-blue-500 hover:bg-blue-600 text-white transition-all w-full">ثبت</button>
+                        <button class="rounded-lg p-2 bg-blue-500 hover:bg-blue-600 text-white transition-all w-full" type='submit'>ثبت</button>
                     </div>
-    
+                    </form>
                     <!-- ALL COMMENTS -->
                     <ul class="lg:w-3/4 flex flex-col gap-y-2 child:w-full ">
                         <!-- COMMENT ITEMS -->

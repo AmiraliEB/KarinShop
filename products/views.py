@@ -6,6 +6,7 @@ from products.models import AttributeValue, Product, AttributeCategory
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.text import slugify
 from django.db.models import Prefetch
+from .forms import CommentForm
 
 def post_redirect_view(request, pk):
     product_obj = get_object_or_404(Product, pk=pk)
@@ -20,6 +21,20 @@ class ProductDetailView(generic.DetailView):
     model = Product
     template_name = "products/product_details.html"
     context_object_name = "product"
+    
+    def post(self,request,*args, **kwargs):
+        self.object = self.get_object()
+        comment_form = CommentForm(request.POST)
+        if comment_form.is_valid():
+            new_comment = comment_form.save(commit=False)
+            new_comment.user = request.user
+            new_comment.product = self.object
+            new_comment.save()
+            return redirect(self.object.get_absolute_url())
+        else:
+            print("Form is invalid:", comment_form.errors)
+            context = self.get_context_data(object=self.object,comment_form=comment_form)
+            return self.render_to_response(context)
     
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -51,11 +66,13 @@ class ProductDetailView(generic.DetailView):
             percentage = (discount_amount / product.price) * 100
             discount_percentage = round(percentage) 
         context['discount_percentage'] = discount_percentage
-
         grouped_attributes = defaultdict(list)
 
         for value_obj in self.object.sorted_attribute_values:
             category = value_obj.attribute.attribute_category
             grouped_attributes[category].append(value_obj)
         context['grouped_attributes'] = dict(grouped_attributes)
+        
+        if 'comment_form' not in context:
+            context['comment_form'] = CommentForm()
         return context

@@ -244,7 +244,7 @@ class Comments(models.Model):
     content = models.TextField(verbose_name=_("comment content"))
     rating = models.PositiveSmallIntegerField(verbose_name=_("rating"),validators=[MinValueValidator(1), MaxValueValidator(5)])
     
-    is_recommend = models.BooleanField(default=True, verbose_name=_("recommends product?"), null=True, blank=True)
+    is_recommend = models.BooleanField(default=False, verbose_name=_("recommends product?"), null=True, blank=True)
     is_approved = models.BooleanField(default=False, verbose_name=_("is approved by admin?"))
     
     datetime_created = models.DateTimeField(auto_now_add=True, verbose_name=_("creation date"))
