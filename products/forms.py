@@ -23,9 +23,12 @@ class CommentForm(forms.ModelForm):
                 'class': 'h-24 tailwind-input w-full',
                 'name': 'content'
             }),
-            
             'rating': forms.HiddenInput(attrs={
                 'id': 'rating-value',
                 'name': 'rating'
-            }),
+            }), 
+            'is_recommend': forms.HiddenInput(attrs={
+                'id': 'recommend-value',
+                'name': 'is_recommend'
+            })
         }

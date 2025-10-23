@@ -5,6 +5,8 @@ module.exports = {
       './**/templates/**/*.html',
       './static/**/*.js',
       './accounts/forms.py',
+      './products/forms.py',
+      './products/static/products/js/productDetails.js',
   ],
   darkMode: 'class',
   theme: {

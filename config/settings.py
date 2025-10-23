@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'products',
 
     #third party apps
+    'jalali_date',
+    
     #allauth
     'allauth',
     'allauth.account',
@@ -165,6 +167,7 @@ ACCOUNT_PASSWORD_RESET_REDIRECT_URL = '/'
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 LOGIN_REDIRECT_URL = '/' 
 LOGOUT_REDIRECT_URL = '/'
+LOGIN_URL = 'account_login'
 SITE_ID = 1
 
 ACCOUNT_ADAPTER = 'accounts.adapter.CustomAccountAdapter'

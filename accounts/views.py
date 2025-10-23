@@ -1,7 +1,7 @@
 from django.urls import reverse
 from django.shortcuts import redirect, render
 from django.utils.translation import gettext_lazy as _
-from allauth.account.views import PasswordResetView, PasswordResetDoneView,EmailVerificationSentView,AccountInactiveView,PasswordResetFromKeyDoneView
+from allauth.account.views import PasswordResetView,AccountInactiveView,PasswordResetFromKeyDoneView
 from django.contrib import messages
 from django.views import View
 from allauth.account.models import EmailAddress
@@ -13,7 +13,7 @@ User = get_user_model()
 
 from accounts.forms import ResendConfirmationEmailForm
 #TODO: bug:user can get message with get method on any custom views
-    
+
 def custom_resend_email(request, email, template_prefix, context):
     try:
         adapter = get_adapter(request)
@@ -21,7 +21,6 @@ def custom_resend_email(request, email, template_prefix, context):
     except Exception as e:
         print(f"error in send custom email allauth: {e}")
     
-
 class CustomPasswordResetView(PasswordResetView):
     def form_valid(self, form):
         response = super().form_valid(form)

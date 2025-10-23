@@ -174,12 +174,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const ratingValueInput = document.getElementById("rating-value");
     const recommendBtn = document.getElementById("recommend-btn");
     const dontRecommendBtn = document.getElementById("dont-recommend-btn");
+    const recommendValueInput = document.getElementById("recommend-value"); 
 
-    if (!starsContainer || !ratingStars.length || !ratingValueInput || !recommendBtn || !dontRecommendBtn) {
+    if (!starsContainer || !ratingStars.length || !ratingValueInput || !recommendBtn || !dontRecommendBtn || !recommendValueInput) {
         return;
     }
 
     let currentRating = 0; 
+
+    const recommendActiveClasses = ["ring-green-600", "dark:ring-green-600"];
+    const dontRecommendActiveClasses = ["ring-[#EF4343]", "dark:ring-[#EF4343]"];
+    const defaultRingClasses = ["ring-transparent", "dark:ring-white/20"];
 
     const updateStars = (value) => {
         ratingStars.forEach(star => {
@@ -194,29 +199,43 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     };
 
+    const selectRecommend = () => {
+        recommendBtn.classList.remove(...defaultRingClasses); 
+        recommendBtn.classList.add(...recommendActiveClasses); 
+        dontRecommendBtn.classList.remove(...dontRecommendActiveClasses);
+        dontRecommendBtn.classList.add(...defaultRingClasses);
+        recommendValueInput.value = "True";
+    };
+
+    const selectDontRecommend = () => {
+        dontRecommendBtn.classList.remove(...defaultRingClasses); 
+        dontRecommendBtn.classList.add(...dontRecommendActiveClasses); 
+        recommendBtn.classList.remove(...recommendActiveClasses);
+        recommendBtn.classList.add(...defaultRingClasses);
+        recommendValueInput.value = "False";
+    };
+
     ratingStars.forEach(star => {
         star.addEventListener("mouseover", () => {
             const hoverValue = parseInt(star.getAttribute("data-value"));
-            updateStars(hoverValue); 
+            updateStars(hoverValue);
         });
 
         star.addEventListener("click", () => {
             currentRating = parseInt(star.getAttribute("data-value"));
             ratingValueInput.value = currentRating; 
             updateStars(currentRating); 
-
-            const recommendActiveClasses = ["ring-green-600", "dark:ring-green-600"];
-            const dontRecommendActiveClasses = ["ring-[#EF4343]", "dark:ring-[#EF4343]"];
-            
-            const defaultRingClasses = ["ring-transparent", "dark:ring-white/20"];
-
-            recommendBtn.classList.remove(...recommendActiveClasses);
-            recommendBtn.classList.add(...defaultRingClasses);
-            
-            dontRecommendBtn.classList.remove(...dontRecommendActiveClasses);
-            dontRecommendBtn.classList.add(...defaultRingClasses);
         });
     });
+
+    recommendBtn.addEventListener("click", () => {
+        selectRecommend();
+    });
+
+    dontRecommendBtn.addEventListener("click", () => {
+        selectDontRecommend();
+    });
+
     starsContainer.addEventListener("mouseout", () => {
         updateStars(currentRating); 
     });

@@ -84,3 +84,10 @@ class BrandAdmin(admin.ModelAdmin):
 @admin.register(models.AttributeCategory)
 class AttributeCategory(admin.ModelAdmin):
     list_display = ('id','name')
+
+@admin.register(models.Comments)
+class CommentsAdmin(admin.ModelAdmin):
+    list_display = ('title', 'user', 'parent_product', 'rating', 'is_recommend', 'datetime_created')
+    list_filter = ('is_recommend', 'rating', 'datetime_created')
+    search_fields = ('title', 'content', 'parent_product__name')
+    readonly_fields = ('datetime_created', 'datetime_modified')

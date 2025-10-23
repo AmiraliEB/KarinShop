@@ -237,14 +237,15 @@ class Brand(models.Model):
 
 
 class Comments(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='comments', verbose_name=_("product"))
+    # comment should pe linked to parent product
+    parent_product = models.ForeignKey(ParentProduct, on_delete=models.CASCADE, related_name='comments', verbose_name=_("product"))
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments', verbose_name=_("user"))
     
     title = models.CharField(_("title"), max_length=200)
     content = models.TextField(verbose_name=_("comment content"))
     rating = models.PositiveSmallIntegerField(verbose_name=_("rating"),validators=[MinValueValidator(1), MaxValueValidator(5)])
     
-    is_recommend = models.BooleanField(default=False, verbose_name=_("recommends product?"), null=True, blank=True)
+    is_recommend = models.BooleanField(default=None, verbose_name=_("recommends product?"), null=True, blank=True)
     is_approved = models.BooleanField(default=False, verbose_name=_("is approved by admin?"))
     
     datetime_created = models.DateTimeField(auto_now_add=True, verbose_name=_("creation date"))
@@ -256,4 +257,4 @@ class Comments(models.Model):
         ordering = ['-datetime_created'] 
 
     def __str__(self):
-        return f"Comment by {self.user} on {self.product}"
+        return f"Comment by {self.user} on {self.parent_product}"
