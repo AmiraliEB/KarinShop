@@ -92,9 +92,9 @@ class ProductDetailView(generic.DetailView):
         )
         paginator = Paginator(comments, 5)
         page_number = self.request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
+        commnts_filter_by_page_number = paginator.get_page(page_number)
 
-        context['comments'] = page_obj
+        context['comments'] = commnts_filter_by_page_number
         context['comments_count'] = comment_summary_data.get('comment_count')
         context['average_rating'] = "{:.2f}".format(comment_summary_data.get('average_rating'))
 

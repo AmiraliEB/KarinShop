@@ -88,27 +88,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 // SHOW MORE COMMENTS
-const moreCommentBtn = document.querySelector('.more-comment-btn');
-const moreCommentText = document.querySelector('.more-comment-text');
-const moreCommentIcon = document.querySelector('.more-comment-icon');
-const hiddenCommentItems = document.querySelectorAll('.hidden-comment-item');
+// const moreCommentBtn = document.querySelector('.more-comment-btn');
+// const moreCommentText = document.querySelector('.more-comment-text');
+// const moreCommentIcon = document.querySelector('.more-comment-icon');
+// const hiddenCommentItems = document.querySelectorAll('.hidden-comment-item');
 
-if (moreCommentBtn) {
-    moreCommentBtn.addEventListener('click', () => {
-        hiddenCommentItems.forEach(item => {
-            item.classList.toggle('hidden');
-            item.classList.toggle('block');
-        });
+// if (moreCommentBtn) {
+//     moreCommentBtn.addEventListener('click', () => {
+//         hiddenCommentItems.forEach(item => {
+//             item.classList.toggle('hidden');
+//             item.classList.toggle('block');
+//         });
 
-        if (moreCommentText.innerHTML === 'مشاهده بیشتر') {
-            moreCommentText.innerHTML = 'مشاهده کمتر';
-        } else {
-            moreCommentText.innerHTML = 'مشاهده بیشتر';
-        }
+//         if (moreCommentText.innerHTML === 'مشاهده بیشتر') {
+//             moreCommentText.innerHTML = 'مشاهده کمتر';
+//         } else {
+//             moreCommentText.innerHTML = 'مشاهده بیشتر';
+//         }
 
-        moreCommentIcon.classList.toggle('rotate-180');
-    });
-}
+//         moreCommentIcon.classList.toggle('rotate-180');
+//     });
+// }
 
 
 
