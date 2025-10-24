@@ -1130,7 +1130,7 @@
                     </button>
                 {% endif %}
             </div>
-            <div class="tab-content tab3 hidden w-full">
+            <div class="tab-content tab3 hidden w-full" id="comments-section">
                 <div class="flex items-center gap-x-2 mb-6">
                     <h2 class="font-DanaMedium text-2xl ">
                         دیدگاه ها
@@ -1291,7 +1291,7 @@
                     
                     {% if comments.has_previous %}
                         <li class="bg-white dark:bg-gray-800 hover:bg-blue-500 dark:hover:bg-blue-500 hover:text-white">
-                            <a href="?page={{ comments.previous_page_number }}" class="flex items-center justify-center w-full h-full">
+                            <a href="?page={{ comments.previous_page_number }}#comments-section" class="flex items-center justify-center w-full h-full">
                                 <svg class="size-5 rotate-180">
                                     <use href="#chevron-left"></use>
                                 </svg>
