@@ -1,4 +1,5 @@
 {% load static %}
+{% load humanize %}
 <header class="header">
     <!-- Desktop -->
     <div class="container mt-5 hidden flex-col gap-y-6 lg:flex">
@@ -156,12 +157,14 @@
                     <svg class="size-6">
                         <use href="#shopping-bag" />
                     </svg>
+                    {% if global_cart|length > 0 %}
                     <span class="absolute -top-1 -right-1 flex h-4 w-4">
                         <span
                             class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-600 opacity-75"></span>
                         <span
-                            class="relative inline-flex rounded-full h-4 w-4 bg-red-500 text-xs pt-1 flex-center text-white">2</span>
+                            class="relative inline-flex rounded-full h-4 w-4 bg-red-500 text-xs pt-1 flex-center text-white">{{global_cart|length}}</span>
                     </span>
+                    {% endif %}
                 </button>
                 <!-- Cart -->
                 <div class="cart ">
@@ -169,7 +172,7 @@
                     <div
                         class="flex items-center justify-between pb-2 border-b-2 border-gray-200 dark:border-gray-600 text-gray-800 dark:text-gray-300">
                         <h2 class="font-DanaMedium text-lg">سبد خرید <span class="text-sm text-gray-400 font-Dana">
-                                (2
+                                ({{global_cart|length}}
                                 مورد)</span></h2>
                         <svg class="size-5 cursor-pointer close-cart mb-.5">
                             <use href="#x-mark" />
@@ -177,17 +180,17 @@
                     </div>
                     <!-- MAIN -->
                     <div class="flex flex-col divide-y-2 divide-gray-200 dark:divide-gray-600 my-4">
+                        {% for cart_item in global_cart %}
                         <!-- CART ITEM -->
                         <div class="grid grid-cols-12 gap-x-2 w-full py-4 cursor-pointer">
                             <!-- img -->
                             <div class="col-span-4 w-24 h-20">
-                                <img src="{% static "./images/products/5.webp" %}" class="rounded-lg" alt="product">
+                                <img src={{cart_item.product_obj.parent_product.images.last.image.url}} class="rounded-lg" alt="product">
                             </div>
                             <!-- detail -->
                             <div class="col-span-8 flex flex-col justify-between">
                                 <h2 class="font-DanaMedium line-clamp-2">
-                                    گوشی موبایل اپل مدل iPhone 13 CH دو سیم‌ کارت ظرفیت 256 گیگابایت و رم 4 گیگابایت
-                                    - نات اکتیو
+                                    {{cart_item.product_obj.full_name}}
                                 </h2>
                                 <div class="flex items-center justify-between gap-x-2 mt-2">
                                     <button
@@ -195,59 +198,32 @@
                                         <svg class="size-4 increment text-green-600">
                                             <use href="#plus"></use>
                                         </svg>
-                                        <input type="number" name="customInput" id="customInput" min="0" max="20"
-                                            value="2" class="custom-input w-4 mr-2 text-sm">
+                                        <div class="flex items-center gap-x-1">
+                                            <span class="font-DanaMedium text-gray-700 dark:text-gray-300">تعداد:</span>
+                                            <span class="font-DanaMedium text-lg text-blue-500 dark:text-blue-400">{{ cart_item.quantity }}</span>
+                                        </div>
                                         <svg class="size-4 decrement text-red-500">
                                             <use href="#minus"></use>
                                         </svg>
                                     </button>
-                                    <p class="text-lg text-blue-500 dark:text-blue-400 font-DanaMedium">1,130,000
+                                    <p class="text-lg text-blue-500 dark:text-blue-400 font-DanaMedium">{{cart_item.product_obj.price|intcomma:False}}
                                         <span class="font-Dana text-sm">تومان</span>
                                     </p>
                                 </div>
                             </div>
                         </div>
-                        <!-- CART ITEM -->
-                        <div class="grid grid-cols-12 gap-x-2 w-full py-4 cursor-pointer">
-                            <!-- img -->
-                            <div class="col-span-4 w-24 h-20">
-                                <img src="{% static "./images/products/1.png" %}" class="rounded-lg" alt="product">
-                            </div>
-                            <!-- detail -->
-                            <div class="col-span-8 flex flex-col justify-between">
-                                <h2 class="font-DanaMedium line-clamp-2">
-                                    گوشی موبایل اپل مدل iPhone 13 CH دو سیم‌ کارت ظرفیت 256 گیگابایت و رم 4 گیگابایت
-                                    - نات اکتیو
-                                </h2>
-                                <div class="flex items-center justify-between gap-x-2 mt-2">
-                                    <button
-                                        class="w-20 flex items-center justify-between gap-x-1 rounded-lg border border-gray-200 dark:border-white/20 py-1 px-2">
-                                        <svg class="size-4 increment text-green-600">
-                                            <use href="#plus"></use>
-                                        </svg>
-                                        <input type="number" name="customInput" id="customInput" min="0" max="20"
-                                            value="2" class="custom-input w-4 mr-2 text-sm">
-                                        <svg class="size-4 decrement text-red-500">
-                                            <use href="#minus"></use>
-                                        </svg>
-                                    </button>
-                                    <p class="text-lg text-blue-500 dark:text-blue-400 font-DanaMedium">1,130,000
-                                        <span class="font-Dana text-sm">تومان</span>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
+                        {% endfor %}
                     </div>
                     <!-- FOOTER -->
                     <div
                         class="w-[90%] fixed bottom-2 flex items-center justify-between border-t-2 border-gray-200 dark:border-gray-600 pt-4">
                         <div>
                             <p class="text-gray-500 dark:text-gray-300 text-sm">مبلغ قابل پرداخت :</p>
-                            <p class="text-lg text-blue-500 dark:text-blue-400 font-DanaDemiBold">1,130,000
+                            <p class="text-lg text-blue-500 dark:text-blue-400 font-DanaDemiBold">{{global_cart.get_total_price|intcomma:False}}
                                 <span class="font-Dana text-sm">تومان</span>
                             </p>
                         </div>
-                        <a href="shopping-cart.html"
+                        <a href="{% url "cart_detail" %}"
                             class="py-2 px-4 bg-blue-600 flex-center hover:bg-blue-700 transition-all rounded-lg text-gray-200">
                             ثبت سفارش
                         </a>
