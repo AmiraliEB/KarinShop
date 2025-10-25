@@ -9,6 +9,8 @@ from django.contrib import messages
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from cart.forms import CartAddPrproductForm
+from cart.cart import Cart
 
 def post_redirect_view(request, pk):
     product_obj = get_object_or_404(Product, pk=pk)
@@ -25,26 +27,36 @@ class ProductDetailView(generic.DetailView):
     context_object_name = "product"
     @method_decorator(login_required)
     def post(self,request,*args, **kwargs):
-        
         self.object = self.get_object()
-        comment_form = CommentForm(request.POST)
-        if comment_form.is_valid():
-            new_comment = comment_form.save(commit=False)
-            new_comment.user = request.user
-            new_comment.product = self.object
-            if comment_form.cleaned_data.get('is_recommend')==None:
-                if new_comment.rating >=3:
-                    new_comment.is_recommend = True
-                else:
-                    new_comment.is_recommend = False
-            new_comment.save()
-            messages.success(request, 'دیدگاه شما با موفقیت ثبت شد و پس از تایید نمایش داده می‌شود.')
-            return redirect(self.object.get_absolute_url())
-        else:
-            print("Form is invalid:", comment_form.errors)
-            context = self.get_context_data(object=self.object,comment_form=comment_form)
-            return self.render_to_response(context)
-    
+        if 'comment_submit' in request.POST:
+            comment_form = CommentForm(request.POST)
+            if comment_form.is_valid():
+                
+                new_comment = comment_form.save(commit=False)
+                new_comment.user = request.user
+                new_comment.parent_product = self.object.parent_product
+                if comment_form.cleaned_data.get('is_recommend')==None:
+                    if new_comment.rating >=3:
+                        new_comment.is_recommend = True
+                    else:
+                        new_comment.is_recommend = False
+                new_comment.save()
+                messages.success(request, 'دیدگاه شما با موفقیت ثبت شد و پس از تایید نمایش داده می‌شود.')
+                return redirect(self.object.get_absolute_url())
+            else:
+                context = self.get_context_data(comment_form=comment_form)
+                return self.render_to_response(context)
+        if 'cart_submit' in request.POST:
+            cart_form = CartAddPrproductForm(request.POST)
+            if cart_form.is_valid():
+                cart = Cart(request)
+                cart.add(self.object,cart_form.cleaned_data['quantity'])
+                messages.success(request, 'محصول با موفقیت به سبد خرید اضافه شد.')
+                return redirect(self.object.get_absolute_url())     
+            else:
+                context = self.get_context_data(cart_form=cart_form)
+                return self.render_to_response(context)           
+
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.select_related(
@@ -65,6 +77,7 @@ class ProductDetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        cart = Cart(self.request)
         product = self.object
         
         discount_percentage = 0
@@ -93,9 +106,13 @@ class ProductDetailView(generic.DetailView):
         context['comments_count'] = comment_summary_data.get('comment_count')
         context['average_rating'] = "{:.2f}".format(comment_summary_data.get('average_rating'))
 
+        context['cart'] = cart
 
         if 'comment_form' not in context:
             context['comment_form'] = CommentForm()
+        if 'cart_form' not in context:
+            context['cart_form'] = CartAddPrproductForm()
+
 
 
         return context

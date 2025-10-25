@@ -1,13 +1,15 @@
 from django import forms
 
 class CartAddPrproductForm(forms.Form):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['quantity'].widget = forms.NumberInput(
+    quantity = forms.IntegerField(
+        min_value=1,
+        initial=1,
+        widget=forms.NumberInput(
             attrs={
-                'class': 'custom-input mr-4 text-lg bg-transparent',
-                'id': 'customInput'
-            })
-    QUANTITY_CHOICES = [(i, str(i)) for i in range(1, 21)]
-    quantity = forms.TypedChoiceField(choices=QUANTITY_CHOICES, coerce=int)
-
+                'class': 'custom-input text-lg bg-transparent border-none focus:ring-0 text-center w-full cursor-default ',
+                'id': 'customInput',
+                'readonly': True,
+                'style': 'pointer-events: none;',
+            }
+        )
+    )

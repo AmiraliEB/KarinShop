@@ -517,7 +517,8 @@
                 </div>
             </div>
             <!-- PRICE & ADD TO CART BOX -->
-            <div class="w-full lg:w-1/4 lg:sticky top-5 flex flex-col gap-y-6">
+            <form action="" class='w-full lg:w-1/4 lg:sticky top-5 flex flex-col gap-y-6' method='post'>
+                {% csrf_token %}
                 <!-- PRICE -->
                 <div class="flex flex-col items-start gap-y-2">
                     {% if product.discount_price and product.price > product.discount_price %}
@@ -537,18 +538,20 @@
                     {% endif %}
                 </div>
                 <button
-                    class="w-full flex items-center justify-between gap-x-1 rounded-lg border border-gray-200 dark:border-white/20 py-2 px-3">
-                    <svg class="w-6 h-6 increment text-green-600">
+                    class="w-full flex items-center justify-between gap-x-1 rounded-lg border border-gray-200 dark:border-white/20 py-2 px-3 cursor-default" type='button'>
+                    <svg class="w-6 h-6 increment text-green-600 cursor-pointer">
                         <use href="#plus"></use>
                     </svg>
-                    <input type="number" name="customInput" id="customInput" min="1" max="20" value="1"
-                        class="custom-input mr-4 text-lg bg-transparent">
-                    <svg class="w-6 h-6 decrement text-red-500">
+                    {{cart_form.quantity}}
+                    {% for error in cart_form.quantity.errors %}
+                        <p class="text-sm text-red-600">{{ error }}</p>
+                    {% endfor %}                    
+                    <svg class="w-6 h-6 decrement text-red-500 cursor-pointer">
                         <use href="#minus"></use>
                     </svg>
                 </button>
-
-                <button
+        
+                <div
                     class="w-full flex items-center gap-x-1 justify-between dark:bg-gray-900 dark:text-gray-400  bg-gray-100 transition-all rounded-lg py-2 px-2 xl:px-3 font-DanaMedium text-sm xl:text-base">
                     <p>مجموع خرید :</p>
                     {% if product.discount_price and product.price > product.discount_price %}
@@ -556,21 +559,21 @@
                     {% else %}
                     <p>{{product.price|intcomma:False}} تومان</p>
                     {% endif %}
-                </button>
-
+                </div>
                 <div class="relative overflow-hidden text-sm font-DanaDemiBold text-right">
                     <div id="slider-text" class="transition-all duration-700 ease-in-out">
-                      <p>🔥 ۱۰۰۰+ فروش در هفته گذشته</p> 
-                      {% comment %} TODO {% endcomment %}
+                        <p>🔥 ۱۰۰۰+ فروش در هفته گذشته</p>
+                        {% comment %} TODO {% endcomment %}
                     </div>
-                  </div>
+                </div>
                 <button
-                    class="w-full flex items-center gap-x-1 justify-center bg-blue-500 text-white hover:bg-blue-600 transition-all rounded-lg shadow py-2">
-                    افزودن به سبد 
+                    class="w-full flex items-center gap-x-1 justify-center bg-blue-500 text-white hover:bg-blue-600 transition-all rounded-lg shadow py-2" type='submit' name='cart_submit'>
+                    افزودن به سبد
                     <svg class="w-5 h-5">
                         <use href="#shopping-bag"></use>
                     </svg>
                 </button>
+            </form>
 
                 <div class="text-sm  text-gray-400 flex xl:items-center gap-x-1">
                     <svg class="w-5 h-5">
@@ -1172,9 +1175,9 @@
                             </div>
                             {% for error in comment_form.rating.errors %}
                                 <p class="text-sm text-red-600">{{ error }}</p>
-                                {% endfor %}
-                                {{comment_form.title}}
-                                {% for error in comment_form.title.errors %}
+                            {% endfor %}
+                            {{comment_form.title}}
+                            {% for error in comment_form.title.errors %}
                                 <p class="text-sm text-red-600">{{ error }}</p>
                             {% endfor %}
                             {{comment_form.rating}}
@@ -1205,7 +1208,7 @@
                             {% for error in comment_form.content.errors %}
                                 <p class="text-sm text-red-600">{{ error }}</p>
                             {% endfor %}                        
-                            <button class="rounded-lg p-2 bg-blue-500 hover:bg-blue-600 text-white transition-all w-full" type='submit'>ثبت</button>
+                            <button class="rounded-lg p-2 bg-blue-500 hover:bg-blue-600 text-white transition-all w-full" type='submit' name='comment_submit'>ثبت</button>
                             
                         </form>
                         {% endif %}
