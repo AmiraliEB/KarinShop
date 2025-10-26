@@ -554,6 +554,7 @@
                 <div
                     class="w-full flex items-center gap-x-1 justify-between dark:bg-gray-900 dark:text-gray-400  bg-gray-100 transition-all rounded-lg py-2 px-2 xl:px-3 font-DanaMedium text-sm xl:text-base">
                     <p>مجموع خرید :</p>
+                    {% comment %} TODO:sum should change after add number in input {% endcomment %}
                     {% if product.discount_price and product.price > product.discount_price %}
                     <p>{{product.discount_price|intcomma:False}} تومان</p>
                     {% else %}
