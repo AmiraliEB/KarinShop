@@ -517,7 +517,7 @@
                 </div>
             </div>
             <!-- PRICE & ADD TO CART BOX -->
-            <form action="" class='w-full lg:w-1/4 lg:sticky top-5 flex flex-col gap-y-6' method='post'>
+            <form action="" class='w-full lg:w-1/4 lg:sticky top-5 flex flex-col gap-y-6' method='post' data-unit-price="{% if product.discount_price and product.price > product.discount_price %}{{ product.discount_price }}{% else %}{{ product.price }}{% endif %}">
                 {% csrf_token %}
                 <!-- PRICE -->
                 <div class="flex flex-col items-start gap-y-2">
@@ -556,9 +556,9 @@
                     <p>مجموع خرید :</p>
                     {% comment %} TODO:sum should change after add number in input {% endcomment %}
                     {% if product.discount_price and product.price > product.discount_price %}
-                    <p>{{product.discount_price|intcomma:False}} تومان</p>
+                    <p id='total-price-display'>{{product.discount_price|intcomma:False}} تومان</p>
                     {% else %}
-                    <p>{{product.price|intcomma:False}} تومان</p>
+                    <p id='total-price-display'>{{product.price|intcomma:False}} تومان</p>
                     {% endif %}
                 </div>
                 <div class="relative overflow-hidden text-sm font-DanaDemiBold text-right">

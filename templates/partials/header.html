@@ -85,7 +85,7 @@
                 </div>
             </div>
             <!-- Logo -->
-            <a href="index.html" class="flex flex-col text-center ml-20">
+            <a href="{% url "homepage" %}" class="flex flex-col text-center ml-20">
                 <span class="font-MorabbaMedium text-4xl flex items-center">
                     <span class="text-blue-500">کارین</span> شاپ
                 </span>
@@ -207,7 +207,7 @@
                                             <use href="#minus"></use>
                                         </svg>
                                     </button>
-                                    <p class="text-lg text-blue-500 dark:text-blue-400 font-DanaMedium">{{cart_item.product_obj.price|intcomma:False}}
+                                    <p class="text-lg text-blue-500 dark:text-blue-400 font-DanaMedium">{{cart_item.item_total_price|intcomma:False}}
                                         <span class="font-Dana text-sm">تومان</span>
                                     </p>
                                 </div>

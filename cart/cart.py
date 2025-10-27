@@ -20,7 +20,9 @@ class Cart:
         cart = self.cart.copy()
 
         for product in products:
-            cart[str(product.id)]['product_obj'] = product
+            product_id = str(product.id)
+            cart[product_id]['product_obj'] = product
+            cart[product_id]['item_total_price'] = cart[product_id]['product_obj'].price * cart[product_id]['quantity']
 
         for item in cart.values():
             yield item

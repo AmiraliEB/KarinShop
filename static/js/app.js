@@ -113,13 +113,40 @@ closeMenuButton?.addEventListener('click', () => {
 
 // Custom Input Fields with Increment/Decrement Buttons
 document.addEventListener('DOMContentLoaded', () => {
+  function formatNumberWithCommas(num) {
+    if (typeof num.toString !== 'function') return num;
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
+  function updateCartTotal(inputElement) {
+    if (!inputElement) return;
+
+    const form = inputElement.closest('form[data-unit-price]'); 
+    if (!form) return; 
+
+    const unitPrice = parseFloat(form.dataset.unitPrice);
+    const totalPriceDisplay = form.querySelector('#total-price-display');
+    const quantity = parseInt(inputElement.value) || 0;
+
+    if (isNaN(unitPrice) || !totalPriceDisplay) {
+      console.error("المان‌های قیمت پیدا نشد یا قیمت واحد نامعتبر است.");
+      return;
+    }
+
+    const newTotal = unitPrice * quantity;
+    totalPriceDisplay.textContent = formatNumberWithCommas(newTotal) + ' تومان';
+  }
+
   // Event Listener for Increment Buttons
   document.querySelectorAll('.increment').forEach(button => {
     button.addEventListener('click', event => {
-      const input = event.target.closest('button').querySelector('.custom-input');
+      const input = event.target.closest('.border').querySelector('.custom-input');
+      if (!input) return; 
+      
       const value = parseInt(input.value) || 0;
       if (value < 20) {
         input.value = value + 1;
+        updateCartTotal(input);
       }
     });
   });
@@ -127,13 +154,30 @@ document.addEventListener('DOMContentLoaded', () => {
   // Event Listener for Decrement Buttons
   document.querySelectorAll('.decrement').forEach(button => {
     button.addEventListener('click', event => {
-      const input = event.target.closest('button').querySelector('.custom-input');
+      const input = event.target.closest('.border').querySelector('.custom-input');
+      if (!input) return; 
+
       const value = parseInt(input.value) || 0;
       if (value > 1) {
         input.value = value - 1;
+        updateCartTotal(input);
       }
     });
   });
+  const productForm = document.querySelector('form[data-unit-price]');
+  if (productForm) {
+    const quantityInput = productForm.querySelector('.custom-input');
+    if (quantityInput) {
+      
+      quantityInput.value = 1; 
+      
+      quantityInput.addEventListener('input', () => {
+        updateCartTotal(quantityInput);
+      });
+      
+      updateCartTotal(quantityInput);
+    }
+  }
 });
 
 
