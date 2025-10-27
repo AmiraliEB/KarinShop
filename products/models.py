@@ -12,7 +12,14 @@ class ParentProduct(models.Model):
     name = models.CharField(max_length=255, verbose_name=_("parent product name"))
     category = models.ForeignKey('ProductCategory', on_delete=models.PROTECT, blank=True, null=True, related_name='product_parents', verbose_name=_("category"))
     brand = models.ForeignKey('Brand', on_delete=models.PROTECT, blank=True, null=True, related_name='product_parents', verbose_name=_("brand"))
-    
+
+    specification_values = models.ManyToManyField(
+        'AttributeValue', 
+        related_name='parent_products', 
+        verbose_name=_("shared specifications"),
+        blank=True,
+    )
+
     datetime_created = models.DateTimeField(auto_now_add=True, verbose_name=_("creation date"))
     datetime_modified = models.DateTimeField(auto_now=True, verbose_name=_("last modified date"))
 
@@ -31,7 +38,6 @@ class Product(models.Model):
     is_amazing = models.BooleanField(default=False, verbose_name=_("is amazing?"))
     is_best_selling = models.BooleanField(default=False, verbose_name=_("is best selling?"))
 
-    color = models.ManyToManyField('Color', blank=True, verbose_name=_("colors"))
     attribute_values = models.ManyToManyField('AttributeValue', verbose_name=_("attribute values"))
 
 
@@ -219,12 +225,6 @@ class AttributeCategory(models.Model):
         verbose_name_plural = _('attribute categories')
         ordering = ['id']
 
-class Color(models.Model):
-    name = models.CharField(max_length=50, verbose_name=_("color name"))
-    hex_code = models.CharField(max_length=7, verbose_name=_("hex code"))
-    def __str__(self):
-        return self.name
-    
 class Brand(models.Model):
     name = models.CharField(max_length=50, verbose_name=_("brand"))
     code = models.CharField(max_length=50, unique=True, verbose_name=_("brand code"))
