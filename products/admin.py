@@ -78,7 +78,8 @@ class BrandAdmin(admin.ModelAdmin):
 
 @admin.register(models.AttributeCategory)
 class AttributeCategory(admin.ModelAdmin):
-    list_display = ('id','name')
+    list_display = ('id','name','sort_order')
+    ordering = ('sort_order','id')
 
 @admin.register(models.Comments)
 class CommentsAdmin(admin.ModelAdmin):
