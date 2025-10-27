@@ -8,7 +8,7 @@ class ProductImageInline(admin.TabularInline):
 
 class ProductInline(admin.TabularInline):
     model = models.Product
-    extra = 0  
+    extra = 0
     fields = ('price', 'discount_price', 'stock', 'is_available', 'attribute_values')
     readonly_fields = ('is_available',)
     filter_horizontal = ('attribute_values',)
@@ -22,18 +22,19 @@ class AttributeValueInline(admin.TabularInline):
     model = models.AttributeValue
     extra = 1 
 
-
+# TODO:prevent submit two attribute_value with same attribiute
 @admin.register(models.ParentProduct)
 class ParentProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category', 'brand')
+    list_display = ('name', 'category', 'brand',)
+    filter_horizontal = ('specification_values',)
     list_filter = ('category', 'brand', 'datetime_created')
     search_fields = ('name', 'category__name', 'brand__name')
-    readonly_fields = ('slug','datetime_created','datetime_modified')
+    readonly_fields = ('datetime_created','datetime_modified')
     inlines = [ProductImageInline,ProductInline]
 
     fieldsets = (
-        (None, {'fields': ('name', 'category', 'brand')}),
-        ('Advanced Options', {'fields': ('slug', 'datetime_created', 'datetime_modified')}),
+        (None, {'fields': ('name', 'category', 'brand','specification_values')}),
+        ('Advanced Options', {'fields': ('datetime_created', 'datetime_modified')}),
     )
     readonly_fields = ('datetime_created', 'datetime_modified')
 
@@ -64,12 +65,12 @@ class AttributeAdmin(admin.ModelAdmin):
     search_fields = ('name',)
     inlines = [AttributeRuleInline,AttributeValueInline]
 
-@admin.register(models.AttributeValue)
-class AttributeValueAdmin(admin.ModelAdmin):
-    list_display = ('attribute', 'value')
-    search_fields = ('value', 'attribute__name')
-    list_filter = ('attribute',)
-    ordering = ('attribute__name', 'value')
+# @admin.register(models.AttributeValue)
+# class AttributeValueAdmin(admin.ModelAdmin):
+#     list_display = ('attribute', 'value')
+#     search_fields = ('value', 'attribute__name')
+#     list_filter = ('attribute',)
+#     ordering = ('attribute__name', 'value')
 
 @admin.register(models.Brand)
 class BrandAdmin(admin.ModelAdmin):

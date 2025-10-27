@@ -23,7 +23,6 @@ class ProductDetailView(generic.DetailView):
     model = Product
     template_name = "products/product_details.html"
     context_object_name = "product"
-
     @method_decorator(login_required)
     def post(self,request,*args, **kwargs):
         
@@ -52,15 +51,15 @@ class ProductDetailView(generic.DetailView):
             'parent_product__brand',
             'parent_product__category'
         ).prefetch_related(
-                Prefetch(
-                'attribute_values',
-                queryset=AttributeValue.objects.select_related(
-                    'attribute__attribute_category'  
-                ).order_by(
-                    'attribute__attribute_category__sort_order'  
-                ),
-                to_attr='sorted_attribute_values' 
-                ),
+            Prefetch(
+            'parent_product__specification_values',
+            queryset=AttributeValue.objects.select_related(
+                'attribute__attribute_category'  
+            ).order_by(
+                'attribute__attribute_category__sort_order'  
+            ),
+            to_attr='sorted_attribute_values' 
+            ),
             'parent_product__images',
         )
 
@@ -75,12 +74,9 @@ class ProductDetailView(generic.DetailView):
             percentage = (discount_amount / product.price) * 100
             discount_percentage = round(percentage) 
         context['discount_percentage'] = discount_percentage
-        grouped_attributes = defaultdict(list)
 
-        for value_obj in self.object.sorted_attribute_values:
-            category = value_obj.attribute.attribute_category
-            grouped_attributes[category].append(value_obj)
-        context['grouped_attributes'] = dict(grouped_attributes)
+        context['grouped_attributes'] = self.object.parent_product.grouped_specifications
+
 
 
         comments = Comments.objects.filter(parent_product=product.parent_product,is_approved=True).select_related('user').order_by('-datetime_created')

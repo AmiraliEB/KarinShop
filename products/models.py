@@ -1,3 +1,4 @@
+from collections import defaultdict
 from django.db import models
 from django.db.models import Q
 from django.core.exceptions import ValidationError
@@ -18,6 +19,7 @@ class ParentProduct(models.Model):
         related_name='parent_products', 
         verbose_name=_("shared specifications"),
         blank=True,
+        limit_choices_to={'attribute__show_in_specifications': True}
     )
 
     datetime_created = models.DateTimeField(auto_now_add=True, verbose_name=_("creation date"))
@@ -25,6 +27,21 @@ class ParentProduct(models.Model):
 
     def __str__(self):
         return self.name
+    @property
+    def grouped_specifications(self):
+        if hasattr(self, 'sorted_attribute_values'):
+            values_list = self.sorted_attribute_values
+        else:
+            values_list = self.specification_values.select_related(
+                'attribute__attribute_category'
+            ).order_by('attribute__attribute_category__sort_order')
+
+        grouped_attributes = defaultdict(list)
+        for value_obj in values_list:
+            category = value_obj.attribute.attribute_category
+            grouped_attributes[category].append(value_obj)
+        
+        return dict(grouped_attributes)
     
 class Product(models.Model):
     parent_product = models.ForeignKey('ParentProduct', on_delete=models.PROTECT, related_name='products', verbose_name=_("product name"))
@@ -38,7 +55,7 @@ class Product(models.Model):
     is_amazing = models.BooleanField(default=False, verbose_name=_("is amazing?"))
     is_best_selling = models.BooleanField(default=False, verbose_name=_("is best selling?"))
 
-    attribute_values = models.ManyToManyField('AttributeValue', verbose_name=_("attribute values"))
+    attribute_values = models.ManyToManyField('AttributeValue', verbose_name=_("attribute values"),limit_choices_to={'attribute__is_variant_defining': True})
 
 
     datetime_created = models.DateTimeField(auto_now_add=True, verbose_name=_("creation date"))
@@ -165,6 +182,11 @@ class Attribute(models.Model):
         blank=False,
         verbose_name=_("attribute category")
     )
+    is_variant_defining = models.BooleanField(
+        default=False, 
+        verbose_name=_("Is this a variant-defining attribute?")
+    )
+    show_in_specifications = models.BooleanField(_("Show in specifications in detail page?"),default=True)
 
     def __str__(self):
         return self.name
