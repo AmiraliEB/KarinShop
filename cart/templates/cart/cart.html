@@ -291,11 +291,14 @@
                     class="w-full flex flex-col gap-y-4 child:p-2 lg:child:p-4 ">
                     {% for cart_item in global_cart %}
                     <!-- PRODUCT ITEM -->
-                    <div class="w-full flex justify-between relative border-b-2 border-gray-200 dark:border-white/20 ">
+                    <div class="w-full flex justify-between relative {% if not forloop.last %} border-b-2 border-gray-200 dark:border-white/20 {% endif %}">
                         <div class="flex flex-col sm:flex-row items-center gap-6">
                             <!-- IMG AND COUNT BTN -->
                             <div class="flex w-fit flex-col">
-                                <img src={{cart_item.product_obj.parent_product.images.last.image.url}} class="w-36" alt="">
+                                <a href="{{cart_item.product_obj.get_absolute_url}}">
+                                    <img src={{cart_item.product_obj.parent_product.images.last.image.url}} class="w-36" alt="">
+                                    
+                                </a>
                                 <button
                                     class="flex items-center justify-between gap-x-1 rounded-lg border border-gray-200 dark:border-white/20 py-1 px-2">
                                     <svg class="w-4 h-4 increment text-green-600">
@@ -362,12 +365,12 @@
                         <p class="flex gap-x-1 text-gray-600 dark:text-gray-300 ">{{global_cart.get_total_price|intcomma:False}} <span class="hidden xl:flex">تومان</span></p>
                     </li>
                     <li>
-                        <p>تخفیف </p> {% comment %} TODO {% endcomment %}
-                        <p class="font-DanaMedium text-gray-700 dark:text-gray-200">! تومان  </p>
-                    </li>
+                        <p>تخفیف </p>
+                        <p class="font-DanaMedium text-gray-700 dark:text-gray-200">-</p>
+                    </li>                    
                     <li class="border-t-2 border-dashed border-gray-400 pt-8">
                         <p> مبلغ نهایی  :</p>
-                        <p>! تومان</p>
+                        <p>{{global_cart.get_total_price|intcomma:False}} تومان</p>
                     </li>
                 </ul>
 
@@ -382,20 +385,15 @@
             </div>
         </section>
         {% else %}
-        <section class="flex flex-col items-center justify-center gap-y-4 bg-white dark:bg-gray-800 shadow rounded-lg p-8 mt-5 text-center">
-            
-            <svg class="w-24 h-24 text-gray-400 dark:text-gray-500">
-                <use href="#shopping-cart"></use>
-            </svg>
-            
-            <h2 class="text-2xl font-DanaMedium text-gray-800 dark:text-white">سبد خرید شما خالی است!</h2>
-            <p class="text-gray-500 dark:text-gray-400">برای مشاهده محصولات و افزودن آن‌ها به سبد خرید، به فروشگاه بروید.</p>
-            
-            <a href="/"  
-                class="mt-4 inline-flex items-center gap-x-2 bg-blue-500 text-white hover:bg-blue-600 transition-all rounded-lg shadow py-2 px-5">
-                رفتن به فروشگاه
-                <svg class="w-5 h-5 transform -scale-x-100">
-                    <use href="#arrow-left-circle"></use>
+        <section class="flex flex-col items-center justify-center gap-y-3 mt-5">
+            <img class="max-w-60" src="{% static "images/svg/empty-cart.svg" %}" alt="">
+            <h1 class="font-DanaDemiBold text-gray-700 dark:text-gray-300 text-2xl mt-2">
+                سبد خرید شما خالی است!
+            </h1>
+            <a  class="flex items-center justify-center w-fit text-sky-500" href="{% url "homepage" %}">
+                مشاهده فروشگاه
+                 <svg class="size-4 mb-0.5">
+                    <use href="#chevron-left" />
                 </svg>
             </a>
         </section>
