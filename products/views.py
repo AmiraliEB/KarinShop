@@ -57,12 +57,11 @@ class ProductDetailView(generic.DetailView):
                 queryset=AttributeValue.objects.select_related(
                     'attribute__attribute_category'  
                 ).order_by(
-                    'attribute__attribute_category__id'  
+                    'attribute__attribute_category__sort_order'  
                 ),
                 to_attr='sorted_attribute_values' 
                 ),
             'parent_product__images',
-            'color',
         )
 
     def get_context_data(self, **kwargs):

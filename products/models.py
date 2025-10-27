@@ -216,7 +216,7 @@ class AttributeValue(models.Model):
 
 class AttributeCategory(models.Model):
     name = models.CharField(max_length=255, verbose_name=_("category name"))
-
+    sort_order = models.PositiveIntegerField(default=0, verbose_name=_("ترتیب نمایش"))
     def __str__(self):
         return self.name
 
