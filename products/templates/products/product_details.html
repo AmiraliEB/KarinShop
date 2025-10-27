@@ -528,14 +528,13 @@
                     <div class="flex items-center gap-x-1">
                         <p class="text-2xl font-DanaDemiBold">{{product.discount_price|intcomma:False}}</p>
                         <p class="">تومان</p>
-                    {% else %}
                     </div>
+                    {% else %}
                     <div class="flex items-center gap-x-1">
                         <p class="text-2xl font-DanaDemiBold">{{product.price|intcomma:False}}</p>
                         <p class="">تومان</p>
                     </div>
                     {% endif %}
-                    
                 </div>
                 <button
                     class="w-full flex items-center justify-between gap-x-1 rounded-lg border border-gray-200 dark:border-white/20 py-2 px-3">
@@ -1123,7 +1122,7 @@
                     </div>
                 </div>
                 {% endfor %}
-                {% if product.attribute_values.all|length > 5 %}
+                {% if product.parent_product.specification_values.all|length > 5 %}
                     <button class="more-specs-btn flex gap-x-1 items-center text-blue-400">
                         <span class="more-specs-text">مشاهده بیشتر</span>
                         <svg class="size-4 more-specs-icon transition-transform">
