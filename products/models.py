@@ -6,7 +6,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
 from django.contrib.auth import get_user_model
-from django.db.models.signals import m2m_changed 
+from django.db.models.signals import m2m_changed, post_save, post_delete 
 from django.dispatch import receiver
 
 User = get_user_model()
@@ -83,14 +83,17 @@ class Product(models.Model):
     @property
     def full_name(self):
         return self._full_name
+    
     def _generate_full_name(self):
+        # TODO:fix attribute order in full detail page
         base_name = f'{self.parent_product.category} {self.parent_product.brand} {self.parent_product.name}'
         
         product_category = self.parent_product.category
         product_brand = self.parent_product.brand
-        
+
         if not product_category:
             return base_name
+        
 
         applicable_rules_query = Q(
             attributerule__category=product_category,
@@ -104,33 +107,20 @@ class Product(models.Model):
             applicable_rules_query,
             attributerule__is_main_feature=True
         ).distinct() 
-
-        main_values = self.attribute_values.filter(
+        print(main_feature_attributes)
+        main_specification_values = self.parent_product.specification_values.filter(
             attribute__in=main_feature_attributes
         ).select_related('attribute')
+        main_attribute_values = self.attribute_values.filter(
+            attribute__in=main_feature_attributes
+        ).select_related('attribute')
+        main_values = main_attribute_values | main_specification_values
+        final_parts = list()
+        print(main_values)
+        for attribute_value_obj in main_values:
+            attribute_value = attribute_value_obj.value
+            final_parts.append(attribute_value)
 
-
-        ram_value_str = None
-        storage_value_str = None
-        other_parts = []
-
-        for value in main_values:
-            attr_name = value.attribute.name
-
-            if attr_name == 'حافظه داخلی':
-                storage_value_str = f'{value.value}'
-            elif attr_name == 'رم':
-                ram_value_str = f'{value.value}'
-            else:
-                other_parts.append(f'{value.value}')
-
-        final_parts = []
-        if storage_value_str:
-            final_parts.append(storage_value_str)
-        if ram_value_str:
-            final_parts.append(ram_value_str)
-        
-        final_parts.extend(other_parts)
 
         return f"{base_name} {' '.join(final_parts)}".strip()
         
@@ -300,3 +290,21 @@ def update_full_name_on_m2m_change(sender, instance, action, **kwargs):
         if instance._full_name != new_full_name:
             instance._full_name = new_full_name
             instance.save(update_fields=['_full_name'])
+
+@receiver([post_save, post_delete], sender=AttributeRule)
+def update_product_names_on_rule_change(sender, instance, **kwargs):
+    print('---------------------------------')
+    category = instance.category
+    brand = instance.brand
+    if brand:
+        affected_parent_products = ParentProduct.objects.filter(category=category, brand=brand)
+    else:
+        affected_parent_products = ParentProduct.objects.filter(category=category)
+    affected_products = Product.objects.filter(
+        parent_product__in=affected_parent_products
+    ).iterator()
+    for product in affected_products:
+        new_full_name = product._generate_full_name()
+        if product._full_name != new_full_name:
+            product._full_name = new_full_name
+            product.save(update_fields=['_full_name'])
