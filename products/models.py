@@ -6,6 +6,8 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
 from django.contrib.auth import get_user_model
+from django.db.models.signals import m2m_changed 
+from django.dispatch import receiver
 
 User = get_user_model()
 
@@ -47,6 +49,8 @@ class Product(models.Model):
     parent_product = models.ForeignKey('ParentProduct', on_delete=models.PROTECT, related_name='products', verbose_name=_("product name"))
     slug = models.SlugField(max_length=255, unique=True, verbose_name=_("slug"))
     
+    _full_name = models.CharField(max_length=500, blank=True, verbose_name=_("Full Name (Cached)"))
+
     price = models.DecimalField(max_digits=10, decimal_places=0, verbose_name=_("price (Toman)"))
     discount_price = models.DecimalField(max_digits=10, decimal_places=0, blank=True, null=True, verbose_name=_("discounted price (Toman)"))
     stock = models.PositiveIntegerField(default=0, verbose_name=_("stock"))
@@ -71,13 +75,15 @@ class Product(models.Model):
 
 
     def __str__(self):
-        return f'{self.id}:{self.parent_product}'
+        return self.full_name if self._full_name else f'Product {self.id}'
     
     def get_absolute_url(self):
         return reverse('products:post_redirect', kwargs={'pk': self.pk})
 
     @property
     def full_name(self):
+        return self._full_name
+    def _generate_full_name(self):
         base_name = f'{self.parent_product.category} {self.parent_product.brand} {self.parent_product.name}'
         
         product_category = self.parent_product.category
@@ -132,6 +138,10 @@ class Product(models.Model):
     def save(self, *args, **kwargs):
         self.is_available = self.stock > 0
         super().save(*args, **kwargs)
+        new_full_name = self._generate_full_name()
+        if self._full_name != new_full_name:
+            self._full_name = new_full_name
+            super().save(update_fields=['_full_name'])
 
 
 def product_image_upload_to(instance, filename):
@@ -280,3 +290,13 @@ class Comments(models.Model):
 
     def __str__(self):
         return f"Comment by {self.user} on {self.parent_product}"
+    
+
+
+@receiver(m2m_changed, sender=Product.attribute_values.through)
+def update_full_name_on_m2m_change(sender, instance, action, **kwargs):
+    if action in ("post_add", "post_remove", "post_clear"):
+        new_full_name = instance._generate_full_name()
+        if instance._full_name != new_full_name:
+            instance._full_name = new_full_name
+            instance.save(update_fields=['_full_name'])

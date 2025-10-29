@@ -41,18 +41,15 @@ class ParentProductAdmin(admin.ModelAdmin):
 
 @admin.register(models.Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display =('id', 'parent_product', 'full_name', 'price', 'stock', 'is_available')
+    list_display =('id', 'parent_product', '_full_name', 'price', 'stock', 'is_available')
     list_display_links = ('parent_product',)
     list_filter = ('is_available', 'parent_product__category', 'parent_product__brand')
-    search_fields = ('parent_product__name', 'id')
-    readonly_fields = ('full_name', 'datetime_created', 'datetime_modified', 'is_available')
+    search_fields = ('parent_product__name', 'id','_full_name')
+    readonly_fields = ('_full_name' ,'datetime_created', 'datetime_modified', 'is_available')
     autocomplete_fields = ('parent_product',)
     filter_horizontal = ('attribute_values',)
     list_select_related = ('parent_product',)
 
-    def full_name(self, obj):
-        return obj.full_name
-    full_name.short_description = 'نام کامل محصول'
 
 @admin.register(models.ProductCategory)
 class ProductCategoryAdmin(admin.ModelAdmin):
@@ -64,13 +61,6 @@ class AttributeAdmin(admin.ModelAdmin):
     list_display = ('name','attribute_category')
     search_fields = ('name',)
     inlines = [AttributeRuleInline,AttributeValueInline]
-
-# @admin.register(models.AttributeValue)
-# class AttributeValueAdmin(admin.ModelAdmin):
-#     list_display = ('attribute', 'value')
-#     search_fields = ('value', 'attribute__name')
-#     list_filter = ('attribute',)
-#     ordering = ('attribute__name', 'value')
 
 @admin.register(models.Brand)
 class BrandAdmin(admin.ModelAdmin):
