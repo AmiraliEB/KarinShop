@@ -85,7 +85,6 @@ class Product(models.Model):
         return self._full_name
     
     def _generate_full_name(self):
-        # TODO:fix attribute order in full detail page
         base_name = f'{self.parent_product.category} {self.parent_product.brand} {self.parent_product.name}'
         
         product_category = self.parent_product.category

@@ -22,7 +22,6 @@ class AttributeValueInline(admin.TabularInline):
     model = models.AttributeValue
     extra = 1 
 
-# TODO:prevent submit two attribute_value with same attribiute
 @admin.register(models.ParentProduct)
 class ParentProductAdmin(admin.ModelAdmin):
     list_display = ('name', 'category', 'brand',)

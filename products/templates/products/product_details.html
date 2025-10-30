@@ -1107,7 +1107,6 @@
                     </a>
                 </p>
             </div>
-            {% comment %} TODO:fix line {% endcomment %}
             <div class="tab-content tab2 hidden w-full">
                 {% for category , value_list in grouped_attributes.items %}
                 <div class="spec-category-group px-4 {% if not forloop.first %}hidden hidden-spec-category-group{% endif %}">
@@ -1260,7 +1259,7 @@
                                         <p>{{comment_item.user.username}}</p>
                                     </div>
                                     <div class="flex items-center gap-x-2 flex-wrap mt-2">
-                                        <p class="text-gray-400 text-sm">آیا این دیدگاه برایتان مفید بود؟</p> {% comment %} TODO {% endcomment %}
+                                        <p class="text-gray-400 text-sm">آیا این دیدگاه برایتان مفید بود؟</p>
                                         <div class="flex items-center gap-x-2 child:flex child:items-center child:gap-x-1 child:rounded-lg child:p-2 child:font-DanaMedium child:duration-300 
                                         child:transition-all child:text-sm">
                                             <button

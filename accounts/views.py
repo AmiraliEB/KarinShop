@@ -12,7 +12,6 @@ from allauth.utils import build_absolute_uri
 User = get_user_model()
 
 from accounts.forms import ResendConfirmationEmailForm
-#TODO: bug:user can get message with get method on any custom views
 
 def custom_resend_email(request, email, template_prefix, context):
     try:
