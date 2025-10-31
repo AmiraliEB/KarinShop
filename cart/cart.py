@@ -1,4 +1,4 @@
-from products.models import Product
+from products.models import Product, Attribute
 
 class Cart:
     def __init__(self,request):
@@ -23,6 +23,10 @@ class Cart:
             product_id = str(product.id)
             cart[product_id]['product_obj'] = product
             cart[product_id]['item_total_price'] = cart[product_id]['product_obj'].price * cart[product_id]['quantity']
+            attribute = Attribute.objects.filter(name="رنگ")
+            product_color = product.attribute_values.filter(attribute__in=attribute).first().value
+            print(product_color)
+            cart[product_id]['color'] = product_color
 
         for item in cart.values():
             yield item
