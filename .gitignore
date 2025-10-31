@@ -43,7 +43,6 @@ build/
 dist/
 *.egg-info/
 
-/static/css/output.css
 /staticfiles/
 
 /node_modules/
@@ -51,3 +50,6 @@ dist/
 *.mo
 
 templates/
+js/
+css/
+src/
