@@ -49,7 +49,16 @@ dist/
 /node_modules/
 
 *.mo
-templates/
+
+cart/templates/cart
+products/templates/products
+core/templates/core
+templates/partials
+templates/_base.html
+templates/base_account.html
+static/js
+static/src
+static/css
 js/
 css/
 src/
