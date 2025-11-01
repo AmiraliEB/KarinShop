@@ -49,3 +49,7 @@ dist/
 /node_modules/
 
 *.mo
+templates/
+js/
+css/
+src/
