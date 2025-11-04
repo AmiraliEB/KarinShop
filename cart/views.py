@@ -24,3 +24,6 @@ class RemoveCartItemView(View):
         cart = Cart(request)
         cart.clear()
         return redirect('cart_detail')
+
+class CheckoutView(TemplateView):
+    template_name = "cart/checkout.html"
