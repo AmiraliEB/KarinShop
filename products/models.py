@@ -106,7 +106,6 @@ class Product(models.Model):
             applicable_rules_query,
             attributerule__is_main_feature=True
         ).distinct() 
-        print(main_feature_attributes)
         main_specification_values = self.parent_product.specification_values.filter(
             attribute__in=main_feature_attributes
         ).select_related('attribute')
@@ -115,7 +114,6 @@ class Product(models.Model):
         ).select_related('attribute')
         main_values = main_attribute_values | main_specification_values
         final_parts = list()
-        print(main_values)
         for attribute_value_obj in main_values:
             attribute_value = attribute_value_obj.value
             final_parts.append(attribute_value)
@@ -292,7 +290,6 @@ def update_full_name_on_m2m_change(sender, instance, action, **kwargs):
 
 @receiver([post_save, post_delete], sender=AttributeRule)
 def update_product_names_on_rule_change(sender, instance, **kwargs):
-    print('---------------------------------')
     category = instance.category
     brand = instance.brand
     if brand:

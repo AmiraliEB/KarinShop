@@ -1,10 +1,11 @@
 from django.shortcuts import render,redirect
 from django.views.generic import View,TemplateView
 
-from .forms import CartAddPrproductForm
+from .forms import CartAddAddressFrom
 from .cart import Cart
 from products.models import Product
 from django.shortcuts import get_object_or_404
+from accounts.models import Profile
 
 class CartView(TemplateView):
     template_name = 'cart/cart.html'
@@ -25,5 +26,12 @@ class RemoveCartItemView(View):
         cart.clear()
         return redirect('cart_detail')
 
-class CheckoutView(TemplateView):
-    template_name = "cart/checkout.html"
+class CheckoutView(View):
+    def get(self,request,*args, **kwargs):
+        current_user = request.user
+        return render(request,"cart/checkout.html")
+    def post(self,request,*args, **kwargs):
+        form = CartAddAddressFrom(request.POST)
+
+                
+

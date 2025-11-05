@@ -25,7 +25,6 @@ class Cart:
             cart[product_id]['item_total_price'] = cart[product_id]['product_obj'].price * cart[product_id]['quantity']
             attribute = Attribute.objects.filter(name="رنگ")
             product_color = product.attribute_values.filter(attribute__in=attribute).first().value
-            print(product_color)
             cart[product_id]['color'] = product_color
 
         for item in cart.values():
