@@ -4,8 +4,9 @@ from django.views.generic import View,TemplateView
 from .forms import CartAddAddressFrom
 from .cart import Cart
 from products.models import Product
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
-from accounts.models import Profile
+from accounts.models import Profile, Address
 
 class CartView(TemplateView):
     template_name = 'cart/cart.html'
@@ -16,7 +17,7 @@ class RemoveCartItemView(View):
         pk = self.kwargs.get('pk')
         if pk is None:
            return redirect('cart_detail')
-        product = Product.objects.get(pk=pk)
+        product = get_object_or_404(Product,pk=pk)
         cart.remove(product)
         return redirect('cart_detail')
 
@@ -26,12 +27,42 @@ class RemoveCartItemView(View):
         cart.clear()
         return redirect('cart_detail')
 
-class CheckoutView(View):
+class CheckoutView(LoginRequiredMixin,View):
     def get(self,request,*args, **kwargs):
-        current_user = request.user
-        return render(request,"cart/checkout.html")
+        form = CartAddAddressFrom()
+        return render(request,"cart/checkout.html",{'form':form})
     def post(self,request,*args, **kwargs):
         form = CartAddAddressFrom(request.POST)
+        current_user = request.user
+        profile, created = Profile.objects.get_or_create(user=current_user)
+        if form.is_valid():
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
 
-                
+            province = form.cleaned_data['province']
+            city = form.cleaned_data['city']
+            postal_code = form.cleaned_data['postal_code']
+            full_address = form.cleaned_data['full_address']
+            phone_number = form.cleaned_data['phone_number']
 
+            profile.user = request.user
+            profile.first_name = first_name
+            profile.last_name = last_name
+            profile.save()
+
+            new_address = Address()
+            new_address.user = request.user
+            new_address.province = province
+            new_address.city = city
+            new_address.postal_code = postal_code
+            new_address.full_address = full_address
+            new_address.phone_number = phone_number
+            new_address.save()
+
+            return redirect('payment')
+        else:
+            return render(request, "cart/checkout.html",{'form':form})
+
+class PaymentView(LoginRequiredMixin, View):
+    def get(self,request,*args, **kwargs):
+        return render(request,template_name="cart/payment.html")
