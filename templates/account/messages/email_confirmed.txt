@@ -1,2 +1,0 @@
-{% load i18n %}
-{% blocktrans %}ایمیل {{email}} با موفقیت تایید شد, اکنون میتوانید وارد شوید{% endblocktrans %}

@@ -13,6 +13,7 @@ services:
       - D:\master_folder\templates\_base.html:/app/templates/_base.html:ro
       - D:\master_folder\templates\base_account.html:/app/templates/base_account.html:ro
       - D:\master_folder\templates\partials:/app/templates/partials:ro
+      - D:\master_folder\templates\account:/app/templates/account:ro
 
       - D:\master_folder\static\js:/app/static/js
       - D:\master_folder\static\src:/app/static/src

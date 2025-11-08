@@ -11,6 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from cart.forms import CartAddPrproductForm
 from cart.cart import Cart
+from django.conf import settings
 
 def post_redirect_view(request, pk):
     product_obj = get_object_or_404(Product, pk=pk)
@@ -25,10 +26,13 @@ class ProductDetailView(generic.DetailView):
     model = Product
     template_name = "products/product_details.html"
     context_object_name = "product"
-    @method_decorator(login_required)
+
     def post(self,request,*args, **kwargs):
         self.object = self.get_object()
         if 'comment_submit' in request.POST:
+            if not request.user.is_authenticated:
+                messages.warning(request, 'برای ثبت دیدگاه، لطفا ابتدا وارد شوید.')
+                return redirect(f'{settings.LOGIN_URL}?next={self.object.get_absolute_url()}')
             comment_form = CommentForm(request.POST)
             if comment_form.is_valid():
                 
