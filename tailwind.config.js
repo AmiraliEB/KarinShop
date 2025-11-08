@@ -6,6 +6,7 @@ module.exports = {
       '../master_folder/static/**/*.js',
       './accounts/forms.py',
       './products/forms.py',
+      './cart/forms.py',
       '../master_folder/static/products/js/productDetails.js',
   ],
   darkMode: 'class',
