@@ -16,9 +16,9 @@ class Address(models.Model):
     user = models.ForeignKey(CustomUser, verbose_name=_("addresses"), on_delete=models.CASCADE,related_name='addresses')
     province = models.CharField(verbose_name=_("province"), max_length=50)
     city = models.CharField(verbose_name=_("city"), max_length=50)
-    postal_code = models.PositiveIntegerField(verbose_name=_("postal code"))
+    postal_code = models.CharField(max_length=20,verbose_name=_("postal code"))
     full_address = models.CharField(verbose_name=_("full address"), max_length=255)
-    phone_number = models.PositiveIntegerField(_(""))
+    phone_number = models.CharField(max_length=20,verbose_name=_("phone number"), blank=True, null=True)
 
     datetime_created = models.DateTimeField(auto_now_add=True, verbose_name=_("creation date"))
     datetime_modified = models.DateTimeField(auto_now=True, verbose_name=_("last modified date"))

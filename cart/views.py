@@ -29,12 +29,11 @@ class RemoveCartItemView(View):
         cart.clear()
         return redirect('cart_detail')
 
+today = timezone.localdate()
+time_to_leave_warehouse = today + timedelta(days=2)
 class CheckoutView(LoginRequiredMixin,View):
     def get(self,request,*args, **kwargs):
         form = CartAddAddressFrom()
-
-        today = timezone.localdate()
-        time_to_leave_warehouse = today + timedelta(days=2)
         return render(request,"cart/checkout.html",{'form':form,'time_to_leave_warehouse':time_to_leave_warehouse})
     def post(self,request,*args, **kwargs):
         form = CartAddAddressFrom(request.POST)
@@ -67,7 +66,7 @@ class CheckoutView(LoginRequiredMixin,View):
 
             return redirect('payment')
         else:
-            return render(request, "cart/checkout.html",{'form':form})
+            return render(request, "cart/checkout.html",{'form':form, 'time_to_leave_warehouse':time_to_leave_warehouse})
 
 class PaymentView(LoginRequiredMixin, View):
     def get(self,request,*args, **kwargs):
