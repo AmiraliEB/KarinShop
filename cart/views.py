@@ -1,6 +1,8 @@
 from django.shortcuts import render,redirect
 from django.views.generic import View,TemplateView
 
+from django.utils import timezone
+from datetime import timedelta
 from .forms import CartAddAddressFrom
 from .cart import Cart
 from products.models import Product
@@ -30,11 +32,15 @@ class RemoveCartItemView(View):
 class CheckoutView(LoginRequiredMixin,View):
     def get(self,request,*args, **kwargs):
         form = CartAddAddressFrom()
-        return render(request,"cart/checkout.html",{'form':form})
+
+        today = timezone.localdate()
+        time_to_leave_warehouse = today + timedelta(days=2)
+        return render(request,"cart/checkout.html",{'form':form,'time_to_leave_warehouse':time_to_leave_warehouse})
     def post(self,request,*args, **kwargs):
         form = CartAddAddressFrom(request.POST)
         current_user = request.user
         profile, created = Profile.objects.get_or_create(user=current_user)
+
         if form.is_valid():
             first_name = form.cleaned_data['first_name']
             last_name = form.cleaned_data['last_name']
