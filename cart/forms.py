@@ -18,6 +18,7 @@ class CartAddPrproductForm(forms.Form):
 
 
 class CartAddAddressFrom(forms.Form):
+    
     SHIPPING_CHOICES = [
         ('post', 'پست پیشتاز: 89,000 تومان'),
         ('tipax', 'تیپاکس: 120,000 تومان'),
@@ -40,9 +41,9 @@ class CartAddAddressFrom(forms.Form):
 
     province = forms.CharField(max_length=50, required=True, label=_("Province"),widget=forms.TextInput(attrs={"class":tailwind_classes,"placeholder":'استان*'}))
     city = forms.CharField(max_length=50, required=True, label=_("City"),widget=forms.TextInput(attrs={"class":tailwind_classes,"placeholder":'شهر*'}))
-    postal_code = forms.IntegerField(required=True, validators=[postal_code_validator], label=_("Postal code"),widget=forms.TextInput(attrs={"class":tailwind_classes,"placeholder":'کد پستی*'}))
+    postal_code = forms.CharField(max_length=20,required=True, validators=[postal_code_validator], label=_("Postal code"),widget=forms.TextInput(attrs={"class":tailwind_classes,"placeholder":'کد پستی*'}))
     full_address = forms.CharField(max_length=255, required=True, label=_("Full address"),widget=forms.TextInput(attrs={"class":tailwind_classes,"placeholder":'آدرس*'}))
-    phone_number = forms.IntegerField(required=False,validators=[phone_number_validator], label=_("Phone number"),widget=forms.TextInput(attrs={"class":tailwind_classes,"placeholder":'تلفن'}))
+    phone_number = forms.CharField(max_length=20,required=False,validators=[phone_number_validator], label=_("Phone number"),widget=forms.TextInput(attrs={"class":tailwind_classes,"placeholder":'تلفن'}))
 
     description = forms.CharField(max_length=500, label=_("Description"), required=False, widget= forms.TextInput(attrs={"class":tailwind_classes,"placeholder":'توضیحات'})) 
 

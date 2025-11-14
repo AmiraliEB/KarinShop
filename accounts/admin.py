@@ -1,7 +1,16 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser
+from .models import CustomUser,Profile,Address
 from .forms import CustomUserCreationForm, CustomUserChangeForm
+
+class ProfileInline(admin.StackedInline):
+    model = Profile
+    can_delete = False
+    verbose_name_plural = 'Profile'
+
+class AddressInline(admin.TabularInline):
+    model = Address
+    extra = 1
 
 class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
@@ -24,6 +33,8 @@ class CustomUserAdmin(UserAdmin):
     )
     search_fields = ("email",)
     ordering = ("email",)
+
+    inlines = [ProfileInline, AddressInline]
 
 
 admin.site.register(CustomUser, CustomUserAdmin)
