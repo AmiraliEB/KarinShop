@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'accounts',
     'core',
     'products',
-    'cart',
+    'cart.apps.CartConfig',
 
     #third party apps
     'jalali_date',

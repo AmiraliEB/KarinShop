@@ -18,7 +18,7 @@ class CartItem(models.Model):
     datetime_modified = models.DateTimeField(auto_now=True, verbose_name=_("last modified date"))
     
     def __str__(self):
-        return f"{self.quantity} عدد از {self.product.name} در سبد {self.cart.user.username}"
+        return f"{self.quantity} عدد از {self.product.parent_product.name} در سبد {self.cart.user.username}"
     
     def get_total_price(self):
         return self.product.price * self.quantity
