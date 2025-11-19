@@ -1,5 +1,44 @@
 from products.models import Product, Attribute
 
+from .models import Cart as DBCart
+from products.models import Attribute
+
+class DBCartWrapper:
+    def __init__(self, request):
+        self.request = request
+        self.user = request.user
+        self.db_cart = DBCart.objects.filter(user=self.user).first()
+
+    def __iter__(self):
+        if not self.db_cart:
+            return []
+        
+        items = self.db_cart.items.select_related('product').all()
+
+        for item in items:
+            yield {
+                'product_obj': item.product,
+                'quantity': item.quantity,
+                'item_total_price': item.get_total_price(),
+                'color': self._get_product_color(item.product),
+            }
+
+    def __len__(self):
+        if not self.db_cart:
+            return 0
+        return self.db_cart.items.count()
+
+    def get_total_price(self):
+        if not self.db_cart:
+            return 0
+        return self.db_cart.get_total_price()
+
+    def _get_product_color(self, product):
+        attribute = Attribute.objects.filter(name="رنگ")
+        attr_val = product.attribute_values.filter(attribute__in=attribute).first()
+        return attr_val.value if attr_val else "نامشخص"
+
+
 class Cart:
     def __init__(self,request):
         self.request = request
