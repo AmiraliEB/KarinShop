@@ -1,4 +1,6 @@
 from django.db import models
+from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator, MaxValueValidator
 from products.models import Product
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
@@ -58,3 +60,40 @@ class OrderItem(models.Model):
     
     def get_cost(self):
         return self.price * self.quantity
+
+    
+class Coupon(models.Model):
+    discount_type_choices = (
+        ('v', _("Fixed Amount")),
+        ('p', _("Percentage")),
+    )
+    code = models.CharField(max_length=50, unique=True, verbose_name=_("Coupon Code"))
+    discount_value = models.DecimalField(max_digits=10, decimal_places=0, verbose_name=_("Discount Value (Toman)"))
+    discount_type = models.CharField(max_length=1, choices=discount_type_choices, verbose_name=_("Discount Type"))
+    
+    quantity = models.PositiveIntegerField(verbose_name=_("Available Quantity"),default=1)
+    used_count = models.PositiveIntegerField(default=0, verbose_name=_("Used Count"))
+    active = models.BooleanField(default=True, verbose_name=_("Is Active"))
+    
+    valid_from = models.DateTimeField(verbose_name=_("Valid From"))
+    valid_to = models.DateTimeField(verbose_name=_("Valid To"))
+
+    def __str__(self):
+        return self.code
+    
+    def clean(self):
+        if self.discount_type == 'p' and self.discount_value > 100:
+            raise ValidationError({'discount_value': _("Percentage discount cannot be more than 100.")})
+            
+        if self.valid_to and self.valid_from and self.valid_to < self.valid_from:
+             raise ValidationError({'valid_to': _("End date cannot be before start date.")})
+        
+    @property
+    def is_usable(self):
+        from django.utils import timezone
+        now = timezone.now()
+        return (
+            self.active and
+            self.valid_from <= now <= self.valid_to and
+            self.used_count < self.quantity
+        )
