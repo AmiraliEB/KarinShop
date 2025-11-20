@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Order, OrderItem
+from .models import Coupon, Order, OrderItem
 
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
@@ -46,3 +46,9 @@ class OrderAdmin(admin.ModelAdmin):
     def get_total_price_display(self, obj):
         return f"{obj.get_total_price():,} تومان"
     get_total_price_display.short_description = 'مبلغ کل سفارش'
+
+@admin.register(Coupon)
+class CouponAdmin(admin.ModelAdmin):
+    list_display = ['code', 'discount_value', 'quantity', 'used_count', 'valid_from', 'valid_to', 'active']
+    list_filter = ['active', 'valid_from', 'valid_to']
+    search_fields = ['code']

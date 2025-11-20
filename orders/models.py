@@ -17,6 +17,11 @@ class Order(models.Model):
         ('f', _('Finished')),
     )
 
+    SHIPPING_CHOICES = (
+        ('post', _('Post')),
+        ('tipax', _('Tipax')),
+    )
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     order_number = models.CharField(max_length=20, unique=True)
@@ -32,6 +37,8 @@ class Order(models.Model):
     full_address = models.CharField(verbose_name=_("full address"), max_length=255)
     phone_number = models.CharField(max_length=20,verbose_name=_("phone number"), blank=True, null=True)
 
+    shipping_method = models.CharField(max_length=10, choices=SHIPPING_CHOICES, default='post', verbose_name=_("shipping method"))
+    
     datetime_created = models.DateTimeField(auto_now_add=True, verbose_name=_("creation date"))
 
     def __str__(self):
@@ -68,7 +75,7 @@ class Coupon(models.Model):
         ('p', _("Percentage")),
     )
     code = models.CharField(max_length=50, unique=True, verbose_name=_("Coupon Code"))
-    discount_value = models.DecimalField(max_digits=10, decimal_places=0, verbose_name=_("Discount Value (Toman)"))
+    discount_value = models.DecimalField(max_digits=10, decimal_places=0, verbose_name=_("Discount Value"))
     discount_type = models.CharField(max_length=1, choices=discount_type_choices, verbose_name=_("Discount Type"))
     
     quantity = models.PositiveIntegerField(verbose_name=_("Available Quantity"),default=1)
