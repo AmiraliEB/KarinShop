@@ -5,11 +5,12 @@ from django.utils import timezone
 from datetime import timedelta
 from .forms import CartAddAddressFrom, CouponApplyForm
 from .cart import Cart
-from products.models import Product
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
+from products.models import Product
 from accounts.models import Profile, Address
 from orders.models import Coupon
+from .models import Cart
 from django.contrib import messages
 
 from django.utils.translation import gettext_lazy as _
@@ -74,23 +75,52 @@ class CheckoutView(LoginRequiredMixin,View):
 
 class PaymentView(LoginRequiredMixin, View):
     def get(self,request,*args, **kwargs):
+        total_price = Cart.objects.get(user=request.user).get_total_price()
+        coupon = Coupon.objects.filter(id=request.session.get('coupon_id')).first()
+        discounted_amount = coupon.discount_value if request.session.get('coupon_id') and coupon else 0
         coupon_form = CouponApplyForm()
-        return render(request,template_name="cart/payment.html",context={'coupon_form':coupon_form, 'time_to_leave_warehouse':time_to_leave_warehouse})
+        if discounted_amount:
+            if coupon.discount_type == 'p':
+                discounted_amount = total_price * (coupon.discount_value / 100)
+            elif coupon.discount_type == 'v':
+                discounted_amount = coupon.discount_value
+            total_price -= discounted_amount
+        context = {
+            'coupon_form':coupon_form,
+            'time_to_leave_warehouse':time_to_leave_warehouse,
+            'total_price':total_price,
+            'discounted_price':discounted_amount,
+        }
+        return render(request,template_name="cart/payment.html",context=context)
     
     def post(self,request,*args, **kwargs):
+        coupon = None
         coupon_form = CouponApplyForm()
+        total_price = Cart.objects.get(user=request.user).get_total_price()
+        discounted_amount = 0
         if 'coupon_submit' in request.POST:
             coupon_form = CouponApplyForm(request.POST)
             if coupon_form.is_valid():
                 coupon_code = coupon_form.cleaned_data['code']
                 try:
                     coupon = Coupon.objects.get(code__iexact=coupon_code)
-                    request.session['coupon_id'] = coupon.id
                     if coupon.is_usable:
                         messages.success(request, _('کد تخفیف با موفقیت اعمال شد.'))
+
+                        if coupon.discount_type == 'p':
+                            discounted_amount = total_price * (coupon.discount_value / 100)
+                        elif coupon.discount_type == 'v':
+                            discounted_amount = coupon.discount_value
+                        
+                        total_price -= discounted_amount
+
+                        request.session['coupon_id'] = coupon.id
+                        return redirect("payment")
                     else:
+                        request.session['coupon_id'] = None
                         coupon_form.add_error('code', _('این کد تخفیف معتبر نیست یا قابل استفاده نمی‌باشد.'))
+                        coupon = None
                 except Coupon.DoesNotExist:
                     coupon_form.add_error('code', _('کد تخفیف وارد شده وجود ندارد.'))
-            return render(request, "cart/payment.html",{'coupon_form':coupon_form, 'time_to_leave_warehouse':time_to_leave_warehouse,'coupon':coupon})
-        return render(request,template_name="cart/payment.html",context={'coupon_form':coupon_form, 'time_to_leave_warehouse':time_to_leave_warehouse})
+            return render(request, "cart/payment.html",{'coupon_form':coupon_form, 'time_to_leave_warehouse':time_to_leave_warehouse,'coupon':coupon, 'total_price':total_price})
+        return render(request,template_name="cart/payment.html",context={'coupon_form':CouponApplyForm(), 'time_to_leave_warehouse':time_to_leave_warehouse, 'total_price':total_price})
