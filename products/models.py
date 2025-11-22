@@ -1,4 +1,5 @@
 from collections import defaultdict
+import uuid
 from django.db import models
 from django.db.models import Q
 from django.core.exceptions import ValidationError
@@ -8,6 +9,7 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.db.models.signals import m2m_changed, post_save, post_delete 
 from django.dispatch import receiver
+from django.utils.text import slugify
 
 User = get_user_model()
 
@@ -21,7 +23,7 @@ class ParentProduct(models.Model):
         related_name='parent_products', 
         verbose_name=_("shared specifications"),
         blank=True,
-        limit_choices_to={'attribute__show_in_specifications': True}
+        limit_choices_to={'attribute__show_in_specifications': True,'attribute__is_variant_defining': False}
     )
 
     datetime_created = models.DateTimeField(auto_now_add=True, verbose_name=_("creation date"))
@@ -79,7 +81,6 @@ class Product(models.Model):
     
     def get_absolute_url(self):
         return reverse('products:post_redirect', kwargs={'pk': self.pk})
-
     @property
     def full_name(self):
         return self._full_name
@@ -124,7 +125,13 @@ class Product(models.Model):
     
     def save(self, *args, **kwargs):
         self.is_available = self.stock > 0
+        if not self.slug:
+            base_slug = slugify(self.parent_product.name, allow_unicode=True)
+            unique_id = str(uuid.uuid4())[:4]
+            self.slug = f"{base_slug}-{unique_id}"
+
         super().save(*args, **kwargs)
+        
         new_full_name = self._generate_full_name()
         if self._full_name != new_full_name:
             self._full_name = new_full_name
@@ -132,13 +139,13 @@ class Product(models.Model):
 
 
 def product_image_upload_to(instance, filename):
-    return f'products/{instance.parent_product.slug}/{filename}'
+    return f'products/{slugify(instance.parent_product.name)}/{filename}'
 
 class ProductImage(models.Model):
     parent_product = models.ForeignKey(ParentProduct, on_delete=models.CASCADE, related_name='images', verbose_name=_("parent product"))
     image = models.ImageField(upload_to=product_image_upload_to, verbose_name=_("product image"))
     alt_text = models.CharField(max_length=255, blank=True, null=True, verbose_name=_("alt text"))
-
+    is_main_image = models.BooleanField(default=False, verbose_name=_("is main image?"))
     def __str__(self):
         return f"Image for {self.parent_product.name}"
 
@@ -146,6 +153,23 @@ class ProductImage(models.Model):
         verbose_name = _('product image')
         verbose_name_plural = _('product images')
         ordering = ['-id']
+    
+    def clean(self):
+        if self.parent_product is None:
+            raise ValidationError({'parent_product': _("Parent product must be set for the image.")})
+        if not self.image:
+            raise ValidationError({'image': _("Image file must be provided.")})
+    
+    class Meta:
+        verbose_name = _('product image')
+        verbose_name_plural = _('product images')
+        constraints = [
+            models.UniqueConstraint(
+                fields=['parent_product'], 
+                condition=Q(is_main_image=True),
+                name='unique_main_image_per_product',
+            )
+        ]
 
 class ProductCategory(models.Model):
     name = models.CharField(max_length=255, verbose_name=_("category name"))
@@ -235,7 +259,7 @@ class AttributeValue(models.Model):
 
 class AttributeCategory(models.Model):
     name = models.CharField(max_length=255, verbose_name=_("category name"))
-    sort_order = models.PositiveIntegerField(default=0, verbose_name=_("ترتیب نمایش"))
+    sort_order = models.PositiveIntegerField(default=0, verbose_name=_("sort order"))
     def __str__(self):
         return self.name
 
@@ -264,7 +288,7 @@ class Comments(models.Model):
     content = models.TextField(verbose_name=_("comment content"))
     rating = models.PositiveSmallIntegerField(verbose_name=_("rating"),validators=[MinValueValidator(1), MaxValueValidator(5)])
     
-    is_recommend = models.BooleanField(default=None, verbose_name=_("recommends product?"), null=True, blank=True)
+    is_recommend = models.BooleanField(default=None, verbose_name=_("   "), null=True, blank=True)
     is_approved = models.BooleanField(default=False, verbose_name=_("is approved by admin?"))
     
     datetime_created = models.DateTimeField(auto_now_add=True, verbose_name=_("creation date"))

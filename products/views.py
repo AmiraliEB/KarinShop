@@ -95,9 +95,7 @@ class ProductDetailView(generic.DetailView):
         context['grouped_attributes'] = self.object.parent_product.grouped_specifications
 
 
-
         comments = Comments.objects.filter(parent_product=product.parent_product,is_approved=True).select_related('user').order_by('-datetime_created')
-
         comment_summary_data = comments.aggregate(
             average_rating = Avg('rating'),
             comment_count = Count('id'),
@@ -108,8 +106,10 @@ class ProductDetailView(generic.DetailView):
 
         context['comments'] = commnts_filter_by_page_number
         context['comments_count'] = comment_summary_data.get('comment_count')
-        context['average_rating'] = "{:.2f}".format(comment_summary_data.get('average_rating'))
-
+        if comment_summary_data.get('average_rating') is not None:
+            context['average_rating'] = "{:.2f}".format(comment_summary_data.get('average_rating'))
+        else:
+            context['average_rating'] = 0
         context['cart'] = cart
 
         if 'comment_form' not in context:
