@@ -27,7 +27,7 @@ class CustomPasswordResetView(PasswordResetView):
 
 class CustomAccountInactiveView(AccountInactiveView):
     def get(self, request, *args, **kwargs):
-        messages.error(request, _("اکانت شما غیرفعال شده است. لطفا با پشتیبانی تماس بگیرید."))
+        messages.error(request, _("Your account has been disabled. Please contact support."))
         return redirect(reverse('account_login'))
 
 class CustomPasswordResetFromKeyDoneView(PasswordResetFromKeyDoneView):

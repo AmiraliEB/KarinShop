@@ -6,14 +6,14 @@ services:
     volumes:
       - .:/app
       
-      - D:\master_folder\templates\cart:/app/cart/templates/cart:ro
-      - D:\master_folder\templates\products:/app/products/templates/products:ro
-      - D:\master_folder\templates\core:/app/core/templates/core:ro
+      - D:\master_folder\templates\cart:/app/cart/templates/cart
+      - D:\master_folder\templates\products:/app/products/templates/products
+      - D:\master_folder\templates\core:/app/core/templates/core
 
-      - D:\master_folder\templates\_base.html:/app/templates/_base.html:ro
-      - D:\master_folder\templates\base_account.html:/app/templates/base_account.html:ro
-      - D:\master_folder\templates\partials:/app/templates/partials:ro
-      - D:\master_folder\templates\account:/app/templates/account:ro
+      - D:\master_folder\templates\_base.html:/app/templates/_base.html
+      - D:\master_folder\templates\base_account.html:/app/templates/base_account.html
+      - D:\master_folder\templates\partials:/app/templates/partials
+      - D:\master_folder\templates\account:/app/templates/account
 
       - D:\master_folder\static\js:/app/static/js
       - D:\master_folder\static\src:/app/static/src
