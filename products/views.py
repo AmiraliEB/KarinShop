@@ -118,6 +118,9 @@ class ProductDetailView(generic.DetailView):
             context['cart_form'] = CartAddPrproductForm()
 
 
+        context['main_image'] = product.parent_product.images.filter(is_main_image=True).first().image.url
+        context['album_images'] = product.parent_product.images.filter(is_main_image=False)
+
 
         return context
     
