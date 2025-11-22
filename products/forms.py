@@ -42,14 +42,22 @@ class ProductImageFormSet(BaseInlineFormSet):
             return
 
         count_is_main = 0
-        
+        count_active_images = 0
         for form in self.forms:
             if form.cleaned_data and not form.cleaned_data.get('DELETE', False):
+
+                count_active_images += 1
+
                 if form.cleaned_data.get('is_main_image'):
                     count_is_main += 1
+            if form.cleaned_data.get('DELETE', False) and form.cleaned_data.get('is_main_image'):
+                raise ValidationError('نمی‌توانید عکس اصلی را حذف کنید. لطفاً ابتدا عکس اصلی دیگری انتخاب کنید.')
 
         if count_is_main > 1:
             raise ValidationError('شما فقط می‌توانید یک عکس را به عنوان "عکس اصلی" انتخاب کنید.')
         
         if count_is_main == 0:
             raise ValidationError('لطفاً یکی از عکس‌ها را به عنوان عکس اصلی انتخاب کنید.')
+        
+        if count_active_images < 4:
+            raise ValidationError(f'شما باید حداقل ۴ عکس آپلود کنید. (در حال حاضر {count_active_images} عکس دارید) اگر می‌خواهید عکسی را حذف کنید، لطفاً ابتدا عکس جدیدی اضافه کنید.')

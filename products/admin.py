@@ -5,11 +5,8 @@ from .forms import ProductImageFormSet
 
 class ProductImageInline(admin.TabularInline):
     model = models.ProductImage
-    extra = 1
-
+    extra = 0
     formset = ProductImageFormSet
-
-
     min_num = 4
     validate_min = True
 
@@ -47,7 +44,7 @@ class ParentProductAdmin(admin.ModelAdmin):
 
 @admin.register(models.Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display =('id', 'parent_product', '_full_name', 'price', 'stock', 'is_available')
+    list_display =('id','parent_product', '_full_name', 'price', 'stock', 'is_available')
     list_display_links = ('parent_product',)
     list_filter = ('is_available', 'parent_product__category', 'parent_product__brand')
     search_fields = ('parent_product__name', 'id','_full_name')
