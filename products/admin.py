@@ -1,10 +1,17 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 from . import models
+from .forms import ProductImageFormSet
 
 class ProductImageInline(admin.TabularInline):
     model = models.ProductImage
     extra = 1
+
+    formset = ProductImageFormSet
+
+
+    min_num = 4
+    validate_min = True
 
 class ProductInline(admin.TabularInline):
     model = models.Product

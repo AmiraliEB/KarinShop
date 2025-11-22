@@ -1,3 +1,5 @@
+from django.forms.models import BaseInlineFormSet
+from django.core.exceptions import ValidationError
 from django import forms
 from .models import Comments
 from django.utils.translation import gettext_lazy as _
@@ -32,3 +34,22 @@ class CommentForm(forms.ModelForm):
                 'name': 'is_recommend'
             })
         }
+
+class ProductImageFormSet(BaseInlineFormSet):
+    def clean(self):
+        super().clean()
+        if any(self.errors):
+            return
+
+        count_is_main = 0
+        
+        for form in self.forms:
+            if form.cleaned_data and not form.cleaned_data.get('DELETE', False):
+                if form.cleaned_data.get('is_main_image'):
+                    count_is_main += 1
+
+        if count_is_main > 1:
+            raise ValidationError('شما فقط می‌توانید یک عکس را به عنوان "عکس اصلی" انتخاب کنید.')
+        
+        if count_is_main == 0:
+            raise ValidationError('لطفاً یکی از عکس‌ها را به عنوان عکس اصلی انتخاب کنید.')
