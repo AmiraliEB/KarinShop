@@ -51,6 +51,10 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.github',
+
+    # django cleanup
+    # should be after all apps
+    'django_cleanup.apps.CleanupConfig',
 ]
 
 

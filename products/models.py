@@ -49,7 +49,6 @@ class ParentProduct(models.Model):
     
 class Product(models.Model):
     parent_product = models.ForeignKey('ParentProduct', on_delete=models.PROTECT, related_name='products', verbose_name=_("product name"))
-    slug = models.SlugField(max_length=255, unique=True, verbose_name=_("slug"))
     
     _full_name = models.CharField(max_length=500, blank=True, verbose_name=_("Full Name (Cached)"))
 
@@ -125,11 +124,6 @@ class Product(models.Model):
     
     def save(self, *args, **kwargs):
         self.is_available = self.stock > 0
-        if not self.slug:
-            base_slug = slugify(self.parent_product.name, allow_unicode=True)
-            unique_id = str(uuid.uuid4())[:4]
-            self.slug = f"{base_slug}-{unique_id}"
-
         super().save(*args, **kwargs)
         
         new_full_name = self._generate_full_name()
