@@ -3,12 +3,13 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#: accounts/models.py:8
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-27 08:27+0000\n"
+"POT-Creation-Date: 2025-11-21 14:22+0330\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,151 +19,435 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: products/models.py:8
-msgid "parent"
-msgstr "محصول مادر (غیرقابل فروش)"
+#: accounts/models.py:9
+msgid "first name"
+msgstr "نام"
 
-#: products/models.py:9
-msgid "child"
-msgstr "محصول فرزند (قابل فروش)"
+#: accounts/models.py:10
+msgid "last name"
+msgstr "نام خانوادگی"
 
-#: products/models.py:13
-msgid "product type"
-msgstr "نوع محصول"
-
-#: products/models.py:25
-#, fuzzy
-#| msgid "parent"
-msgid "parent product"
-msgstr "محصول مادر (غیرقابل فروش)"
-
-#: products/models.py:28
-msgid "product name"
-msgstr "نام محصول / مشخصه کانفیگ"
-
-#: products/models.py:29
-msgid "category"
-msgstr "دسته‌بندی"
-
-#: products/models.py:30 products/models.py:100
-msgid "slug"
-msgstr "اسلاگ"
-
-#: products/models.py:32
-msgid "fixed attributes"
-msgstr "ویژگی های ثابت"
-
-#: products/models.py:33
-msgid "product has color?"
-msgstr "محصول رنگ های مختلف دارد؟"
-
-#: products/models.py:35 products/models.py:60
+#: accounts/models.py:12 accounts/models.py:23 cart/models.py:10
+#: cart/models.py:24 orders/models.py:42 products/models.py:27
+#: products/models.py:65 products/models.py:270
 msgid "creation date"
 msgstr "تاریخ ساخت"
 
-#: products/models.py:36 products/models.py:61
+#: accounts/models.py:13 accounts/models.py:24 cart/models.py:11
+#: cart/models.py:25 products/models.py:28 products/models.py:66
+#: products/models.py:271
 msgid "last modified date"
 msgstr "تاریخ آخرین ویرایش"
 
-#: products/models.py:46 products/models.py:51 products/models.py:86
+#: accounts/models.py:16
+msgid "addresses"
+msgstr "آدرس ها"
+
+#: accounts/models.py:17 orders/models.py:34
+msgid "province"
+msgstr "استان"
+
+#: accounts/models.py:18 orders/models.py:35
+msgid "city"
+msgstr "شهر"
+
+#: accounts/models.py:19 orders/models.py:36
+msgid "postal code"
+msgstr "کد پستی"
+
+#: accounts/models.py:20 orders/models.py:37
+msgid "full address"
+msgstr "آدرس کامل"
+
+#: accounts/models.py:21 orders/models.py:38
+msgid "phone number"
+msgstr "شماره تلفن"
+
+#: accounts/views.py:30
+msgid "اکانت شما غیرفعال شده است. لطفا با پشتیبانی تماس بگیرید."
+msgstr ""
+
+#: cart/forms.py:39
+#, fuzzy
+#| msgid "product name"
+msgid "First name"
+msgstr "نام"
+
+#: cart/forms.py:40
+#, fuzzy
+#| msgid "category name"
+msgid "Last name"
+msgstr "نام خانوادگی"
+
+#: cart/forms.py:42
+msgid "Province"
+msgstr "استان"
+
+#: cart/forms.py:43
+msgid "City"
+msgstr "شهر"
+
+#: cart/forms.py:44
+msgid "Postal code"
+msgstr "کد پستی"
+
+#: cart/forms.py:45
+msgid "Full address"
+msgstr "آدرس کامل"
+
+#: cart/forms.py:46
+msgid "Phone number"
+msgstr "شماره تلفن"
+
+#: cart/forms.py:48
+msgid "Description"
+msgstr "توضیحات"
+
+#: cart/forms.py:63 orders/models.py:77
+msgid "Coupon Code"
+msgstr "کد تخفیف"
+
+#: cart/forms.py:66
+msgid "کد تخفیف خود را وارد کنید"
+msgstr ""
+
+#: cart/models.py:8 products/models.py:261
+msgid "user"
+msgstr "کاربر"
+
+#: cart/models.py:20
+msgid "cart"
+msgstr "سبد خرید"
+
+#: cart/models.py:21 products/models.py:69 products/models.py:260
 msgid "product"
 msgstr "محصول"
 
-#: products/models.py:47
-msgid "products"
-msgstr "محصول ها"
+#: cart/models.py:22
+msgid "quantity"
+msgstr "تعداد"
 
-#: products/models.py:52
+#: cart/views.py:43 cart/views.py:95 cart/views.py:158
+msgid "سبد خرید شما خالی است."
+msgstr ""
+
+#: cart/views.py:91 cart/views.py:136
+msgid "لطفا ابتدا یک آدرس برای ارسال سفارش خود اضافه کنید."
+msgstr ""
+
+#: cart/views.py:146
+msgid "کد تخفیف با موفقیت اعمال شد."
+msgstr ""
+
+#: cart/views.py:151
+msgid "این کد تخفیف معتبر نیست یا قابل استفاده نمی‌باشد."
+msgstr ""
+
+#: cart/views.py:154
+msgid "کد تخفیف وارد شده وجود ندارد."
+msgstr ""
+
+#: orders/models.py:14
+msgid "در انتظار"
+msgstr ""
+
+#: orders/models.py:15
+msgid "Confirmed"
+msgstr "تایید شد"
+
+#: orders/models.py:16
+msgid "Sent"
+msgstr "ارسال شد"
+
+#: orders/models.py:17
+msgid "Finished"
+msgstr "به پایان رسید"
+
+#: orders/models.py:21
+msgid "Post"
+msgstr "پست پیشتاز"
+
+#: orders/models.py:22
+msgid "Tipax"
+msgstr "تیپاکس"
+
+#: orders/models.py:29
+msgid "Is Paid?"
+msgstr "پرداخت شده؟"
+
+#: orders/models.py:30
+msgid "Status"
+msgstr "وضعیت"
+
+#: orders/models.py:32
+msgid "address"
+msgstr "آدرس"
+
+#: orders/models.py:40
+msgid "shipping method"
+msgstr "روش حمل و نقل"
+
+#: orders/models.py:63 products/models.py:54
 msgid "price (Toman)"
 msgstr "قیمت (تومان)"
 
-#: products/models.py:53
+#: orders/models.py:74
+msgid "Fixed Amount"
+msgstr "مبلغ ثابت"
+
+#: orders/models.py:75
+msgid "Percentage"
+msgstr "درصد"
+
+#: orders/models.py:78
+msgid "Discount Value"
+msgstr "مقدار تخفیف"
+
+#: orders/models.py:79
+msgid "Discount Type"
+msgstr "نوع تخفیف"
+
+#: orders/models.py:81
+msgid "Available Quantity"
+msgstr "تعداد موجود"
+
+#: orders/models.py:82
+msgid "Used Count"
+msgstr "تعداد استفاده شده"
+
+#: orders/models.py:83
+msgid "Is Active"
+msgstr "فعال است؟"
+
+#: orders/models.py:85
+msgid "Valid From"
+msgstr "معتبر از"
+
+#: orders/models.py:86
+msgid "Valid To"
+msgstr "معتبر تا"
+
+#: orders/models.py:93
+msgid "Percentage discount cannot be more than 100."
+msgstr "مقدار تخفیف درصدی نمیتواند بیشتر از صد باشد"
+
+#: orders/models.py:96
+msgid "End date cannot be before start date."
+msgstr "تاریخ انقضا نمیتواند قبل از تاریخ شروع باشد"
+
+#: products/forms.py:10
+msgid "Title"
+msgstr "عنوان"
+
+#: products/forms.py:11 products/models.py:274
+msgid "Comment"
+msgstr "کامنت"
+
+#: products/forms.py:12
+msgid "Rating"
+msgstr "امتیاز"
+
+#: products/forms.py:13
+msgid "Do you recommend this product?"
+msgstr "آیا این محصول را پیشنهاد میکنید؟"
+
+#: products/models.py:15
+msgid "parent product name"
+msgstr "نام محصول مادر"
+
+#: products/models.py:16 products/models.py:198
+msgid "category"
+msgstr "دسته‌بندی"
+
+#: products/models.py:17 products/models.py:199 products/models.py:248
+msgid "brand"
+msgstr "برند"
+
+#: products/models.py:22
+msgid "shared specifications"
+msgstr "مشخصات مربوط به واریانت"
+
+#: products/models.py:49
+msgid "product name"
+msgstr "نام محصول"
+
+#: products/models.py:50
+msgid "slug"
+msgstr "اسلاگ"
+
+#: products/models.py:52
+msgid "Full Name (Cached)"
+msgstr "نام کامل (کش)"
+
+#: products/models.py:55
 msgid "discounted price (Toman)"
 msgstr "قیمت نهایی با تخفیف (تومان)"
 
-#: products/models.py:54
+#: products/models.py:56
 msgid "stock"
 msgstr "موجودی انبار"
 
-#: products/models.py:56
+#: products/models.py:58
 msgid "is available"
 msgstr "محصول موجود است؟"
 
-#: products/models.py:57
+#: products/models.py:59
 msgid "is amazing?"
 msgstr "محصول شگفت‌انگیز است؟"
 
-#: products/models.py:58
+#: products/models.py:60
 msgid "is best selling?"
 msgstr "محصول پرفروش است؟"
 
-#: products/models.py:63
-msgid "variant attributes"
-msgstr "ویژگی های واریانت"
-
-#: products/models.py:74
-msgid "product variant"
-msgstr "واریانت محصول"
-
-#: products/models.py:75
-msgid "product variants"
-msgstr "واریانت های محصول"
-
-#: products/models.py:87 products/models.py:94
-msgid "product image"
-msgstr "تصویر محصول"
-
-#: products/models.py:88
-msgid "alt text"
-msgstr "متن جایگزین تصویر محصول"
-
-#: products/models.py:95
-msgid "product images"
-msgstr "تصویر محصولات"
-
-#: products/models.py:99
-msgid "category name"
-msgstr "نام دسته‌بندی"
-
-#: products/models.py:101
-msgid "parent category"
-msgstr "دسته‌بندی والد"
-
-#: products/models.py:112
-msgid "product category"
-msgstr "دسته‌بندی محصول"
-
-#: products/models.py:113
-msgid "product categories"
-msgstr "دسته‌بندی محصولات"
-
-#: products/models.py:117
-msgid "attribute name"
-msgstr "نام ویژگی"
-
-#: products/models.py:118
-msgid "related categories"
-msgstr "دسته‌بندی های مرتبط"
-
-#: products/models.py:123 products/models.py:128
-msgid "attribute"
-msgstr "ویژگی"
-
-#: products/models.py:124
-msgid "attributes"
-msgstr "ویژگی ها"
-
-#: products/models.py:129 products/models.py:135
-msgid "attribute value"
-msgstr "مقدار ویژگی"
-
-#: products/models.py:136
+#: products/models.py:62 products/models.py:232
 msgid "attribute values"
 msgstr "مقادیر ویژگی"
 
+#: products/models.py:70
+msgid "products"
+msgstr "محصول ها"
+
+#: products/models.py:74
+msgid "Discount price must be less than the original price."
+msgstr "میزان تخفیف باید کمتر از مبلغ اصلی محصول باشد"
+
+#: products/models.py:138
+msgid "parent product"
+msgstr "محصول مادر"
+
+#: products/models.py:139 products/models.py:146
+msgid "product image"
+msgstr "تصویر محصول"
+
+#: products/models.py:140
+msgid "alt text"
+msgstr "متن جایگزین تصویر محصول"
+
+#: products/models.py:147
+msgid "product images"
+msgstr "تصویر محصولات"
+
+#: products/models.py:151 products/models.py:237
+msgid "category name"
+msgstr "نام دسته‌بندی"
+
+#: products/models.py:152
+msgid "category code"
+msgstr "نام دسته‌بندی"
+
+#: products/models.py:153
+msgid "parent category"
+msgstr "دسته‌بندی والد"
+
+#: products/models.py:158 products/models.py:244
+msgid "attribute categories"
+msgstr "دسته‌بندی ویژگی ها"
+
+#: products/models.py:166
+msgid "product category"
+msgstr "دسته‌بندی محصول"
+
+#: products/models.py:167
+msgid "product categories"
+msgstr "دسته‌بندی محصولات"
+
+#: products/models.py:171
+msgid "attribute name"
+msgstr "نام ویژگی"
+
+#: products/models.py:172 products/models.py:250
+msgid "related categories"
+msgstr "دسته‌بندی های مرتبط"
+
+#: products/models.py:180 products/models.py:243
+msgid "attribute category"
+msgstr "دسته‌بندی ویژگی"
+
+#: products/models.py:184
+msgid "Is this a variant-defining attribute?"
+msgstr "آیا این یک ویژگی مختص واریانت است؟"
+
+#: products/models.py:186
+msgid "Show in specifications in detail page?"
+msgstr "نمایش مشخصات در صفحه جزئیات محصول؟"
+
+#: products/models.py:192 products/models.py:197 products/models.py:225
+msgid "attribute"
+msgstr "ویژگی"
+
+#: products/models.py:193
+msgid "attributes"
+msgstr "ویژگی ها"
+
+#: products/models.py:201
+msgid "Show in product tite?"
+msgstr "نمایش در عنوان محصول؟"
+
+#: products/models.py:204
+msgid "Attribute Rule"
+msgstr "قانون ویژگی"
+
+#: products/models.py:205
+msgid "Attribute Rules"
+msgstr "قوانین ویژگی"
+
+#: products/models.py:226 products/models.py:231
+msgid "attribute value"
+msgstr "مقدار ویژگی"
+
+#: products/models.py:238
+msgid "ترتیب نمایش"
+msgstr ""
+
+#: products/models.py:249
+msgid "brand code"
+msgstr "نام برند"
+
+#: products/models.py:263
+msgid "title"
+msgstr "عنوان"
+
+#: products/models.py:264
+msgid "comment content"
+msgstr "محتوای کامنت"
+
+#: products/models.py:265
+msgid "rating"
+msgstr "امتیاز"
+
+#: products/models.py:267
+msgid "recommends product?"
+msgstr "محصول را پیشنهاد میکنید؟"
+
+#: products/models.py:268
+msgid "is approved by admin?"
+msgstr "آیا توسط ادمین تایید شد؟"
+
+#: products/models.py:275
+msgid "Comments"
+msgstr "کامنت ها"
+
+#: templates/account/messages/email_confirmed.txt:2
+#, python-format
+msgid "ایمیل %(email)s با موفقیت تایید شد, اکنون میتوانید وارد شوید"
+msgstr ""
+
+#: templates/account/messages/logged_in.txt:2
+msgid "خوش آمدید! ورود شما موفقیت‌آمیز بود."
+msgstr ""
+
+#: templates/account/messages/logged_out.txt:2
+msgid "روز خوبی داشته باشید! شما از حساب خود خارج شدید."
+msgstr ""
+
+#: templates/account/messages/password_changed.txt:2
+msgid ""
+"رمز عبور شما با موفقیت تغییر کرد. اکنون می‌توانید با رمز عبور جدید وارد شوید"
+msgstr ""
+
 #: venv/Lib/site-packages/django/contrib/messages/apps.py:16
 msgid "Messages"
-msgstr ""
+msgstr "پیام ها"
 
 #: venv/Lib/site-packages/django/contrib/sitemaps/apps.py:8
 msgid "Site Maps"
@@ -170,7 +455,7 @@ msgstr ""
 
 #: venv/Lib/site-packages/django/contrib/staticfiles/apps.py:9
 msgid "Static Files"
-msgstr ""
+msgstr "فایل های استاتیک"
 
 #: venv/Lib/site-packages/django/contrib/syndication/apps.py:7
 msgid "Syndication"
@@ -184,36 +469,36 @@ msgstr ""
 
 #: venv/Lib/site-packages/django/core/paginator.py:32
 msgid "That page number is not an integer"
-msgstr ""
+msgstr "آن شماره صفحه اینتجر نیست"
 
 #: venv/Lib/site-packages/django/core/paginator.py:33
 msgid "That page number is less than 1"
-msgstr ""
+msgstr "آن شماره صفحه کمتر از یک است"
 
 #: venv/Lib/site-packages/django/core/paginator.py:34
 msgid "That page contains no results"
-msgstr ""
+msgstr "آن صفحه شامل هیچ محتوا ای نیست"
 
 #: venv/Lib/site-packages/django/core/validators.py:22
 msgid "Enter a valid value."
-msgstr ""
+msgstr "یک مقدار معتبر وارد کنید"
 
 #: venv/Lib/site-packages/django/core/validators.py:70
 msgid "Enter a valid domain name."
-msgstr ""
+msgstr "یک دامنه معتبر وارد کنید"
 
 #: venv/Lib/site-packages/django/core/validators.py:153
 #: venv/Lib/site-packages/django/forms/fields.py:775
 msgid "Enter a valid URL."
-msgstr ""
+msgstr "یک URL معتبر وارد کنید"
 
 #: venv/Lib/site-packages/django/core/validators.py:200
 msgid "Enter a valid integer."
-msgstr ""
+msgstr "یک عدد معتبر وارد کنید"
 
 #: venv/Lib/site-packages/django/core/validators.py:211
 msgid "Enter a valid email address."
-msgstr ""
+msgstr "یک ایمیل معتبر وارد کنید"
 
 #. Translators: "letters" means latin letters: a-z and A-Z.
 #: venv/Lib/site-packages/django/core/validators.py:289
@@ -250,7 +535,7 @@ msgstr ""
 
 #: venv/Lib/site-packages/django/core/validators.py:375
 msgid "Enter only digits separated by commas."
-msgstr ""
+msgstr "فقط ارغام جدا شده با ویرگول را وارد کنید"
 
 #: venv/Lib/site-packages/django/core/validators.py:381
 #, python-format
@@ -305,7 +590,7 @@ msgstr[1] ""
 #: venv/Lib/site-packages/django/forms/fields.py:366
 #: venv/Lib/site-packages/django/forms/fields.py:405
 msgid "Enter a number."
-msgstr ""
+msgstr "یک شماره وارد کنید"
 
 #: venv/Lib/site-packages/django/core/validators.py:516
 #, python-format
@@ -1383,3 +1668,21 @@ msgstr ""
 #: venv/Lib/site-packages/django/views/templates/default_urlconf.html:236
 msgid "Connect, get help, or contribute"
 msgstr ""
+
+#~ msgid "parent"
+#~ msgstr "محصول مادر (غیرقابل فروش)"
+
+#~ msgid "child"
+#~ msgstr "محصول فرزند (قابل فروش)"
+
+#~ msgid "fixed attributes"
+#~ msgstr "ویژگی های ثابت"
+
+#~ msgid "product has color?"
+#~ msgstr "محصول رنگ های مختلف دارد؟"
+
+#~ msgid "product variant"
+#~ msgstr "واریانت محصول"
+
+#~ msgid "product variants"
+#~ msgstr "واریانت های محصول"

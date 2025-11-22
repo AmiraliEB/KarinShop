@@ -63,6 +63,6 @@ class CouponApplyForm(forms.Form):
         label=_("Coupon Code"),
         widget=forms.TextInput(attrs={
             'class': 'block w-full p-2.5 text-base outline dark:outline-none outline-1 -outline-offset-1 placeholder:text-gray-400 transition-alltext-gray-800 dark:text-gray-100 dark:bg-gray-900 bg-slate-100 border border-transparent hover:border-slate-200 appearance-none rounded-md outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-blue-400',
-            'placeholder': _('Enter your coupon code'),
+            'placeholder': _('Enter your discount code'),
         })
     )

@@ -22,3 +22,6 @@ class Address(models.Model):
 
     datetime_created = models.DateTimeField(auto_now_add=True, verbose_name=_("creation date"))
     datetime_modified = models.DateTimeField(auto_now=True, verbose_name=_("last modified date"))
+
+    def get_full_address(self):
+        return f'{self.province}, {self.city}, {self.full_address}'
