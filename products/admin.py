@@ -1,13 +1,13 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 from . import models
-from .forms import ProductImageFormSet
+from .forms import ProductImageFormSet, ProductFormSet, ParentProductAdminForm
 
 class ProductImageInline(admin.TabularInline):
     model = models.ProductImage
     extra = 0
     formset = ProductImageFormSet
-    min_num = 4
+    min_num = 5
     validate_min = True
 
 class ProductInline(admin.TabularInline):
@@ -16,6 +16,7 @@ class ProductInline(admin.TabularInline):
     fields = ('price', 'discount_price', 'stock', 'is_available', 'attribute_values')
     readonly_fields = ('is_available',)
     filter_horizontal = ('attribute_values',)
+    formset = ProductFormSet
 
 class AttributeRuleInline(admin.TabularInline):
     model = models.AttributeRule
@@ -28,6 +29,8 @@ class AttributeValueInline(admin.TabularInline):
 
 @admin.register(models.ParentProduct)
 class ParentProductAdmin(admin.ModelAdmin):
+    form = ParentProductAdminForm
+
     list_display = ('name', 'category', 'brand',)
     filter_horizontal = ('specification_values',)
     list_filter = ('category', 'brand', 'datetime_created')

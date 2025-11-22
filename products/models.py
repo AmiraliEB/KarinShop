@@ -16,7 +16,7 @@ User = get_user_model()
 class ParentProduct(models.Model):
     name = models.CharField(max_length=255, verbose_name=_("parent product name"))
     category = models.ForeignKey('ProductCategory', on_delete=models.PROTECT, blank=True, null=True, related_name='product_parents', verbose_name=_("category"))
-    brand = models.ForeignKey('Brand', on_delete=models.PROTECT, blank=True, null=True, related_name='product_parents', verbose_name=_("brand"))
+    brand = models.ForeignKey('Brand', on_delete=models.PROTECT, related_name='product_parents', verbose_name=_("brand"))
 
     specification_values = models.ManyToManyField(
         'AttributeValue', 
@@ -46,6 +46,22 @@ class ParentProduct(models.Model):
             grouped_attributes[category].append(value_obj)
         
         return dict(grouped_attributes)
+
+    class Meta:
+        verbose_name = _("parent product")
+        verbose_name_plural = _("parent products")
+        ordering = ['category', 'brand', 'name']
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        products = self.products.all()
+        for product in products:
+            new_full_name = product._generate_full_name()
+            if product._full_name != new_full_name:
+                product._full_name = new_full_name
+                product.save(update_fields=['_full_name'])
+
+        
     
 class Product(models.Model):
     parent_product = models.ForeignKey('ParentProduct', on_delete=models.PROTECT, related_name='products', verbose_name=_("product name"))
@@ -76,7 +92,7 @@ class Product(models.Model):
 
 
     def __str__(self):
-        return self.full_name if self._full_name else f'Product {self.id}'
+        return self._full_name if self._full_name else f'Product {self.id}'
     
     def get_absolute_url(self):
         return reverse('products:post_redirect', kwargs={'pk': self.pk})
@@ -203,6 +219,10 @@ class Attribute(models.Model):
     )
     show_in_specifications = models.BooleanField(_("Show in specifications in detail page?"),default=True)
 
+    allow_multiple_values = models.BooleanField(
+        default=False, 
+        verbose_name=_("امکان انتخاب چند مقدار همزمان در واریانت")
+    )
     def __str__(self):
         return self.name
 

@@ -151,7 +151,7 @@ class PaymentView(LoginRequiredMixin, View):
                         coupon_form.add_error('code', _('This discount code is invalid or cannot be applied.'))
                         coupon = None
                 except Coupon.DoesNotExist:
-                    coupon_form.add_error('code', _('کد تخفیف وارد شده وجود ندارد.'))
+                    coupon_form.add_error('code', _('Discount code not found.'))
 
             cart = Cart.objects.filter(user=request.user).first()
             if not cart:

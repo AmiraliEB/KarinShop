@@ -1,7 +1,7 @@
 from django.forms.models import BaseInlineFormSet
 from django.core.exceptions import ValidationError
 from django import forms
-from .models import Comments
+from .models import Comments, ParentProduct
 from django.utils.translation import gettext_lazy as _
 
 class CommentForm(forms.ModelForm):
@@ -51,13 +51,80 @@ class ProductImageFormSet(BaseInlineFormSet):
                 if form.cleaned_data.get('is_main_image'):
                     count_is_main += 1
             if form.cleaned_data.get('DELETE', False) and form.cleaned_data.get('is_main_image'):
-                raise ValidationError('نمی‌توانید عکس اصلی را حذف کنید. لطفاً ابتدا عکس اصلی دیگری انتخاب کنید.')
+                raise ValidationError(_('نمی‌توانید عکس اصلی را حذف کنید. لطفاً ابتدا عکس اصلی دیگری انتخاب کنید.'))
 
         if count_is_main > 1:
-            raise ValidationError('شما فقط می‌توانید یک عکس را به عنوان "عکس اصلی" انتخاب کنید.')
+            raise ValidationError(_('شما فقط می‌توانید یک عکس را به عنوان "عکس اصلی" انتخاب کنید.'))
         
         if count_is_main == 0:
-            raise ValidationError('لطفاً یکی از عکس‌ها را به عنوان عکس اصلی انتخاب کنید.')
+            raise ValidationError(_('لطفاً یکی از عکس‌ها را به عنوان عکس اصلی انتخاب کنید.'))
         
-        if count_active_images < 4:
-            raise ValidationError(f'شما باید حداقل ۴ عکس آپلود کنید. (در حال حاضر {count_active_images} عکس دارید) اگر می‌خواهید عکسی را حذف کنید، لطفاً ابتدا عکس جدیدی اضافه کنید.')
+        if count_active_images < 5:
+            raise ValidationError(_(f'شما باید حداقل ۴ عکس آپلود کنید. (در حال حاضر {count_active_images} عکس دارید) اگر می‌خواهید عکسی را حذف کنید، لطفاً ابتدا عکس جدیدی اضافه کنید.'))
+
+class ProductFormSet(BaseInlineFormSet):
+    def clean(self):
+        super().clean()
+
+        if any(self.errors):
+            return
+
+        seen_combinations = []
+
+        for form in self.forms:
+            if form.cleaned_data and not form.cleaned_data.get('DELETE', False):
+                
+                selected_values = form.cleaned_data.get('attribute_values')
+                if not selected_values:
+                    continue
+
+                seen_attributes = set()
+                
+                for value in selected_values:
+                    parent_attr = value.attribute 
+                    
+                    if not parent_attr.allow_multiple_values:
+                        if parent_attr.id in seen_attributes:
+                            form.add_error(
+                                'attribute_values', 
+                                _(f"شما نمی‌توانید برای ویژگی «{parent_attr.name}» چند مقدار انتخاب کنید. اگر میخواهید ویژگی ای را چند بار تکرار کنید در جدول ویژگی گزینه «امکان انتخاب چند مقدار همزمان در واریانت» را فعال کنید.")
+                            )
+                    
+                    seen_attributes.add(parent_attr.id)
+
+                current_ids = sorted([attr.id for attr in selected_values])
+                current_combination = tuple(current_ids)
+
+                if len(current_combination) < 3:
+                     form.add_error('attribute_values', _('حداقل ۳ ویژگی انتخاب کنید.'))
+
+                if current_combination in seen_combinations:
+                    raise ValidationError(_('این ترکیب دقیقاً تکراری است.'))
+                
+                seen_combinations.append(current_combination)
+
+
+class ParentProductAdminForm(forms.ModelForm):
+    class Meta:
+        model = ParentProduct
+        fields = '__all__'
+
+    def clean_specification_values(self):
+        selected_values = self.cleaned_data.get('specification_values')
+
+        if not selected_values:
+            return selected_values
+
+        seen_attributes = set()
+
+        for value in selected_values:
+            parent_attr = value.attribute 
+            if not getattr(parent_attr, 'allow_multiple_values', False):
+                if parent_attr.id in seen_attributes:
+                    raise ValidationError(
+                        _(f"شما نمی‌توانید برای ویژگی «{parent_attr.name}» چند مقدار انتخاب کنید. اگر میخواهید ویژگی ای را چند بار تکرار کنید در جدول ویژگی گزینه «امکان انتخاب چند مقدار همزمان در واریانت» را فعال کنید.")
+                    )
+            
+            seen_attributes.add(parent_attr.id)
+
+        return selected_values
