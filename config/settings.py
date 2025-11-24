@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'orders',
     #third party apps
     'jalali_date',
+    "django_htmx",
     
     #allauth
     'allauth',
@@ -70,6 +71,9 @@ MIDDLEWARE = [
 
     #allauth
     "allauth.account.middleware.AccountMiddleware",
+
+    # htmx
+    "django_htmx.middleware.HtmxMiddleware",
 ]
 
 ROOT_URLCONF = 'config.urls'
