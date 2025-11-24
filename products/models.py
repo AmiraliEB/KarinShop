@@ -147,6 +147,15 @@ class Product(models.Model):
             self._full_name = new_full_name
             super().save(update_fields=['_full_name'])
 
+    def discount_percentage(self):
+        discount_percentage = 0
+        
+        if self.discount_price and self.price > 0 and self.price > self.discount_price:
+            discount_amount = self.price - self.discount_price
+            percentage = (discount_amount / self.price) * 100
+            discount_percentage = round(percentage)
+        return discount_percentage
+
 
 def product_image_upload_to(instance, filename):
     return f'products/{slugify(instance.parent_product.name)}/{filename}'

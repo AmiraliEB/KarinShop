@@ -1,6 +1,6 @@
 from collections import defaultdict
 from django.views import generic
-from products.models import AttributeValue, Product, Comments
+from products.models import AttributeValue, Product, Comments, ParentProduct
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.text import slugify
 from django.db.models import Prefetch, Avg , Count
@@ -83,14 +83,9 @@ class ProductDetailView(generic.DetailView):
         context = super().get_context_data(**kwargs)
         cart = Cart(self.request)
         product = self.object
-        
-        discount_percentage = 0
-        
-        if product.discount_price and product.price > 0 and product.price > product.discount_price:
-            discount_amount = product.price - product.discount_price
-            percentage = (discount_amount / product.price) * 100
-            discount_percentage = round(percentage) 
-        context['discount_percentage'] = discount_percentage
+
+
+        context['discount_percentage'] = product.discount_percentage
 
         context['grouped_attributes'] = self.object.parent_product.grouped_specifications
 
@@ -121,6 +116,12 @@ class ProductDetailView(generic.DetailView):
         context['main_image'] = product.parent_product.images.filter(is_main_image=True).first().image.url
         context['album_images'] = product.parent_product.images.filter(is_main_image=False)
 
+        category = product.parent_product.category
+        brand = product.parent_product.brand
+        related_parent = ParentProduct.objects.prefetch_related('products').filter(category=category, brand=brand).exclude(id=product.parent_product.id)[:6]
+        context['related_products'] = []
+        for parent_obj in related_parent:
+            context['related_products'].append(parent_obj.products.first())
 
         return context
     
