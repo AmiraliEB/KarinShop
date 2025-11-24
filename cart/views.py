@@ -19,15 +19,6 @@ class CartView(TemplateView):
     template_name = 'cart/cart.html'
 
 class RemoveCartItemView(View):
-    def get(self,request,*args, **kwargs):
-        cart = get_cart(request)
-        pk = self.kwargs.get('pk')
-        if pk is None:
-           return redirect('cart_detail')
-        product = get_object_or_404(Product,pk=pk)
-        cart.remove(product)
-        return redirect('cart_detail')
-
     def post(self,request,*args, **kwargs):
         # post method is for clear all the items
         cart = get_cart(request)
@@ -193,3 +184,22 @@ def apply_coupon(request):
             return render(request, 'cart/partials/coupon_area.html',context=context)
         return render(request,'cart/partials/coupon_area.html',{'coupon_form':coupon_form,"total_price":total_price})
     return redirect('payment')
+
+@require_POST
+def remove_item_form_cart(request, pk):
+    if request.htmx:
+        cart = get_cart(request)
+        if pk is None:
+           return redirect('cart_detail')
+        product = get_object_or_404(Product,pk=pk)
+        cart.remove(product)
+        return render(request,"cart/partials/cart_item_area.html")
+    return redirect('cart_detail')
+
+@require_POST
+def clear_items_form_cart(request):
+    if request.htmx:
+        cart = get_cart(request)
+        cart.clear()
+        
+    return redirect('cart_detail')
