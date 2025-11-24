@@ -1,8 +1,9 @@
 from products.models import Product, Attribute
 
-from .models import Cart as DBCart
+from .models import Cart as DBCart, CartItem
 from products.models import Attribute
 
+from django.db.models import F
 class DBCartWrapper:
     def __init__(self, request):
         self.request = request
@@ -37,6 +38,13 @@ class DBCartWrapper:
         attribute = Attribute.objects.filter(name="رنگ")
         attr_val = product.attribute_values.filter(attribute__in=attribute).first()
         return attr_val.value if attr_val else "نامشخص"
+
+    def add(self,product,quantity=1):
+        cart_obj , created = DBCart.objects.get_or_create(user=self.request.user)
+        cart_item_obj, cart_item_created = CartItem.objects.get_or_create(product=product , cart=cart_obj, defaults={'quantity':quantity})
+        if not cart_item_created:
+            cart_item_obj.quantity += quantity
+            cart_item_obj.save()
 
 
 class Cart:
@@ -101,4 +109,9 @@ class Cart:
     def save(self):
         self.session.modified = True
 
-    
+
+def get_cart(request):
+    if request.user.is_authenticated:
+        return DBCartWrapper(request)
+    else:
+        return Cart(request)

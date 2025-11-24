@@ -4,7 +4,7 @@ from django.views.generic import View,TemplateView
 from django.utils import timezone
 from datetime import timedelta
 from .forms import CartAddAddressFrom, CouponApplyForm
-from .cart import Cart
+from .cart import Cart, get_cart
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from products.models import Product
@@ -19,7 +19,7 @@ class CartView(TemplateView):
 
 class RemoveCartItemView(View):
     def get(self,request,*args, **kwargs):
-        cart = Cart(request)
+        cart = get_cart(request)
         pk = self.kwargs.get('pk')
         if pk is None:
            return redirect('cart_detail')
@@ -29,7 +29,7 @@ class RemoveCartItemView(View):
 
     def post(self,request,*args, **kwargs):
         # post method is for clear all the items
-        cart = Cart(request)
+        cart = get_cart(request)
         cart.clear()
         return redirect('cart_detail')
 
