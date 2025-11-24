@@ -14,6 +14,7 @@ from .models import Cart
 from django.contrib import messages
 
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.http import require_POST
 class CartView(TemplateView):
     template_name = 'cart/cart.html'
 
@@ -39,7 +40,7 @@ time_to_leave_warehouse = today + timedelta(days=2)
 class CheckoutView(LoginRequiredMixin,View):
     def get(self,request,*args, **kwargs):
         cart = Cart.objects.filter(user=request.user).first()
-        if not cart:
+        if not cart.items.first():
             messages.error(request, _('Your cart is empty.'))
             return redirect('cart_detail')     
         form = CartAddAddressFrom()
@@ -91,7 +92,7 @@ class PaymentView(LoginRequiredMixin, View):
             messages.error(request, _('Please add a shipping address first.'))
             return redirect('checkout')
         cart = Cart.objects.filter(user=request.user).first()
-        if not cart:
+        if not cart.items.first():
             messages.error(request, _('Your cart is empty.'))
             return redirect('cart_detail')        
         total_price = cart.get_total_price()
@@ -128,51 +129,67 @@ class PaymentView(LoginRequiredMixin, View):
     
     def post(self,request,*args, **kwargs):
         coupon = None
-        coupon_form = CouponApplyForm()
         total_price = Cart.objects.get(user=request.user).get_total_price()
         address = Address.objects.filter(user=request.user).first()
         discount_amount = 0
         if not address:
             messages.error(request, _('Please add a shipping address first.'))
             return redirect('checkout')
-        
-        if 'coupon_submit' in request.POST:
-            coupon_form = CouponApplyForm(request.POST)
-            if coupon_form.is_valid():
-                coupon_code = coupon_form.cleaned_data['code']
-                try:
-                    coupon = Coupon.objects.get(code__iexact=coupon_code)
-                    if coupon.is_usable:
-                        messages.success(request, _('Discount code applied successfully.'))
-                        request.session['coupon_id'] = coupon.id
-                        return redirect("payment")
-                    else:
-                        request.session['coupon_id'] = None
-                        coupon_form.add_error('code', _('This discount code is invalid or cannot be applied.'))
-                        coupon = None
-                except Coupon.DoesNotExist:
-                    coupon_form.add_error('code', _('Discount code not found.'))
 
-            cart = Cart.objects.filter(user=request.user).first()
-            if not cart:
-                messages.error(request, _('Your cart is empty.'))
-                return redirect('cart_detail')
-            total_price = cart.get_total_price()
+        cart = Cart.objects.filter(user=request.user).first()
+        if not cart:
+            messages.error(request, _('Your cart is empty.'))
+            return redirect('cart_detail')
+        total_price = cart.get_total_price()
+
+        return render(request,template_name="cart/payment.html",context={'coupon_form':CouponApplyForm(), 'time_to_leave_warehouse':time_to_leave_warehouse, 'total_price':total_price, 'address_obj': address,'discount_amount':int(discount_amount), 'coupon':coupon})
+
+@require_POST
+def remove_coupon(request):
+    if 'coupon_id' in request.session:
+        del request.session['coupon_id']
+
+    if request.htmx:
+        total_price = Cart.objects.get(user=request.user).get_total_price()
+        context={
+            'coupon_form': CouponApplyForm(),
+            'coupon': None,
+            'total_price':total_price
+        }
+        return render(request,'cart/partials/coupon_area.html', context=context)
+    return redirect('payment')
+
+@require_POST
+def apply_coupon(request):
+    if request.htmx:     
+        coupon_form = CouponApplyForm(request.POST)
+        total_price = Cart.objects.get(user=request.user).get_total_price()
+        if coupon_form.is_valid():
+            coupon_code = coupon_form.cleaned_data['code']
+            try:
+                coupon = Coupon.objects.get(code__iexact=coupon_code)
+                if coupon.is_usable:
+                    request.session['coupon_id'] = coupon.id
+                    if coupon.discount_type == 'p':
+                        discount_amount = total_price * (coupon.discount_value / 100)
+                    elif coupon.discount_type == 'v':
+                        discount_amount = coupon.discount_value
+
+                    if discount_amount > total_price:
+                        discount_amount = total_price
+                        
+                    total_price -= discount_amount
+                    return render(request,'cart/partials/coupon_area.html',{'coupon':coupon, 'discount_amount':discount_amount, 'total_price':total_price})
+                else:
+                    request.session['coupon_id'] = None
+                    coupon_form.add_error('code', _('This discount code is invalid or cannot be applied.'))
+                    coupon = None
+            except Coupon.DoesNotExist:
+                coupon_form.add_error('code', _('Discount code not found.'))
             context = {
                 'coupon_form':coupon_form,
-                'time_to_leave_warehouse':time_to_leave_warehouse,
-                'coupon':None,
-                'total_price':int(total_price),
-                'address_obj': address,
-                'discount_amount':int(discount_amount),
-            }
-            return render(request, "cart/payment.html",context=context)
-        
-        if 'remove_coupon' in request.POST:
-            if 'coupon_id' in request.session:
-                del request.session['coupon_id']
-                return redirect("payment")
-            else:
-                return redirect("payment")
-            
-        return render(request,template_name="cart/payment.html",context={'coupon_form':CouponApplyForm(), 'time_to_leave_warehouse':time_to_leave_warehouse, 'total_price':total_price, 'address_obj': address,'discount_amount':int(discount_amount), 'coupon':coupon})
+                'total_price':total_price,
+            }    
+            return render(request, 'cart/partials/coupon_area.html',context=context)
+        return render(request,'cart/partials/coupon_area.html',{'coupon_form':coupon_form,"total_price":total_price})
+    return redirect('payment')
