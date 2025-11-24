@@ -10,7 +10,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from cart.forms import CartAddPrproductForm
-from cart.cart import Cart
+from cart.cart import Cart, get_cart
 from django.conf import settings
 
 def post_redirect_view(request, pk):
@@ -53,7 +53,7 @@ class ProductDetailView(generic.DetailView):
         if 'cart_submit' in request.POST:
             cart_form = CartAddPrproductForm(request.POST)
             if cart_form.is_valid():
-                cart = Cart(request)
+                cart = get_cart(request)
                 cart.add(self.object,cart_form.cleaned_data['quantity'])
                 messages.success(request, 'محصول با موفقیت به سبد خرید اضافه شد.')
                 return redirect(self.object.get_absolute_url())     
@@ -81,7 +81,7 @@ class ProductDetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        cart = Cart(self.request)
+        cart = get_cart(self.request)
         product = self.object
         
         discount_percentage = 0
