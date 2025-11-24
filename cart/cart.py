@@ -48,7 +48,9 @@ class DBCartWrapper:
 
     def remove(self, product):
         if self.db_cart:
-            cart_item_obj = CartItem.objects.filter(product=product,cart=self.db_cart).first().delete()
+            cart_item_obj = CartItem.objects.filter(product=product,cart=self.db_cart).first()
+            if cart_item_obj:
+                cart_item_obj.delete()
 
     def clear(self):
         if self.db_cart:
