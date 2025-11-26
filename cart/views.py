@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
-from django.views.generic import View,TemplateView
-
+from django.views.generic import View
+from django.core.paginator import Paginator
 from django.utils import timezone
 from datetime import timedelta
 from .forms import CartAddAddressFrom, CouponApplyForm
@@ -12,12 +12,35 @@ from accounts.models import Profile, Address
 from orders.models import Coupon
 from .models import Cart
 from django.contrib import messages
+from itertools import islice
 
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_POST
-class CartView(TemplateView):
-    template_name = 'cart/cart.html'
 
+class CartView(View):
+    def get(self,request,*args, **kwargs):
+        cart = get_cart(request)
+        product_obj = []
+        
+        for cart_item in cart:
+            product_obj.append(cart_item.get('product_obj'))
+
+        paginator = Paginator(product_obj, 4)
+        page_number = self.request.GET.get('page')
+        if not page_number:
+            page_number = 1
+        pagiator_page = paginator.page(page_number)
+        page_objects = pagiator_page.object_list
+
+        context = {
+            'page_objects':page_objects,
+            'paginator':paginator,
+            'paginator_page':pagiator_page,
+        }
+        for i in page_objects:
+            print(type(i))
+        return render(request, 'cart/cart.html',context)
+        
 class RemoveCartItemView(View):
     def post(self,request,*args, **kwargs):
         # post method is for clear all the items
@@ -201,5 +224,5 @@ def clear_items_form_cart(request):
     if request.htmx:
         cart = get_cart(request)
         cart.clear()
-        
+        return render(request,'')
     return redirect('cart_detail')
