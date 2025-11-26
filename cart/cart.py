@@ -46,6 +46,16 @@ class DBCartWrapper:
             cart_item_obj.quantity += quantity
             cart_item_obj.save()
 
+    def decrease(self,product):
+        cart_item_obj = CartItem.objects.filter(product=product,cart=self.db_cart).first()
+        if self.db_cart and cart_item_obj:
+            if cart_item_obj.quantity > 1:
+                cart_item_obj.quantity = F('quantity') - 1
+                cart_item_obj.save()
+                cart_item_obj.refresh_from_db()
+            else:
+                cart_item_obj.delete()
+
     def remove(self, product):
         if self.db_cart:
             cart_item_obj = CartItem.objects.filter(product=product,cart=self.db_cart).first()
@@ -98,6 +108,15 @@ class Cart:
             self.cart[product_id]['quantity'] += quantity
 
         self.save()
+
+    def decrease(self,product):
+        product_id = str(product.id)
+
+        if product_id in self.cart:
+            if self.cart[product_id]['quantity'] > 1:
+                self.cart[product_id]['quantity'] -= 1
+            else:
+                self.remove(product)
 
     def remove(self,product):
         product_id = str(product.id)
