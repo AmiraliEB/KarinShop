@@ -28,5 +28,5 @@ class CartItem(models.Model):
         return f"{self.quantity} عدد از {self.product.parent_product.name} در سبد {self.cart.user.username}"
     
     def get_total_price(self): 
-        price = self.product.initial_price
+        price = self.product.final_price
         return price * self.quantity

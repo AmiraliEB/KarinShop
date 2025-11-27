@@ -92,12 +92,19 @@ class Cart:
 
         for product in products:
             product_id = str(product.id)
-            cart[product_id]['product_obj'] = product
-            cart[product_id]['item_total_price'] = cart[product_id]['product_obj'].price * cart[product_id]['quantity']
-            attribute = Attribute.objects.filter(name="رنگ")
-            product_color = product.attribute_values.filter(attribute__in=attribute).first().value
-            cart[product_id]['color'] = product_color
 
+            # this is necessary for prevent session serialize failure  
+            item = cart[product_id].copy()
+
+            item['product_obj'] = product
+            item['item_total_price'] = item['product_obj'].final_price * cart[product_id]['quantity']
+            attribute = Attribute.objects.filter(name="رنگ")
+            color_attr = product.attribute_values.filter(attribute__in=attribute).first()
+
+            item['color'] = color_attr.value if color_attr else None
+
+            cart[product_id] = item
+        
         for item in cart.values():
             yield item
     
@@ -116,7 +123,7 @@ class Cart:
 
         add_return = {
             'quantity': self.cart[product_id]['quantity'],
-            'new_item_total_price': self.cart[product_id]['quantity'] * product.price
+            'new_item_total_price': self.cart[product_id]['quantity'] * int(product.final_price)
         }
 
         return add_return
@@ -138,12 +145,13 @@ class Cart:
 
     def clear(self):
         del self.session['cart']
+        self.save()
 
     def get_total_price(self):
         product_ids = self.cart.keys()
         products = Product.objects.filter(id__in=product_ids)
         
-        return sum(product.price * self.cart[str(product.id)]['quantity'] for product in products)
+        return sum(product.final_price * self.cart[str(product.id)]['quantity'] for product in products)
         
 
     def save(self):
