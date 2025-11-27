@@ -16,7 +16,7 @@ User = get_user_model()
 class ParentProduct(models.Model):
     name = models.CharField(max_length=255, verbose_name=_("parent product name"))
     category = models.ForeignKey('ProductCategory', on_delete=models.PROTECT, blank=True, null=True, related_name='product_parents', verbose_name=_("category"))
-    brand = models.ForeignKey('Brand', on_delete=models.PROTECT, related_name='product_parents', verbose_name=_("brand"))
+    brand = models.ForeignKey('Brand', on_delete=models.PROTECT, related_name='product_parents', verbose_name=_("brand"), null=True)
 
     specification_values = models.ManyToManyField(
         'AttributeValue', 
@@ -64,12 +64,20 @@ class ParentProduct(models.Model):
         
     
 class Product(models.Model):
+    DISCOUNT_TYPE_CHOICE = (
+        ('percentage',_('Percentage')),
+        ('amount', _('Fixed Amount')),
+    )
+
     parent_product = models.ForeignKey('ParentProduct', on_delete=models.PROTECT, related_name='products', verbose_name=_("product name"))
     
     _full_name = models.CharField(max_length=500, blank=True, verbose_name=_("Full Name (Cached)"))
 
     price = models.DecimalField(max_digits=10, decimal_places=0, verbose_name=_("price (Toman)"))
-    discount_price = models.DecimalField(max_digits=10, decimal_places=0, verbose_name=_("final price (after discount)"))
+    discount_type = models.CharField(verbose_name=_("discount type") ,max_length=50, choices=DISCOUNT_TYPE_CHOICE, default='amount')
+    discount_value = models.PositiveIntegerField(verbose_name=_("discount value"), default=0)
+    final_price = models.DecimalField(verbose_name=_("final price"), max_digits=11, decimal_places=0, null=True)
+
     stock = models.PositiveIntegerField(default=0, verbose_name=_("stock"))
 
     is_available = models.BooleanField(default=True, verbose_name=_("is available"))
