@@ -45,6 +45,11 @@ class DBCartWrapper:
         if not cart_item_created:
             cart_item_obj.quantity += quantity
             cart_item_obj.save()
+        add_return= {
+            'quantity':cart_item_obj.quantity,
+            'new_item_total_price':cart_item_obj.get_total_price()
+        }
+        return add_return
 
     def decrease(self,product):
         cart_item_obj = CartItem.objects.filter(product=product,cart=self.db_cart).first()
@@ -107,7 +112,14 @@ class Cart:
         else:
             self.cart[product_id]['quantity'] += quantity
 
-        self.save()
+        self.session.modified = True
+
+        add_return = {
+            'quantity': self.cart[product_id]['quantity'],
+            'new_item_total_price': self.cart[product_id]['quantity'] * product.price
+        }
+
+        return add_return
 
     def decrease(self,product):
         product_id = str(product.id)

@@ -69,7 +69,7 @@ class Product(models.Model):
     _full_name = models.CharField(max_length=500, blank=True, verbose_name=_("Full Name (Cached)"))
 
     price = models.DecimalField(max_digits=10, decimal_places=0, verbose_name=_("price (Toman)"))
-    discount_price = models.DecimalField(max_digits=10, decimal_places=0, blank=True, null=True, verbose_name=_("discounted price (Toman)"))
+    discount_price = models.DecimalField(max_digits=10, decimal_places=0, verbose_name=_("final price (after discount)"))
     stock = models.PositiveIntegerField(default=0, verbose_name=_("stock"))
 
     is_available = models.BooleanField(default=True, verbose_name=_("is available"))

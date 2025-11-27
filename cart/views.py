@@ -234,19 +234,8 @@ def increase_item(request,pk):
         product_obj = Product.objects.filter(pk=pk).first()
         cart = get_cart(request)
         if product_obj:
-            if request.user.is_authenticated:
-                cart_obj = Cart.objects.filter(user=request.user).first()
-                cart.add(product_obj)
-                cart_item_obj = CartItem.objects.filter(product=product_obj,cart=cart_obj).first()
-                quantity = cart_item_obj.quantity
-                item_total_price = cart_item_obj.get_total_price()
-            else:
-                cart.add(product_obj)
-                session_cart = request.session.get('cart')
-                quantity = session_cart[f'{product_obj.id}']['quantity']
-                item_total_price = int(quantity) * product_obj.price
-
-            cart_item = {'product_obj':product_obj , 'quantity':quantity, 'item_total_price':item_total_price}
+            add_return = cart.add(product_obj)
+            cart_item = {'product_obj':product_obj , 'quantity':add_return.get('quantity'), 'item_total_price':add_return.get('new_item_total_price')}
             return render(request,'cart/partials/increase_reduce_item_area.html',{'cart_item':cart_item})
     return redirect('cart_detail')
 
