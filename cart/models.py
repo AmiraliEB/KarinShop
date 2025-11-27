@@ -12,7 +12,7 @@ class Cart(models.Model):
 
     def get_total_price(self):      
         result = self.items.aggregate(
-            total=Sum(F('quantity') * (F('product__price') - (F('product__price') - F('product__discount_price'))))
+            total=Sum(F('quantity') * F('product__final_price'))
         )
         return result['total'] or 0
     
@@ -28,5 +28,5 @@ class CartItem(models.Model):
         return f"{self.quantity} عدد از {self.product.parent_product.name} در سبد {self.cart.user.username}"
     
     def get_total_price(self): 
-        price = self.product.price
-        return (price - (price - self.product.discount_price)) * self.quantity
+        price = self.product.initial_price
+        return price * self.quantity

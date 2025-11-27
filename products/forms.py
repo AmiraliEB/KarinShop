@@ -1,7 +1,7 @@
 from django.forms.models import BaseInlineFormSet
 from django.core.exceptions import ValidationError
 from django import forms
-from .models import Comments, ParentProduct
+from .models import Comments, ParentProduct, Product
 from django.utils.translation import gettext_lazy as _
 
 class CommentForm(forms.ModelForm):
@@ -128,3 +128,55 @@ class ParentProductAdminForm(forms.ModelForm):
             seen_attributes.add(parent_attr.id)
 
         return selected_values
+    
+
+class ProductAdminForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = '__all__'
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        selected_values = cleaned_data.get('attribute_values')
+        parent = cleaned_data.get('parent_product')
+
+        if not selected_values or not parent:
+            return cleaned_data
+
+        seen_attributes = set()
+        
+        for value in selected_values:
+            parent_attr = value.attribute 
+
+            if not getattr(parent_attr, 'allow_multiple_values', False):
+                if parent_attr.id in seen_attributes:
+                    self.add_error(
+                        'attribute_values', 
+                        _(f"شما نمی‌توانید برای ویژگی «{parent_attr.name}» چند مقدار انتخاب کنید. اگر می‌خواهید ویژگی‌ای را چند بار تکرار کنید در جدول ویژگی گزینه «امکان انتخاب چند مقدار همزمان در واریانت» را فعال کنید.")
+                    )
+            
+            seen_attributes.add(parent_attr.id)
+
+        if self.errors:
+            return cleaned_data
+
+        current_ids = sorted([attr.id for attr in selected_values])
+        current_combination = tuple(current_ids)
+
+        if len(current_combination) < 3:
+             self.add_error('attribute_values', _('حداقل ۳ ویژگی انتخاب کنید.'))
+
+        siblings = Product.objects.filter(parent_product=parent)
+        
+        if self.instance.pk:
+            siblings = siblings.exclude(pk=self.instance.pk)
+
+        for sibling in siblings:
+            sibling_ids = sorted(list(sibling.attribute_values.values_list('id', flat=True)))
+            sibling_combination = tuple(sibling_ids)
+
+            if current_combination == sibling_combination:
+                raise ValidationError(_('این ترکیب دقیقاً تکراری است و قبلاً برای محصول دیگری ثبت شده است.'))
+
+        return cleaned_data
