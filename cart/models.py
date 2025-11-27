@@ -12,13 +12,13 @@ class Cart(models.Model):
 
     def get_total_price(self):      
         result = self.items.aggregate(
-            total=Sum(F('quantity') * F('product__price'))
+            total=Sum(F('quantity') * (F('product__price') - (F('product__price') - F('product__discount_price'))))
         )
         return result['total'] or 0
     
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, verbose_name=_("cart"), on_delete=models.CASCADE, related_name='items')
-    product = models.ForeignKey('products.Product', verbose_name=_("product"), on_delete=models.CASCADE,related_name='item')
+    product = models.ForeignKey('products.Product', verbose_name=_("product"), on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(verbose_name=_("quantity"), default=1)
 
     datetime_created = models.DateTimeField(auto_now_add=True, verbose_name=_("creation date"))
@@ -27,5 +27,6 @@ class CartItem(models.Model):
     def __str__(self):
         return f"{self.quantity} عدد از {self.product.parent_product.name} در سبد {self.cart.user.username}"
     
-    def get_total_price(self):      
-        return self.product.price * self.quantity
+    def get_total_price(self): 
+        price = self.product.price
+        return (price - (price - self.product.discount_price)) * self.quantity
