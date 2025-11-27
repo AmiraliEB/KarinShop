@@ -11,6 +11,6 @@ urlpatterns = [
     path('remove-coupon',views.remove_coupon, name='remove_coupon'),
     path('apply-coupon',views.apply_coupon, name='apply_coupon'),
 
-    path('add/<int:pk>',views.increase_item, name='increase_item'),
-    path('decrease/<int:pk>',views.increase_item, name='decrease_item'),
+    path('add/<int:pk>',views.add_item, name='add_item'),
+    path('decrease/<int:pk>',views.decrement_item, name='decrement_item'),
 ]
