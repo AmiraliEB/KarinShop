@@ -16,7 +16,7 @@ User = get_user_model()
 class ParentProduct(models.Model):
     name = models.CharField(max_length=255, verbose_name=_("parent product name"))
     category = models.ForeignKey('ProductCategory', on_delete=models.PROTECT, blank=True, null=True, related_name='product_parents', verbose_name=_("category"))
-    brand = models.ForeignKey('Brand', on_delete=models.PROTECT, related_name='product_parents', verbose_name=_("brand"), null=True)
+    brand = models.ForeignKey('Brand', on_delete=models.PROTECT, related_name='product_parents', verbose_name=_("brand"))
 
     specification_values = models.ManyToManyField(
         'AttributeValue', 
@@ -73,7 +73,7 @@ class Product(models.Model):
     
     _full_name = models.CharField(max_length=500, blank=True, verbose_name=_("Full Name (Cached)"))
 
-    price = models.DecimalField(max_digits=10, decimal_places=0, verbose_name=_("price (Toman)"))
+    initial_price = models.DecimalField(max_digits=10, decimal_places=0, verbose_name=_("price (Toman)"))
     discount_type = models.CharField(verbose_name=_("discount type") ,max_length=50, choices=DISCOUNT_TYPE_CHOICE, default='amount')
     discount_value = models.PositiveIntegerField(verbose_name=_("discount value"), default=0)
     final_price = models.DecimalField(verbose_name=_("final price"), max_digits=11, decimal_places=0, null=True)
@@ -95,9 +95,11 @@ class Product(models.Model):
         verbose_name_plural = _("products"  )
 
     def clean(self):
-        if self.discount_price and self.discount_price >= self.price:
-            raise ValidationError({'discount_price': _("Discount price must be less than the original price.")})
+        if self.discount_type == 'amount' and self.discount_value <= 100 and self.discount_value > 0:
+            raise ValidationError({'discount_value': _("fixed amount discount values should be more than 100")})
 
+        if self.discount_type == 'percentage' and self.discount_value > 100:
+            raise ValidationError({'discount_value': _("percentage discount values should be less than 100")})
 
     def __str__(self):
         return self._full_name if self._full_name else f'Product {self.id}'
@@ -145,8 +147,33 @@ class Product(models.Model):
 
         return f"{base_name} {' '.join(final_parts)}".strip()
         
+
+    def discount_percentage(self):
+        discount_percentage = 0
+        if self.discount_type == 'percentage':
+            return self.discount_value
+        elif self.discount_type == 'amount':
+            if self.discount_value and self.final_price > 0 and self.final_price > self.discount_value:
+                percentage = (self.discount_value / self.final_price) * 100
+                discount_percentage = round(percentage)
+            return discount_percentage
+    
+    def has_discount(self):
+        if self.discount_value > 0 and self.discount_value < self.initial_price:
+            return True
+        return False
     
     def save(self, *args, **kwargs):
+        if not self.has_discount():
+            self.final_price = self.initial_price
+        else:
+            if self.discount_type == 'percentage':
+                final_price = self.initial_price - ((self.initial_price * self.discount_value) / 100) 
+                self.final_price = final_price
+            elif self.discount_type == 'amount':
+                final_price = self.initial_price - self.discount_value
+                self.final_price = final_price
+
         self.is_available = self.stock > 0
         super().save(*args, **kwargs)
         
@@ -154,15 +181,7 @@ class Product(models.Model):
         if self._full_name != new_full_name:
             self._full_name = new_full_name
             super().save(update_fields=['_full_name'])
-
-    def discount_percentage(self):
-        discount_percentage = 0
         
-        if self.discount_price and self.price > 0 and self.price > self.discount_price:
-            discount_amount = self.price - self.discount_price
-            percentage = (discount_amount / self.price) * 100
-            discount_percentage = round(percentage)
-        return discount_percentage
 
 
 def product_image_upload_to(instance, filename):

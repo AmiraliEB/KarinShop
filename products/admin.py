@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 from . import models
-from .forms import ProductImageFormSet, ProductFormSet, ParentProductAdminForm
+from .forms import ProductAdminForm, ProductImageFormSet, ProductFormSet, ParentProductAdminForm
 
 class ProductImageInline(admin.TabularInline):
     model = models.ProductImage
@@ -13,7 +13,7 @@ class ProductImageInline(admin.TabularInline):
 class ProductInline(admin.TabularInline):
     model = models.Product
     extra = 0
-    fields = ('price', 'discount_price', 'stock', 'is_available', 'attribute_values')
+    fields = ('price', 'stock', 'is_available', 'attribute_values')
     readonly_fields = ('is_available',)
     filter_horizontal = ('attribute_values',)
     formset = ProductFormSet
@@ -47,11 +47,12 @@ class ParentProductAdmin(admin.ModelAdmin):
 
 @admin.register(models.Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display =('id','parent_product', '_full_name', 'price', 'stock', 'is_available')
+    form = ProductAdminForm
+    list_display =('id','parent_product', '_full_name', 'final_price', 'stock', 'is_available')
     list_display_links = ('parent_product',)
-    list_filter = ('is_available', 'parent_product__category', 'parent_product__brand')
+    list_filter = ('is_available','final_price', 'parent_product__category', 'parent_product__brand')
     search_fields = ('parent_product__name', 'id','_full_name')
-    readonly_fields = ('_full_name' ,'datetime_created', 'datetime_modified', 'is_available')
+    readonly_fields = ('_full_name' ,'datetime_created', 'datetime_modified', 'is_available', 'final_price')
     autocomplete_fields = ('parent_product',)
     filter_horizontal = ('attribute_values',)
     list_select_related = ('parent_product',)
