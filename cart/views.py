@@ -1,4 +1,3 @@
-from django.http import HttpResponse
 from django.shortcuts import render,redirect
 from django.views.generic import View
 from django.core.paginator import Paginator
@@ -13,7 +12,6 @@ from accounts.models import Profile, Address
 from orders.models import Coupon
 from .models import Cart, CartItem
 from django.contrib import messages
-from itertools import islice
 
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_POST
@@ -229,7 +227,7 @@ def clear_items_form_cart(request):
     return redirect('cart_detail')
 
 @require_POST
-def increase_item(request,pk):
+def add_item(request,pk):
     if request.htmx:
         product_obj = Product.objects.filter(pk=pk).first()
         cart = get_cart(request)
@@ -240,21 +238,13 @@ def increase_item(request,pk):
     return redirect('cart_detail')
 
 @require_POST
-def decrease_item(request,pk):
+def decrement_item(request,pk):
     if request.htmx:
         product_obj = Product.objects.filter(pk=pk).first()
-        cart_obj = Cart.objects.filter(user=request.user).first()
+        cart = get_cart(request)
         if product_obj:
-            cart = get_cart(request)
-            cart.add(product_obj)
-            cart_item_obj = CartItem.objects.filter(product=product_obj,cart=cart_obj).first()
-            quantity = cart_item_obj.quantity
-            item_total_price = cart_item_obj.get_total_price()
-            cart_item = {'product_obj':product_obj , 'quantity':quantity, 'item_total_price':item_total_price}
+            decrement_return = cart.decrement(product_obj)
+            cart_item = {'product_obj':product_obj , 'quantity':decrement_return.get('quantity'), 'item_total_price':decrement_return.get('new_item_total_price')}
             return render(request,'cart/partials/increase_reduce_item_area.html',{'cart_item':cart_item})
-        
-        response = HttpResponse("Success")
-        response['HX-Refresh'] = "true"
-        return response
     
     return redirect('cart_detail')

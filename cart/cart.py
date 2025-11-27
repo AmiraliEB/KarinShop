@@ -51,7 +51,7 @@ class DBCartWrapper:
         }
         return add_return
 
-    def decrease(self,product):
+    def decrement(self,product):
         cart_item_obj = CartItem.objects.filter(product=product,cart=self.db_cart).first()
         if self.db_cart and cart_item_obj:
             if cart_item_obj.quantity > 1:
@@ -60,6 +60,12 @@ class DBCartWrapper:
                 cart_item_obj.refresh_from_db()
             else:
                 cart_item_obj.delete()
+        
+        decrement_return = {
+            'quantity':cart_item_obj.quantity,
+            'new_item_total_price':cart_item_obj.get_total_price(),
+        }
+        return decrement_return
 
     def remove(self, product):
         if self.db_cart:
@@ -128,14 +134,21 @@ class Cart:
 
         return add_return
 
-    def decrease(self,product):
+    def decrement(self,product):
         product_id = str(product.id)
 
         if product_id in self.cart:
             if self.cart[product_id]['quantity'] > 1:
                 self.cart[product_id]['quantity'] -= 1
+                self.save()
             else:
                 self.remove(product)
+
+        add_return = {
+            'quantity': self.cart[product_id]['quantity'],
+            'new_item_total_price': self.cart[product_id]['quantity'] * int(product.final_price)
+        }
+        return add_return
 
     def remove(self,product):
         product_id = str(product.id)
