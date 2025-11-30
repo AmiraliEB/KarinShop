@@ -126,12 +126,10 @@ class Cart:
             self.cart[product_id]['quantity'] += quantity
 
         self.session.modified = True
-
         add_return = {
             'quantity': self.cart[product_id]['quantity'],
             'new_item_total_price': self.cart[product_id]['quantity'] * int(product.final_price)
         }
-
         return add_return
 
     def decrement(self,product):
