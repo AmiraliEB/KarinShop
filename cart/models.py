@@ -30,3 +30,8 @@ class CartItem(models.Model):
     def get_total_price(self): 
         price = self.product.final_price
         return price * self.quantity
+    def get_total_price_before_discount(self):
+        if self.product.has_discount(): 
+            price = self.product.initial_price
+            return price * self.quantity
+        return None
