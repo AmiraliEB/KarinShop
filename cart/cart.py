@@ -21,7 +21,7 @@ class DBCartWrapper:
                 'product_obj': item.product,
                 'quantity': item.quantity,
                 'item_total_price': item.get_total_price(),
-                'item_total_price': item.get_total_price_before_discount(),
+                'item_total_price_before_discount': item.get_total_price_before_discount(),
                 'color': self._get_product_color(item.product),
             }
 

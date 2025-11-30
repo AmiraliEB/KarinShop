@@ -222,7 +222,7 @@ def clear_items_form_cart(request):
     if request.htmx:
         cart = get_cart(request)
         cart.clear()
-        return render(request,'')
+        return render(request,'cart/partials/clear_items_in_cart.html')
     return redirect('cart_detail')
 
 @require_POST
