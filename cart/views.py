@@ -36,8 +36,7 @@ class CartView(View):
             'paginator':paginator,
             'paginator_page':pagiator_page,
         }
-        for i in page_objects:
-            print(type(i))
+
         return render(request, 'cart/cart.html',context)
         
 class RemoveCartItemView(View):
@@ -234,7 +233,7 @@ def add_item(request,pk):
         if product_obj:
             add_return = cart.add(product_obj)
             cart_item = {'product_obj':product_obj , 'quantity':add_return.get('quantity'), 'item_total_price':add_return.get('new_item_total_price')}
-            return render(request,'cart/partials/increase_reduce_item_area.html',{'cart_item':cart_item})
+            return render(request,'cart/partials/increase_reduce_item_area.html',{'cart_item':cart_item,'product_obj':product_obj})
     return redirect('cart_detail')
 
 @require_POST
@@ -246,5 +245,29 @@ def decrement_item(request,pk):
             decrement_return = cart.decrement(product_obj)
             cart_item = {'product_obj':product_obj , 'quantity':decrement_return.get('quantity'), 'item_total_price':decrement_return.get('new_item_total_price')}
             return render(request,'cart/partials/increase_reduce_item_area.html',{'cart_item':cart_item})
+    
+    return redirect('cart_detail')
+
+@require_POST
+def add_item_for_main_cart(request, pk):
+    if request.htmx:
+        product_obj = Product.objects.filter(pk=pk).first()
+        cart = get_cart(request)
+        if product_obj:
+            add_return = cart.add(product_obj)
+            cart_item = {'product_obj':product_obj , 'quantity':add_return.get('quantity'), 'item_total_price':add_return.get('new_item_total_price')}
+            print(cart_item.get('quantity'))
+            return render(request,'cart/partials/increase_reduce_item_area_for_main.html',{'cart_item':cart_item,'product_obj':product_obj})
+    return redirect('cart_detail')
+
+@require_POST
+def decrement_item_for_main_cart(request, pk):
+    if request.htmx:
+        product_obj = Product.objects.filter(pk=pk).first()
+        cart = get_cart(request)
+        if product_obj:
+            decrement_return = cart.decrement(product_obj)
+            cart_item = {'product_obj':product_obj , 'quantity':decrement_return.get('quantity'), 'item_total_price':decrement_return.get('new_item_total_price')}
+            return render(request,'cart/partials/increase_reduce_item_area_for_main.html',{'cart_item':cart_item})
     
     return redirect('cart_detail')
