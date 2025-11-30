@@ -21,6 +21,7 @@ class DBCartWrapper:
                 'product_obj': item.product,
                 'quantity': item.quantity,
                 'item_total_price': item.get_total_price(),
+                'item_total_price': item.get_total_price_before_discount(),
                 'color': self._get_product_color(item.product),
             }
 
@@ -33,7 +34,7 @@ class DBCartWrapper:
         if not self.db_cart:
             return 0
         return self.db_cart.get_total_price()
-
+    
     def _get_product_color(self, product):
         attribute = Attribute.objects.filter(name="رنگ")
         attr_val = product.attribute_values.filter(attribute__in=attribute).first()
@@ -47,7 +48,8 @@ class DBCartWrapper:
             cart_item_obj.save()
         add_return= {
             'quantity':cart_item_obj.quantity,
-            'new_item_total_price':cart_item_obj.get_total_price()
+            'new_item_total_price':cart_item_obj.get_total_price(),
+            'item_total_price_before_discount':cart_item_obj.get_total_price_before_discount(),
         }
         return add_return
 
@@ -64,6 +66,7 @@ class DBCartWrapper:
         decrement_return = {
             'quantity':cart_item_obj.quantity,
             'new_item_total_price':cart_item_obj.get_total_price(),
+            'item_total_price_before_discount':cart_item_obj.get_total_price_before_discount(),
         }
         return decrement_return
 
@@ -104,6 +107,7 @@ class Cart:
 
             item['product_obj'] = product
             item['item_total_price'] = item['product_obj'].final_price * cart[product_id]['quantity']
+            item['item_total_price_before_discount'] = item['product_obj'].initial_price * cart[product_id]['quantity']
             attribute = Attribute.objects.filter(name="رنگ")
             color_attr = product.attribute_values.filter(attribute__in=attribute).first()
 
@@ -128,7 +132,8 @@ class Cart:
         self.session.modified = True
         add_return = {
             'quantity': self.cart[product_id]['quantity'],
-            'new_item_total_price': self.cart[product_id]['quantity'] * int(product.final_price)
+            'new_item_total_price': self.cart[product_id]['quantity'] * product.final_price,
+            'item_total_price_before_discount': self.cart[product_id]['quantity'] * product.initial_price,
         }
         return add_return
 
@@ -144,7 +149,8 @@ class Cart:
 
         add_return = {
             'quantity': self.cart[product_id]['quantity'],
-            'new_item_total_price': self.cart[product_id]['quantity'] * int(product.final_price)
+            'new_item_total_price': self.cart[product_id]['quantity'] * product.final_price,
+            'item_total_price_before_discount': self.cart[product_id]['quantity'] * product.initial_price,
         }
         return add_return
 
@@ -163,7 +169,6 @@ class Cart:
         products = Product.objects.filter(id__in=product_ids)
         
         return sum(product.final_price * self.cart[str(product.id)]['quantity'] for product in products)
-        
 
     def save(self):
         self.session.modified = True
