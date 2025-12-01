@@ -1,4 +1,5 @@
 from collections import defaultdict
+from math import ceil
 import uuid
 from django.db import models
 from django.db.models import Q
@@ -155,7 +156,7 @@ class Product(models.Model):
         elif self.discount_type == 'amount':
             if self.discount_value and self.final_price > 0 and self.final_price > self.discount_value:
                 percentage = (self.discount_value / self.final_price) * 100
-                discount_percentage = round(percentage)
+                discount_percentage = ceil(percentage)
             return discount_percentage
     
     def has_discount(self):
