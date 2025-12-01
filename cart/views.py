@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render,redirect
 from django.views.generic import View
 from django.core.paginator import Paginator
@@ -15,6 +16,12 @@ from django.contrib import messages
 
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_POST
+
+def refresh_shourtcut():
+    response = HttpResponse('home')
+    response['HX-Refresh'] = 'true'
+    return response
+
 
 class CartView(View):
     def get(self,request,*args, **kwargs):
@@ -38,13 +45,6 @@ class CartView(View):
         }
 
         return render(request, 'cart/cart.html',context)
-        
-class RemoveCartItemView(View):
-    def post(self,request,*args, **kwargs):
-        # post method is for clear all the items
-        cart = get_cart(request)
-        cart.clear()
-        return redirect('cart_detail')
 
 today = timezone.localdate()
 time_to_leave_warehouse = today + timedelta(days=2)
@@ -207,14 +207,16 @@ def apply_coupon(request):
     return redirect('payment')
 
 @require_POST
-def remove_item_form_cart(request, pk):
+def remove_item_form_main_cart(request, pk):
     if request.htmx:
         cart = get_cart(request)
+        print('-------------------------')
+        print(pk)
         if pk is None:
-           return redirect('cart_detail')
+            return refresh_shourtcut()
         product = get_object_or_404(Product,pk=pk)
         cart.remove(product)
-        return render(request,"cart/partials/cart_item_area.html")
+        return refresh_shourtcut()
     return redirect('cart_detail')
 
 @require_POST
