@@ -182,6 +182,7 @@ class Product(models.Model):
         if self._full_name != new_full_name:
             self._full_name = new_full_name
             super().save(update_fields=['_full_name'])
+
         
 
 

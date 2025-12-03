@@ -19,4 +19,9 @@ urlpatterns = [
     
     path('clear-items',views.clear_items_form_cart, name='clear_items'),
 
+
+    
+    path('increase-detail/<int:pk>',views.add_item_for_detail_cart, name='increase_detail_cart'),
+    path('decrement-detail/<int:pk>',views.decrement_item_for_detail_cart, name='decrement_detail_cart'),
+
 ]

@@ -80,6 +80,19 @@ class DBCartWrapper:
         if self.db_cart:
             self.db_cart.items.all().delete()
 
+    def is_available(self,product):
+        cart_item_obj = CartItem.objects.filter(cart=self.db_cart,product=product).first()
+        if not cart_item_obj or cart_item_obj.quantity == 0:
+            return False
+        return True
+    
+    def get_item_quantity(self, product):
+        cart = self.db_cart
+        cart_item_obj = CartItem.objects.filter(cart=cart,product=product).first()
+        if cart_item_obj:
+            return cart_item_obj.quantity
+        return 0
+
 class Cart:
     def __init__(self,request):
         self.request = request
@@ -144,14 +157,20 @@ class Cart:
             if self.cart[product_id]['quantity'] > 1:
                 self.cart[product_id]['quantity'] -= 1
                 self.save()
+                add_return = {
+                    'quantity': self.cart[product_id]['quantity'],
+                    'new_item_total_price': self.cart[product_id]['quantity'] * product.final_price,
+                    'item_total_price_before_discount': self.cart[product_id]['quantity'] * product.initial_price,
+                }
             else:
                 self.remove(product)
+                add_return = {
+                    'quantity': 0,
+                    'new_item_total_price': 0,
+                    'item_total_price_before_discount': 0,
+                }
 
-        add_return = {
-            'quantity': self.cart[product_id]['quantity'],
-            'new_item_total_price': self.cart[product_id]['quantity'] * product.final_price,
-            'item_total_price_before_discount': self.cart[product_id]['quantity'] * product.initial_price,
-        }
+
         return add_return
 
     def remove(self,product):
@@ -173,7 +192,26 @@ class Cart:
     def save(self):
         self.session.modified = True
 
-
+    def is_available(self,product):
+        product_id = str(product.id)
+        cart = self.cart
+        try:
+            product = cart[product_id]
+        except KeyError:
+            return False
+        return True
+    
+    def get_item_quantity(self, product):
+        product_id = str(product.id)
+        cart = self.cart
+        if self.is_available(product):
+            quantity = cart[product_id]['quantity']
+            print(quantity)
+            if quantity:
+                return quantity
+            return quantity
+        return 0
+    
 def get_cart(request):
     if request.user.is_authenticated:
         return DBCartWrapper(request)
