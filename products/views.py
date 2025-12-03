@@ -1,7 +1,7 @@
 from collections import defaultdict
 from django.views import generic
 from products.models import AttributeValue, Product, Comments, ParentProduct
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.text import slugify
 from django.db.models import Prefetch, Avg , Count
 from .forms import CommentForm
@@ -12,6 +12,7 @@ from django.core.paginator import Paginator
 from cart.forms import CartAddPrproductForm
 from cart.cart import Cart, get_cart
 from django.conf import settings
+from django.views.decorators.http import require_POST
 
 def post_redirect_view(request, pk):
     product_obj = get_object_or_404(Product, pk=pk)
@@ -82,12 +83,12 @@ class ProductDetailView(generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         cart = get_cart(self.request)
-        product = self.object
+        product:Product = self.object
 
 
         context['discount_percentage'] = product.discount_percentage
 
-        context['grouped_attributes'] = self.object.parent_product.grouped_specifications
+        context['grouped_attributes'] = product.parent_product.grouped_specifications
 
 
         comments = Comments.objects.filter(parent_product=product.parent_product,is_approved=True).select_related('user').order_by('-datetime_created')
@@ -123,5 +124,11 @@ class ProductDetailView(generic.DetailView):
         for parent_obj in related_parent:
             context['related_products'].append(parent_obj.products.first())
 
+        context['product_available_in_cart'] = cart.is_available(product)
+        context['item_quantity'] = cart.get_item_quantity(product)
+        context['item_total_price_before_discount'] = cart.get_item_quantity(product) * product.initial_price
+        context['item_total_price'] = cart.get_item_quantity(product) * product.final_price
+
+        
         return context
     
