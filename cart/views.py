@@ -207,104 +207,11 @@ def apply_coupon(request):
     return redirect('payment')
 
 @require_POST
-def remove_item_form_main_cart(request, pk):
-    if request.htmx:
-        cart = get_cart(request)
-        print('-------------------------')
-        print(pk)
-        if pk is None:
-            return refresh_shourtcut()
-        product = get_object_or_404(Product,pk=pk)
-        cart.remove(product)
-        return refresh_shourtcut()
-    return redirect('cart_detail')
-
-@require_POST
 def clear_items_form_cart(request):
     if request.htmx:
         cart = get_cart(request)
         cart.clear()
         return render(request,'cart/partials/clear_items_in_cart.html')
-    return redirect('cart_detail')
-
-@require_POST
-def add_item(request,pk):
-    if request.htmx:
-        product_obj = Product.objects.filter(pk=pk).first()
-        cart = get_cart(request)
-        if product_obj:
-            add_return = cart.add(product_obj)
-            quantity = add_return.get('quantity')
-            item_total_price = quantity * product_obj.final_price
-            cart_item = {'product_obj':product_obj , 'quantity':add_return.get('quantity'), 'item_total_price':add_return.get('new_item_total_price'), 'item_total_price_before_discount':add_return.get('item_total_price_before_discount')}
-            return render(request,'cart/partials/increase_reduce_item_area.html',{'cart_item':cart_item,'product_obj':product_obj,'product':product_obj, 'product_available_in_cart':cart.is_available(product_obj), 'item_total_price':item_total_price, 'item_quantity':quantity})
-    return redirect('cart_detail')
-
-@require_POST
-def decrement_item(request,pk):
-    if request.htmx:
-        product_obj = Product.objects.filter(pk=pk).first()
-        cart = get_cart(request)
-        if product_obj:
-            decrement_return = cart.decrement(product_obj)
-            quantity = decrement_return.get('quantity')
-            item_total_price = quantity * product_obj.final_price
-            cart_item = {'product_obj':product_obj , 'quantity':decrement_return.get('quantity'), 'item_total_price':decrement_return.get('new_item_total_price'), 'item_total_price_before_discount':decrement_return.get('item_total_price_before_discount')}
-            return render(request,'cart/partials/increase_reduce_item_area.html',{'cart_item':cart_item, 'product':product_obj, 'product_available_in_cart':cart.is_available(product_obj),'item_total_price':item_total_price,'item_quantity':quantity})
-    
-    return redirect('cart_detail')
-
-@require_POST
-def add_item_for_main_cart(request, pk):
-    if request.htmx:
-        product_obj = Product.objects.filter(pk=pk).first()
-        cart = get_cart(request)
-        if product_obj:
-            add_return = cart.add(product_obj)
-
-            cart_item = {'product_obj':product_obj , 'quantity':add_return.get('quantity'), 'item_total_price':add_return.get('new_item_total_price'), 'item_total_price_before_discount':add_return.get('item_total_price_before_discount')}
-            return render(request,'cart/partials/increase_reduce_item_area_for_main.html',{'cart_item':cart_item,'product_obj':product_obj})
-    return redirect('cart_detail')
-
-@require_POST
-def decrement_item_for_main_cart(request, pk):
-    if request.htmx:
-        product_obj = Product.objects.filter(pk=pk).first()
-        cart = get_cart(request)
-        if product_obj:
-            decrement_return = cart.decrement(product_obj)
-            cart_item = {'product_obj':product_obj , 'quantity':decrement_return.get('quantity'), 'item_total_price':decrement_return.get('new_item_total_price'), 'item_total_price_before_discount':decrement_return.get('item_total_price_before_discount')}
-            return render(request,'cart/partials/increase_reduce_item_area_for_main.html',{'cart_item':cart_item})
-    
-    return redirect('cart_detail')
-
-
-@require_POST
-def add_item_for_detail_cart(request, pk):
-    if request.htmx:
-        product_obj = Product.objects.filter(pk=pk).first()
-        cart = get_cart(request)
-        if product_obj:
-            add_return = cart.add(product_obj,quantity=1)
-            quantity = add_return.get('quantity')
-            item_total_price = quantity * product_obj.final_price
-            cart_item = {'product_obj':product_obj , 'quantity':quantity, 'item_total_price':add_return.get('new_item_total_price'), 'item_total_price_before_discount':add_return.get('item_total_price_before_discount')}
-            return render(request,'products/partials/increase_reduce_item_area_for_detail.html',{'cart_item':cart_item,'product':product_obj, 'product_available_in_cart':cart.is_available(product_obj),'item_quantity':quantity,'item_total_price':item_total_price})
-    return redirect('cart_detail')
-
-
-@require_POST
-def decrement_item_for_detail_cart(request, pk):
-    if request.htmx:
-        product_obj = Product.objects.filter(pk=pk).first()
-        cart = get_cart(request)
-        if product_obj:
-            decrement_return = cart.decrement(product_obj)
-            quantity = decrement_return.get('quantity')
-            item_total_price = quantity * product_obj.final_price
-            cart_item = {'product_obj':product_obj , 'quantity':quantity, 'item_total_price':decrement_return.get('new_item_total_price'), 'item_total_price_before_discount':decrement_return.get('item_total_price_before_discount')}
-            return render(request,'products/partials/increase_reduce_item_area_for_detail.html',{'cart_item':cart_item, 'product_available_in_cart':cart.is_available(product_obj), 'item_quantity':quantity, 'product':product_obj, 'item_total_price':item_total_price})
-    
     return redirect('cart_detail')
 
 @require_POST
