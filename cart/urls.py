@@ -23,5 +23,6 @@ urlpatterns = [
     
     path('increase-detail/<int:pk>',views.add_item_for_detail_cart, name='increase_detail_cart'),
     path('decrement-detail/<int:pk>',views.decrement_item_for_detail_cart, name='decrement_detail_cart'),
+    path('update/<str:action>/<int:pk>', views.update_cart_item, name='update_cart_item'),
 
 ]

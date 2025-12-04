@@ -53,15 +53,15 @@ class DBCartWrapper:
         }
         return add_return
 
-    def decrement(self,product):
+    def decrement(self,product,remove=False):
         cart_item_obj = CartItem.objects.filter(product=product,cart=self.db_cart).first()
         if self.db_cart and cart_item_obj:
-            if cart_item_obj.quantity > 1:
+            if cart_item_obj.quantity <= 1 or remove == True:
+                cart_item_obj.delete()
+            else:
                 cart_item_obj.quantity = F('quantity') - 1
                 cart_item_obj.save()
                 cart_item_obj.refresh_from_db()
-            else:
-                cart_item_obj.delete()
         
         decrement_return = {
             'quantity':cart_item_obj.quantity,
@@ -150,24 +150,24 @@ class Cart:
         }
         return add_return
 
-    def decrement(self,product):
+    def decrement(self,product,remove=False):
         product_id = str(product.id)
 
         if product_id in self.cart:
-            if self.cart[product_id]['quantity'] > 1:
+            if self.cart[product_id]['quantity'] <= 1 or remove == True:
+                self.remove(product)
+                add_return = {
+                    'quantity': 0,
+                    'new_item_total_price': 0,
+                    'item_total_price_before_discount': 0,
+                }
+            else:
                 self.cart[product_id]['quantity'] -= 1
                 self.save()
                 add_return = {
                     'quantity': self.cart[product_id]['quantity'],
                     'new_item_total_price': self.cart[product_id]['quantity'] * product.final_price,
                     'item_total_price_before_discount': self.cart[product_id]['quantity'] * product.initial_price,
-                }
-            else:
-                self.remove(product)
-                add_return = {
-                    'quantity': 0,
-                    'new_item_total_price': 0,
-                    'item_total_price_before_discount': 0,
                 }
 
 
