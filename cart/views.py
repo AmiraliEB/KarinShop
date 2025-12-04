@@ -306,3 +306,39 @@ def decrement_item_for_detail_cart(request, pk):
             return render(request,'products/partials/increase_reduce_item_area_for_detail.html',{'cart_item':cart_item, 'product_available_in_cart':cart.is_available(product_obj), 'item_quantity':quantity, 'product':product_obj, 'item_total_price':item_total_price})
     
     return redirect('cart_detail')
+
+@require_POST
+def update_cart_item(request, action, pk):
+    cart = get_cart(request)
+    product_obj = get_object_or_404(Product, pk=pk)
+    
+    if action == 'add':
+        action_return = cart.add(product_obj)
+    elif action == 'remove':
+        action_return = cart.decrement(product_obj,True)
+    elif action == 'decrement':
+        action_return = cart.decrement(product_obj)
+
+    quantity = action_return.get('quantity')
+    item_total_price = action_return.get('new_item_total_price')
+    is_product_available = cart.is_available(product_obj)
+
+    cart_item = {
+        'product_obj': product_obj,
+        'quantity': quantity,
+        'item_total_price': item_total_price,
+        'product_available_in_cart': is_product_available,
+        'item_total_price_before_discount':action_return.get('item_total_price_before_discount')
+    }
+
+
+    context = {
+        'cart_item': cart_item,
+        'product_obj': product_obj,
+        'product_available_in_cart': is_product_available,
+        'item_quantity':quantity,
+        'product':product_obj,
+        'item_total_price':item_total_price,
+    }
+
+    return render(request, 'cart/partials/cart_update_response.html', context)
