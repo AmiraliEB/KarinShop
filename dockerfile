@@ -12,10 +12,12 @@ ENV LANG fa_IR.UTF-8
 ENV LANGUAGE fa_IR:fa
 ENV LC_ALL fa_IR.UTF-8
 
-WORKDIR /app/backend
+WORKDIR /app
+
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
 COPY . .
 
+WORKDIR /app/backend
 CMD ["python", "manage.py", "runserver","0.0.0.0:8000"]
