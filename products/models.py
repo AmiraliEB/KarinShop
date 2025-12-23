@@ -257,6 +257,7 @@ class Attribute(models.Model):
     )
     show_in_specifications = models.BooleanField(_("Show in specifications in detail page?"),default=True)
 
+    # this allows multiple values for an attribute in a product (e.g. color: red, blue)
     allow_multiple_values = models.BooleanField(
         default=False, 
         verbose_name=_("امکان انتخاب چند مقدار همزمان در واریانت")
