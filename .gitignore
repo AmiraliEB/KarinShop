@@ -22,7 +22,6 @@ static_root/
 
 media/*
 media_root/
-!/media/.gitkeep
 
 
 *.log
