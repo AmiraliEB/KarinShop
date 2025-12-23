@@ -78,7 +78,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(FRONTEND_DIR, 'templates')],
+        'DIRS': [FRONTEND_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -149,18 +149,21 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 
 #static files settings
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(FRONTEND_DIR, 'static'),]
+STATICFILES_DIRS = [
+    FRONTEND_DIR / 'static',
+]
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 #Media files settings
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / "staticfiles"
+MEDIA_ROOT = BASE_DIR / "media"
 
 #translation settings
 LANGUAGE_CODE = 'fa'
 LANGUAGES = [
     ('fa', 'Persian'),
 ]
-LOCALE_PATHS = [os.path.join(BASE_DIR, 'locale')]
+LOCALE_PATHS = [BASE_BACKEND_DIR / 'locale']
 
 USE_I18N = True
 USE_L10N = True
