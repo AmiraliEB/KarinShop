@@ -20,6 +20,8 @@ venv/
 env/
 .venv/
 .env/
+**/venv
+**/.venv
 
 *.egg-info/
 build/
@@ -42,3 +44,4 @@ Thumbs.db
 logs/
 
 node_modules/
+**/node_modules
