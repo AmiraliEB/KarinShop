@@ -11,7 +11,6 @@ from django.shortcuts import get_object_or_404
 from products.models import Product
 from accounts.models import Profile, Address
 from orders.models import Coupon
-from .models import Cart, CartItem
 from django.contrib import messages
 
 from django.utils.translation import gettext_lazy as _
