@@ -1,18 +1,17 @@
-from collections import defaultdict
-from django.views import generic
-from products.models import AttributeValue, Product, Comments, ParentProduct
-from django.shortcuts import get_object_or_404, redirect, render
-from django.utils.text import slugify
-from django.db.models import Prefetch, Avg , Count
-from .forms import CommentForm
-from django.contrib import messages
-from django.utils.decorators import method_decorator
-from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator
+from cart.cart import get_cart
 from cart.forms import CartAddPrproductForm
-from cart.cart import Cart, get_cart
 from django.conf import settings
-from django.views.decorators.http import require_POST
+from django.contrib import messages
+from django.core.paginator import Paginator
+from django.db.models import Avg, Count, Prefetch
+from django.shortcuts import get_object_or_404, redirect
+from django.utils.text import slugify
+from django.views import generic
+
+from products.models import AttributeValue, Comments, ParentProduct, Product
+
+from .forms import CommentForm
+
 
 def post_redirect_view(request, pk):
     product_obj = get_object_or_404(Product, pk=pk)
@@ -40,7 +39,7 @@ class ProductDetailView(generic.DetailView):
                 new_comment = comment_form.save(commit=False)
                 new_comment.user = request.user
                 new_comment.parent_product = self.object.parent_product
-                if comment_form.cleaned_data.get('is_recommend')==None:
+                if comment_form.cleaned_data.get('is_recommend') is None:
                     if new_comment.rating >=3:
                         new_comment.is_recommend = True
                     else:

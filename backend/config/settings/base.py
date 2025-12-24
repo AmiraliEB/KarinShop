@@ -34,11 +34,11 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
 
     # Local apps
-    'accounts',
-    'core',
-    'products',
+    'accounts.apps.AccountsConfig',
+    'core.apps.CoreConfig',
+    'products.apps.ProductsConfig',
     'cart.apps.CartConfig',
-    'orders',
+    'orders.apps.OrdersConfig',
     #third party apps
     'jalali_date',
     "django_htmx",
