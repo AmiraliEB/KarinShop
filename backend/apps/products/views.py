@@ -120,6 +120,8 @@ class ProductDetailView(generic.DetailView):
         category = product.parent_product.category
         brand = product.parent_product.brand
         related_parent = ParentProduct.objects.prefetch_related('products').filter(category=category, brand=brand).exclude(id=product.parent_product.id)[:6]
+        if not related_parent.exists():
+            related_parent = ParentProduct.objects.prefetch_related('products').filter(category=category).exclude(id=product.parent_product.id)[:6]
         context['related_products'] = []
         for parent_obj in related_parent:
             context['related_products'].append(parent_obj.products.first())
