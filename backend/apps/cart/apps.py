@@ -6,4 +6,4 @@ class CartConfig(AppConfig):
     name = 'cart'
 
     def ready(self):
-        from . import signals
+        from . import signals  # noqa: F401

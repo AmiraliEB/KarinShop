@@ -1,18 +1,17 @@
 from collections import defaultdict
 from math import ceil
-import uuid
 from django.db import models
 from django.db.models import Q
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
-from django.contrib.auth import get_user_model
+from django.conf import settings
 from django.db.models.signals import m2m_changed, post_save, post_delete 
 from django.dispatch import receiver
 from django.utils.text import slugify
 
-User = get_user_model()
+User = settings.AUTH_USER_MODEL
 
 class ParentProduct(models.Model):
     name = models.CharField(max_length=255, verbose_name=_("parent product name"))
@@ -196,11 +195,6 @@ class ProductImage(models.Model):
     is_main_image = models.BooleanField(default=False, verbose_name=_("is main image?"))
     def __str__(self):
         return f"Image for {self.parent_product.name}"
-
-    class Meta:
-        verbose_name = _('product image')
-        verbose_name_plural = _('product images')
-        ordering = ['-id']
     
     def clean(self):
         if self.parent_product is None:

@@ -1,8 +1,9 @@
 import pytest
-from products.models import Attribute, AttributeRule, AttributeValue, Product, ProductCategory, Brand, ParentProduct, AttributeCategory
+
 
 @pytest.fixture
 def sample_product_setup():
+    from products.models import ProductCategory, Brand, ParentProduct
     category = ProductCategory.objects.create(name="General", code="gen")
     brand = Brand.objects.create(name="Generic", code="gnr")
     parent = ParentProduct.objects.create(name="Test Product", category=category, brand=brand)
@@ -10,6 +11,7 @@ def sample_product_setup():
 
 @pytest.fixture
 def product_factory(sample_product_setup):
+    from products.models import Attribute, AttributeRule, AttributeValue, Product, AttributeCategory
     product_category = sample_product_setup.category
     
     attr_cat = AttributeCategory.objects.create(name="Spec")
