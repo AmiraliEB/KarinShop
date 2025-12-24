@@ -49,12 +49,31 @@
 
 | بخش | تکنولوژی |
 | :--- | :--- |
-| **زبان و فریم‌ورک** | Python 3.11, Django 5 |
-| **پایگاه داده** | PostgreSQL |
-| **فرانت‌اند** | HTML5, Tailwind CSS, HTMX, Alpine.js |
-| **زیرساخت** | Docker, Docker Compose, Nginx, Gunicorn |
-| **تست** | Pytest, Django-Webtest |
-| **سایر کتابخانه‌ها** | Django-Allauth, Django-Jalali-Date, Pillow |
+| **زبان و فریم‌ورک** | [![Python][python-badge]][python-url] [![Django][django-badge]][django-url] |
+| **پایگاه داده** | [![PostgreSQL][postgresql-badge]][postgresql-url] |
+| **فرانت‌اند** | [![HTML5][html-badge]][html-url] [![Tailwind CSS][tailwind-badge]][tailwind-url] [![HTMX][htmx-badge]][htmx-url] [![Alpine.js][alpine-badge]][alpine-url] |
+| **زیرساخت** | [![Docker][docker-badge]][docker-url] [![Nginx][nginx-badge]][nginx-url] [![Gunicorn][gunicorn-badge]][gunicorn-url] |
+
+[python-badge]: https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white
+[python-url]: https://www.python.org/
+[django-badge]: https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white
+[django-url]: https://www.djangoproject.com/
+[postgresql-badge]: https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white
+[postgresql-url]: https://www.postgresql.org/
+[html-badge]: https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white
+[html-url]: https://developer.mozilla.org/en-US/docs/Web/HTML
+[tailwind-badge]: https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white
+[tailwind-url]: https://tailwindcss.com/
+[htmx-badge]: https://img.shields.io/badge/HTMX-3D5875?style=for-the-badge&logo=htmx&logoColor=white
+[htmx-url]: https://htmx.org/
+[alpine-badge]: https://img.shields.io/badge/Alpine.js-8BC0D0?style=for-the-badge&logo=alpine.js&logoColor=white
+[alpine-url]: https://alpinejs.dev/
+[docker-badge]: https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white
+[docker-url]: https://www.docker.com/
+[nginx-badge]: https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&logoColor=white
+[nginx-url]: https://nginx.org/
+[gunicorn-badge]: https://img.shields.io/badge/Gunicorn-499848?style=for-the-badge&logo=gunicorn&logoColor=white
+[gunicorn-url]: https://gunicorn.org/
 
 ## 🚀 راه‌اندازی با داکر (روش پیشنهادی)
 
@@ -138,15 +157,15 @@ SECRET_KEY=your_secret_key_here
 ALLOWED_HOSTS=localhost,127.0.0.1
 
 # تنظیمات دیتابیس
-POSTGRES_DB=karinshop_db
-POSTGRES_USER=postgres
+POSTGRES_DB=postgres_db
+POSTGRES_USER=postgres_user
 POSTGRES_PASSWORD=password
-DB_HOST=db
-DB_PORT=5432
+DB_HOST=db_host
+DB_PORT=000
 
 # تنظیمات ایمیل (برای فراموشی رمز عبور و...)
 EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
+EMAIL_PORT=000
 EMAIL_HOST_USER=your_email@gmail.com
 EMAIL_HOST_PASSWORD=your_app_password
 
