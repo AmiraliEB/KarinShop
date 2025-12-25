@@ -1,0 +1,12 @@
+{% load filter_for_main_image %}
+{% load humanize %}
+{% load static %}
+
+{% comment %} full cart in cart page{% endcomment %}
+{% include "cart/partials/_full_cart_in_cart_page.html" with oob=True%}
+
+{% comment %} nav cart {% endcomment %}
+{% include "cart/partials/_full_nav_cart.html" with oob=True%}
+
+{% comment %} badge for nav cart in cart detail {% endcomment %}
+{% include "cart/partials/_nav_cart_badge_in_cart_page.html" with oob="delete" %}

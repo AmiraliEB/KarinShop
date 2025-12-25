@@ -61,6 +61,3 @@ src/
 
 
 frontend/
-!frontend/templates/
-frontend/static/
-frontend/assets/

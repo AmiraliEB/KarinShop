@@ -7,6 +7,7 @@ from pathlib import Path
 BASE_BACKEND_DIR = Path(__file__).resolve().parent.parent.parent
 BASE_DIR = BASE_BACKEND_DIR.parent
 FRONTEND_DIR = BASE_DIR / "frontend"
+TEMPLATES_DIR = BASE_BACKEND_DIR / "templates"
 
 sys.path.insert(0, str(BASE_BACKEND_DIR / "apps"))
 
@@ -78,7 +79,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [FRONTEND_DIR / 'templates'],
+        'DIRS': [TEMPLATES_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

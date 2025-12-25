@@ -1,0 +1,21 @@
+{% load humanize %}
+{% load static %}
+{% load filter_for_main_image %}
+
+{% comment %} total price for nav cart {% endcomment %}
+{% include "cart/partials/_nav_cart_total_price.html" with oob=True %}
+
+{% comment %} input for detail page {% endcomment %}
+{% include "cart/partials/_product_detail_cart_input.html" with oob=True %}
+
+{% comment %} full cart page {% endcomment %}
+{% include "cart/partials/_full_cart_in_cart_page.html" with oob=True%}
+
+{% comment %} full nav cart {% endcomment %}
+{% include "cart/partials/_full_nav_cart.html" with oob=True%}
+
+{% comment %} global nav cart badge {% endcomment %}
+{% include "cart/partials/_nav_cart_badge.html" with oob=True%}
+
+{% comment %} badge for nav cart in cart page {% endcomment %}
+{% include "cart/partials/_nav_cart_badge_in_cart_page.html" with oob="True" %}

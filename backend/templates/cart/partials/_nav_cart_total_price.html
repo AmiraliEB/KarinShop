@@ -1,0 +1,8 @@
+{% load humanize %}
+
+<div id="total_price" {% if oob %} hx-swap-oob="True" {% endif %}>
+    <p class="text-gray-500 dark:text-gray-300 text-sm">مبلغ قابل پرداخت :</p>
+    <p class="text-lg text-blue-500 dark:text-blue-400 font-DanaDemiBold">{{global_cart.get_total_price|intcomma:False}}
+        <span class="font-Dana text-sm">تومان</span>
+    </p>
+</div>
