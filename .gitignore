@@ -58,4 +58,9 @@ templates/base_account.html
 js/
 css/
 src/
+
+
 frontend/
+!frontend/templates/
+frontend/static/
+frontend/assets/
