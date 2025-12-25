@@ -1,0 +1,11 @@
+<button class="flex-center p-2 bg-blue-600 text-gray-100 rounded-full open-cart relative" id="badge-nav-crt" {% if oob %} hx-swap-oob="True" {% endif %}>
+    <svg class="size-6">
+        <use href="#shopping-bag" />
+    </svg>
+    {% if global_cart|length > 0 %}
+    <span class="absolute -top-1 -right-1 flex h-4 w-4">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-600 opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-4 w-4 bg-red-500 text-xs pt-1 flex-center text-white">{{global_cart|length}}</span>
+    </span>
+    {% endif %}
+</button>
