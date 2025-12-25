@@ -31,6 +31,13 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Install Persian Locale
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y locales
+        sudo locale-gen fa_IR.UTF-8
+        sudo update-locale LANG=fa_IR.UTF-8
+
     - name: Run Tests
       working-directory: ./backend
       run: |
