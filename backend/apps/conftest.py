@@ -1,4 +1,5 @@
 import pytest
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 @pytest.fixture
 def sample_product_setup():
@@ -10,7 +11,7 @@ def sample_product_setup():
 
 @pytest.fixture
 def product_factory(sample_product_setup):
-    from products.models import Attribute, AttributeRule, AttributeValue, Product, AttributeCategory
+    from products.models import Attribute, AttributeRule, AttributeValue, Product, AttributeCategory, ProductImage
     product_category = sample_product_setup.category
     
     attr_cat = AttributeCategory.objects.create(name="Spec")
@@ -39,6 +40,19 @@ def product_factory(sample_product_setup):
 
         product.attribute_values.add(mem_val, col_val, str_val)
         
+        if not ProductImage.objects.filter(parent_product=parent_product, is_main_image=True).exists():
+            dummy_image = SimpleUploadedFile(
+                name='test_image.jpg',
+                content=b'\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x80\x00\x00\x05\x04\x04\x00\x00\x00\x2c\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02\x44\x01\x00\x3b', # هدر یک فایل GIF معتبر
+                content_type='image/jpeg'
+            )
+            
+            ProductImage.objects.create(
+                parent_product=parent_product,
+                image=dummy_image,
+                is_main_image=True
+            )
+
         product.save()
         
         return product
