@@ -34,6 +34,17 @@ class CommentForm(forms.ModelForm):
                 'name': 'is_recommend'
             })
         }
+    def save(self, request, product, commit=True):
+        comment = super().save(commit=False)
+        comment.user = request.user
+        comment.parent_product = product.parent_product
+
+        if self.cleaned_data.get('is_recommend') is None:
+            comment.is_recommend = comment.rating >= 3
+
+        if commit:
+            comment.save()
+        return comment
 
 class ProductImageFormSet(BaseInlineFormSet):
     def clean(self):
