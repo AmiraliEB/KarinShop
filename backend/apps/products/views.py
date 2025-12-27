@@ -65,18 +65,14 @@ class ProductDetailView(generic.DetailView):
             context = self.get_context_data(cart_form=cart_form)
             return self.render_to_response(context)
 
-
     def get_queryset(self):
         queryset = super().get_queryset()
-        return queryset.select_related(
-            "parent_product__brand",
-            "parent_product__category"
-        ).prefetch_related(
+        return queryset.select_related("parent_product__brand", "parent_product__category").prefetch_related(
             Prefetch(
                 "parent_product__specification_values",
-                queryset=AttributeValue.objects.select_related(
-                    "attribute__attribute_category"
-                ).order_by("attribute__attribute_category__sort_order"),
+                queryset=AttributeValue.objects.select_related("attribute__attribute_category").order_by(
+                    "attribute__attribute_category__sort_order"
+                ),
                 to_attr="sorted_attribute_values",
             ),
             "parent_product__images",
@@ -105,11 +101,9 @@ class ProductDetailView(generic.DetailView):
 
         context["comments"] = commnts_filter_by_page_number
         context["comments_count"] = comment_summary_data.get("comment_count")
-        
+
         if comment_summary_data.get("average_rating") is not None:
-            context["average_rating"] = "{:.2f}".format(
-                comment_summary_data.get("average_rating")
-            )
+            context["average_rating"] = "{:.2f}".format(comment_summary_data.get("average_rating"))
         else:
             context["average_rating"] = 0
         context["cart"] = cart
@@ -121,7 +115,7 @@ class ProductDetailView(generic.DetailView):
 
         main_img_obj = product.parent_product.images.filter(is_main_image=True).first()
         context["main_image"] = main_img_obj.image.url if main_img_obj else None
-        
+
         context["album_images"] = product.parent_product.images.filter(is_main_image=False)
 
         category = product.parent_product.category
@@ -143,11 +137,7 @@ class ProductDetailView(generic.DetailView):
 
         context["product_available_in_cart"] = cart.is_available(product)
         context["item_quantity"] = cart.get_item_quantity(product)
-        context["item_total_price_before_discount"] = (
-            cart.get_item_quantity(product) * product.initial_price
-        )
-        context["item_total_price"] = (
-            cart.get_item_quantity(product) * product.final_price
-        )
+        context["item_total_price_before_discount"] = cart.get_item_quantity(product) * product.initial_price
+        context["item_total_price"] = cart.get_item_quantity(product) * product.final_price
 
         return context
