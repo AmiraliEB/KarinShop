@@ -219,16 +219,16 @@
 <div class="px-3 lg:container group w-full mt-4 lg:mt-10">
     <div dir="rtl" class="swiper header-slider h-52 md:h-96 cursor-pointer">
         <div class="swiper-wrapper">
-            <a href="shop.html" class="swiper-slide">
+            <a href="{% url "products:shop" %}" class="swiper-slide">
                 <img src="{% static "./images/slider/4.webp" %}" class="rounded-xl" alt="">
             </a >
-            <a href="shop.html" class="swiper-slide">
+            <a href="{% url "products:shop" %}" class="swiper-slide">
                 <img src="{% static "./images/slider/1.jpg" %}" class="rounded-xl" alt="">
             </a >
-            <a href="shop.html" class="swiper-slide">
+            <a href="{% url "products:shop" %}" class="swiper-slide">
                 <img src="{% static "./images/slider/2.jpg" %}" class="rounded-xl" alt="">
             </a >
-            <a href="shop.html" class="swiper-slide">
+            <a href="{% url "products:shop" %}" class="swiper-slide">
                 <img src="{% static "./images/slider/3.gif" %}" class="rounded-xl" alt="">
             </a >
         </div>
@@ -276,7 +276,7 @@
                 </div>
             </div>
             <div class="w-full xs:w-auto flex justify-center items-center gap-x-2">
-                <a href="shop.html"
+                <a href="{% url "products:shop" %}"
                     class="group shadow-xl text-sm md:text-base flex gap-x-1.5 items-center px-2 h-10 md:px-3 text-white bg-blue-600 rounded-xl">
                     <p>مشاهده همه</p>
                     <span
@@ -291,7 +291,7 @@
         <!-- ITEMS -->
         <div
             class="flex items-center justify-evenly flex-wrap mt-12 child:mb-8 gap-x-8 child:items-center child:flex-col child:duration-300 child:cursor-pointer child:gap-y-1 child:text-gray-800 child:dark:text-gray-300 child:relative">
-            <a href="shop.html" class="group flex">
+            <a href="{% url "products:shop" %}" class="group flex">
                 <img src="{% static "images/category/5.png" %}"
                     class="w-[100px] h-[100px] lg:w-[120px] lg:h-[120px] object-cover group-hover:grayscale group-hover:opacity-90 duration-300"
                     alt="category1" />
@@ -299,7 +299,7 @@
                     موبایل
                 </p>
             </a>
-            <a href="shop.html" class="group flex">
+            <a href="{% url "products:shop" %}" class="group flex">
                 <img src="{% static "./images/category/6.png" %}"
                     class="w-[100px] h-[100px] lg:w-[120px] lg:h-[120px] object-cover group-hover:grayscale group-hover:opacity-90 duration-300"
                     alt="category1" />
@@ -307,7 +307,7 @@
                     کالای دیجیتال
                 </p>
             </a>
-            <a href="shop.html" class="group flex">
+            <a href="{% url "products:shop" %}" class="group flex">
                 <img src="{% static "./images/category/7.png" %}"
                     class="w-[100px] h-[100px] lg:w-[120px] lg:h-[120px] object-cover group-hover:grayscale group-hover:opacity-90 duration-300"
                     alt="category1" />
@@ -315,7 +315,7 @@
                     خانه و آشپزخانه
                 </p>
             </a>
-            <a href="shop.html" class="group flex">
+            <a href="{% url "products:shop" %}" class="group flex">
                 <img src="{% static "./images/category/8.png" %}"
                     class="w-[100px] h-[100px] lg:w-[120px] lg:h-[120px] object-cover group-hover:grayscale group-hover:opacity-90 duration-300"
                     alt="category1" />
@@ -323,7 +323,7 @@
                     آرایشی بهداشتی
                 </p>
             </a>
-            <a href="shop.html" class="group flex">
+            <a href="{% url "products:shop" %}" class="group flex">
                 <img src="{% static "./images/category/9.png" %}"
                     class="w-[100px] h-[100px] lg:w-[120px] lg:h-[120px] object-cover group-hover:grayscale group-hover:opacity-90 duration-300"
                     alt="category1" />
@@ -332,14 +332,14 @@
                 </p>
 
             </a>
-            <a href="shop.html" class="group flex">
+            <a href="{% url "products:shop" %}" class="group flex">
                 <img src="{% static "./images/category/10.png" %}"
                     class="w-[100px] h-[100px] lg:w-[120px] lg:h-[120px] object-cover group-hover:grayscale group-hover:opacity-90 duration-300"
                     alt="category1" />
                 <p class="pt-1 text-sm lg:text-lg line-clamp-1">
                     گیفت کارت
                 </p>
-                <a href="shop.html" class="group hidden md:flex">
+                <a href="{% url "products:shop" %}" class="group hidden md:flex">
                     <img src="{% static "./images/category/11.png" %}"
                         class="w-[100px] h-[100px] lg:w-[120px] lg:h-[120px] object-cover group-hover:grayscale group-hover:opacity-90 duration-300"
                         alt="category1" />
@@ -368,7 +368,7 @@
                             <span class="timer-box" id="hours">03</span>
                         </div>
 
-                        <a href="shop.html" class="flex items-center gap-x-.5 text-gray-100 cursor-pointer">
+                        <a href="{% url "products:shop" %}" class="flex items-center gap-x-.5 text-gray-100 cursor-pointer">
                             <p>مشاهده همه</p>
                             <svg class="size-4 rotate-90">
                                 <use href="#chevron"></use>
@@ -565,7 +565,7 @@
                             </div>
                         </div>
                     </div>
-                    <a href="shop.html" class="swiper-slide amazing-card_last ">
+                    <a href="{% url "products:shop" %}" class="swiper-slide amazing-card_last ">
                         <svg class="size-10 ">
                             <use href="#arrow-left-circle"></use>
                         </svg>
@@ -620,7 +620,7 @@
                         </svg>
                     </button>
                 </div>
-                <a href="shop.html"
+                <a href="{% url "products:shop" %}"
                     class="group shadow-xl text-sm md:text-base flex gap-x-1.5 items-center px-2 h-10 md:px-3 text-white bg-blue-600 rounded-xl">
                     <p>مشاهده همه</p>
                     <span
@@ -1100,11 +1100,11 @@
     <!-- BANNER -->
     <section
         class="mx-4 lg:container mt-10 lg:mt-20 flex flex-col lg:flex-row items-center gap-5 child:rounded-xl child:overflow-hidden">
-        <a href="shop.html" class="group">
+        <a href="{% url "products:shop" %}" class="group">
             <img src="{% static "./images/banner/1.webp" %}" class="group-hover:scale-105 transition-transform duration-300"
                 alt="">
         </a>
-        <a href="shop.html" class="group">
+        <a href="{% url "products:shop" %}" class="group">
             <img src="{% static "./images/banner/2.webp" %}" class="group-hover:scale-105 transition-transform duration-300"
                 alt="">
         </a>
@@ -1649,7 +1649,7 @@
                         </svg>
                     </button>
                 </div>
-                <a href="shop.html"
+                <a href="{% url "products:shop" %}"
                     class="group shadow-xl text-sm md:text-base flex gap-x-1.5 items-center px-2 h-10 md:px-3 text-white bg-blue-600 rounded-xl">
                     <p>مشاهده همه</p>
                     <span

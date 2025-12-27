@@ -15,6 +15,7 @@ from products.models import Product
 
 from .cart import Cart, get_cart
 from .forms import CartAddAddressFrom, CouponApplyForm
+from .models import Cart
 
 
 def refresh_shourtcut():
