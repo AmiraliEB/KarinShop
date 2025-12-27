@@ -133,3 +133,5 @@ class ProductDetailView(generic.DetailView):
         
         return context
     
+class ShopView(generic.TemplateView):
+    template_name = "products/shop.html"
