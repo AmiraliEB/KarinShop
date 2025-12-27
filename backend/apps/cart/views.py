@@ -5,7 +5,8 @@ from django.core.paginator import Paginator
 from django.utils import timezone
 from datetime import timedelta
 from .forms import CartAddAddressFrom, CouponApplyForm
-from .cart import Cart, get_cart
+from .cart import get_cart
+from .models import Cart
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from products.models import Product
