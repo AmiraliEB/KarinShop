@@ -10,3 +10,7 @@ exclude =
     .venv,
     venv,
     */migrations/*
+    docs/source/conf.py,
+    old,
+    build,
+    dist,
