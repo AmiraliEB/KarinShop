@@ -433,7 +433,7 @@
             <!-- PRICE BOX -->
             <div class="w-full lg:w-1/4 lg:sticky top-5 flex flex-col gap-y-4 rounded-lg bg-white dark:bg-gray-800 shadow p-4">
                 <!-- PRICE -->
-                <ul class="child:flex child:items-center child:justify-between space-y-8">
+                <ul class="child:flex child:items-center child:justify-between space-y-8" id="price-box">
                     <li>
                         <p>قیمت کالاها ({{global_cart|length}})</p>
                         <p class="flex gap-x-1 text-gray-600 dark:text-gray-300" id="total-price">{{global_cart.get_total_price|intcomma:False}} <span class="hidden xl:flex">تومان</span></p>
