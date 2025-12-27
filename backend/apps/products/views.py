@@ -141,3 +141,7 @@ class ProductDetailView(generic.DetailView):
         context["item_total_price"] = cart.get_item_quantity(product) * product.final_price
 
         return context
+
+
+class ShopView(generic.TemplateView):
+    template_name = "products/shop.html"
