@@ -1,10 +1,11 @@
-from .base import *
+from .base import *  # noqa
+
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
-INSTALLED_APPS += ['debug_toolbar']
-MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
+INSTALLED_APPS += ["debug_toolbar"]  # noqa
+MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]  # noqa
 INTERNAL_IPS = ["127.0.0.1"]
