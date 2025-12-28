@@ -1,14 +1,14 @@
 from accounts.forms import ResendConfirmationEmailForm
-from django.urls import reverse
-from django.shortcuts import redirect, render
-from django.utils.translation import gettext_lazy as _
-from allauth.account.views import PasswordResetView, AccountInactiveView, PasswordResetFromKeyDoneView
-from django.contrib import messages
-from django.views import View
-from allauth.account.models import EmailAddress
 from allauth.account.adapter import get_adapter
-from django.contrib.auth import get_user_model
+from allauth.account.models import EmailAddress
+from allauth.account.views import AccountInactiveView, PasswordResetFromKeyDoneView, PasswordResetView
 from allauth.utils import build_absolute_uri
+from django.contrib import messages
+from django.contrib.auth import get_user_model
+from django.shortcuts import redirect, render
+from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
+from django.views import View
 
 User = get_user_model()
 

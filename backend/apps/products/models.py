@@ -1,3 +1,4 @@
+from __future__ import annotations
 from collections import defaultdict
 from math import ceil
 from django.db import models
@@ -6,12 +7,12 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
-from django.conf import settings
 from django.db.models.signals import m2m_changed, post_save, post_delete
 from django.dispatch import receiver
 from django.utils.text import slugify
+from django.contrib.auth import get_user_model
 
-User = settings.AUTH_USER_MODEL
+User = get_user_model()
 
 
 class ParentProduct(models.Model):
@@ -24,11 +25,11 @@ class ParentProduct(models.Model):
         related_name="product_parents",
         verbose_name=_("category"),
     )
-    brand = models.ForeignKey(
+    brand: models.ForeignKey[Brand] = models.ForeignKey(
         "Brand", on_delete=models.PROTECT, related_name="product_parents", verbose_name=_("brand")
     )
 
-    specification_values = models.ManyToManyField(
+    specification_values: models.ManyToManyField[AttributeValue, ParentProduct] = models.ManyToManyField(
         "AttributeValue",
         related_name="parent_products",
         verbose_name=_("shared specifications"),
@@ -79,7 +80,7 @@ class Product(models.Model):
         ("amount", _("Fixed Amount")),
     )
 
-    parent_product = models.ForeignKey(
+    parent_product: models.ForeignKey[ParentProduct] = models.ForeignKey(
         "ParentProduct", on_delete=models.PROTECT, related_name="products", verbose_name=_("product name")
     )
 
@@ -98,7 +99,7 @@ class Product(models.Model):
     is_amazing = models.BooleanField(default=False, verbose_name=_("is amazing?"))
     is_best_selling = models.BooleanField(default=False, verbose_name=_("is best selling?"))
 
-    attribute_values = models.ManyToManyField(
+    attribute_values: models.ManyToManyField[AttributeValue, Product] = models.ManyToManyField(
         "AttributeValue", verbose_name=_("attribute values"), limit_choices_to={"attribute__is_variant_defining": True}
     )
 
@@ -196,7 +197,7 @@ def product_image_upload_to(instance, filename):
 
 
 class ProductImage(models.Model):
-    parent_product = models.ForeignKey(
+    parent_product: models.ForeignKey[ParentProduct] = models.ForeignKey(
         ParentProduct, on_delete=models.CASCADE, related_name="images", verbose_name=_("parent product")
     )
     image = models.ImageField(upload_to=product_image_upload_to, verbose_name=_("product image"))
@@ -236,7 +237,7 @@ class ProductCategory(models.Model):
         verbose_name=_("parent category"),
     )
 
-    attribute_categories = models.ManyToManyField(
+    attribute_categories: models.ManyToManyField[AttributeCategory, ProductCategory] = models.ManyToManyField(
         "AttributeCategory", blank=True, verbose_name=_("attribute categories")
     )
 
@@ -251,7 +252,7 @@ class ProductCategory(models.Model):
 
 class Attribute(models.Model):
     name = models.CharField(max_length=255, verbose_name=_("attribute name"))
-    product_category = models.ManyToManyField(
+    product_category: models.ManyToManyField[ProductCategory, Attribute] = models.ManyToManyField(
         ProductCategory, related_name="attributes", verbose_name=_("related categories"), through="AttributeRule"
     )
 
@@ -281,8 +282,12 @@ class Attribute(models.Model):
 
 
 class AttributeRule(models.Model):
-    attribute = models.ForeignKey("Attribute", verbose_name=_("attribute"), on_delete=models.CASCADE)
-    category = models.ForeignKey("ProductCategory", verbose_name=_("category"), on_delete=models.CASCADE)
+    attribute: models.ForeignKey[Attribute] = models.ForeignKey(
+        "Attribute", verbose_name=_("attribute"), on_delete=models.CASCADE
+    )
+    category: models.ForeignKey[ProductCategory] = models.ForeignKey(
+        "ProductCategory", verbose_name=_("category"), on_delete=models.CASCADE
+    )
     brand = models.ForeignKey("Brand", verbose_name=_("brand"), on_delete=models.CASCADE, blank=True, null=True)
 
     is_main_feature = models.BooleanField(default=False, verbose_name=_("Show in product tite?"))
@@ -306,7 +311,7 @@ class AttributeRule(models.Model):
 
 
 class AttributeValue(models.Model):
-    attribute = models.ForeignKey(
+    attribute: models.ForeignKey[Attribute] = models.ForeignKey(
         Attribute, on_delete=models.CASCADE, related_name="values", verbose_name=_("attribute")
     )
     value = models.CharField(max_length=255, verbose_name=_("attribute value"))
@@ -345,7 +350,7 @@ class Brand(models.Model):
 
 class Comments(models.Model):
     # comment should pe linked to parent product
-    parent_product = models.ForeignKey(
+    parent_product: models.ForeignKey[ParentProduct] = models.ForeignKey(
         ParentProduct, on_delete=models.CASCADE, related_name="comments", verbose_name=_("product")
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments", verbose_name=_("user"))
