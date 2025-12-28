@@ -9,10 +9,9 @@ class OrderItemInline(admin.TabularInline):
     extra = 0
     raw_id_fields = ["product"]
 
+    @admin.display(description="قیمت کل ردیف")
     def get_cost(self, obj):
         return f"{obj.get_cost():,} تومان"
-
-    get_cost.short_description = "قیمت کل ردیف"
 
 
 @admin.register(Order)
@@ -40,10 +39,9 @@ class OrderAdmin(admin.ModelAdmin):
         ("تاریخچه", {"fields": ("datetime_created", "get_total_price_display")}),
     )
 
+    @admin.display(description="مبلغ کل سفارش")
     def get_total_price_display(self, obj):
         return f"{obj.get_total_price():,} تومان"
-
-    get_total_price_display.short_description = "مبلغ کل سفارش"
 
 
 @admin.register(Coupon)

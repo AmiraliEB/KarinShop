@@ -1,14 +1,13 @@
 from cart.cart import get_cart
-from cart.forms import CartAddPrproductForm
+from cart.forms import CartAddProductForm
 from django.conf import settings
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Avg, Count, Prefetch
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.text import slugify
 from django.views import generic
-from django.http import HttpResponse, HttpRequest
-
 from products.models import AttributeValue, Comments, ParentProduct, Product
 
 from .forms import CommentForm
@@ -56,7 +55,7 @@ class ProductDetailView(generic.DetailView):
             return self.render_to_response(context)
 
     def process_cart(self, request: HttpRequest) -> HttpResponse:
-        cart_form = CartAddPrproductForm(request.POST)
+        cart_form = CartAddProductForm(request.POST)
         if cart_form.is_valid():
             cart = get_cart(request)
             cart.add(self.object, cart_form.cleaned_data["quantity"])
@@ -112,7 +111,7 @@ class ProductDetailView(generic.DetailView):
         if "comment_form" not in context:
             context["comment_form"] = CommentForm()
         if "cart_form" not in context:
-            context["cart_form"] = CartAddPrproductForm()
+            context["cart_form"] = CartAddProductForm()
 
         main_img_obj = product.parent_product.images.filter(is_main_image=True).first()
         context["main_image"] = main_img_obj.image.url if main_img_obj else None
