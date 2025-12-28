@@ -1,20 +1,20 @@
-from django.http import HttpResponse
-from django.shortcuts import render, redirect
-from django.views.generic import View
-from django.core.paginator import Paginator
-from django.utils import timezone
 from datetime import timedelta
-from .forms import CartAddAddressFrom, CouponApplyForm
-from .cart import Cart, get_cart
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import get_object_or_404
-from products.models import Product
-from accounts.models import Profile, Address
-from orders.models import Coupon
-from django.contrib import messages
 
+from accounts.models import Address, Profile
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.paginator import Paginator
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_POST
+from django.views.generic import View
+from orders.models import Coupon
+from products.models import Product
+
+from .cart import Cart, get_cart
+from .forms import CartAddAddressFrom, CouponApplyForm
 
 
 def refresh_shourtcut():

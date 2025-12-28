@@ -1,9 +1,10 @@
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from allauth.account.forms import SignupForm, LoginForm, ResetPasswordForm, ResetPasswordKeyForm
-from django import forms
-from .models import CustomUser
-from allauth.account.utils import get_adapter, filter_users_by_email
 from allauth.account import app_settings
+from allauth.account.forms import LoginForm, ResetPasswordForm, ResetPasswordKeyForm, SignupForm
+from allauth.account.utils import filter_users_by_email, get_adapter
+from django import forms
+from django.contrib.auth.forms import UserChangeForm, UserCreationForm
+
+from .models import CustomUser
 
 
 class CustomUserCreationForm(UserCreationForm):

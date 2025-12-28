@@ -1,52 +1,60 @@
-from products.models import Product, Attribute
+from typing import Any, Iterator
 
-from .models import Cart as DBCart, CartItem
+from django.db.models import F, QuerySet
+from django.http import HttpRequest
+from products.models import Attribute, Product
 
-from django.db.models import F
+from .models import Cart as DBCart
+from .models import CartItem
 
 
 class DBCartWrapper:
-    def __init__(self, request):
+    def __init__(self, request: HttpRequest):
         self.request = request
         self.user = request.user
-        self.db_cart = DBCart.objects.filter(user=self.user).first()
+        if not self.user.is_authenticated:
+            # Type Narrowing: Ensure user is a concrete 'CustomUser' model,
+            return None
 
-    def __iter__(self):
-        if not self.db_cart:
-            return []
+        self.db_cart: DBCart | None = DBCart.objects.filter(user=self.user).first()
 
-        items = self.db_cart.items.select_related("product").all()
+    def __iter__(self) -> Iterator[dict]:
+        if self.db_cart is None:
+            return
+
+        items: QuerySet["CartItem"] = (
+            self.db_cart.items.select_related("product").prefetch_related("product__attribute_values__attribute").all()
+        )
+
+        color_attribute_obj = Attribute.objects.filter(name="رنگ").first()
 
         for item in items:
+            color_value = "نامشخص"
+            if color_attribute_obj:
+                for attr_val in item.product.attribute_values.all():
+                    if attr_val.attribute_id == color_attribute_obj.id:
+                        color_value = attr_val.value
+                        break
+
             yield {
                 "product_obj": item.product,
                 "quantity": item.quantity,
                 "item_total_price": item.get_total_price(),
                 "item_total_price_before_discount": item.get_total_price_before_discount(),
-                "color": self._get_product_color(item.product),
+                "color": color_value,
             }
 
     def __len__(self) -> int:
-        if not self.db_cart:
+        if self.db_cart is None:
             return 0
         return self.db_cart.items.count()
 
-    def get_total_price(self) -> int:
-        if not self.db_cart:
-            return 0
-        return self.db_cart.get_total_price()
-
-    def _get_product_color(self, product):
-        attribute = Attribute.objects.filter(name="رنگ")
-        attr_val = product.attribute_values.filter(attribute__in=attribute).first()
-        return attr_val.value if attr_val else "نامشخص"
-
-    def add(self, product, quantity=1):
+    def add(self, product: Product, quantity=1) -> dict[str, int]:
         cart_obj, created = DBCart.objects.get_or_create(user=self.request.user)
         cart_item_obj, cart_item_created = CartItem.objects.get_or_create(
             product=product, cart=cart_obj, defaults={"quantity": quantity}
         )
-        if not cart_item_created:
+        if cart_item_created is False:
             cart_item_obj.quantity += quantity
             cart_item_obj.save()
         add_return = {
@@ -56,91 +64,113 @@ class DBCartWrapper:
         }
         return add_return
 
-    def decrement(self, product, remove=False):
+    def decrement(self, product: Product, remove=False) -> dict[str, int]:
         cart_item_obj = CartItem.objects.filter(product=product, cart=self.db_cart).first()
-        if self.db_cart and cart_item_obj:
-            if cart_item_obj.quantity <= 1 or remove is True:
-                cart_item_obj.delete()
-            else:
-                cart_item_obj.quantity = F("quantity") - 1
-                cart_item_obj.save()
-                cart_item_obj.refresh_from_db()
 
-        decrement_return = {
-            "quantity": cart_item_obj.quantity,
-            "new_item_total_price": cart_item_obj.get_total_price(),
-            "item_total_price_before_discount": cart_item_obj.get_total_price_before_discount(),
+        base_return = {
+            "quantity": 0,
+            "new_item_total_price": 0,
+            "item_total_price_before_discount": 0,
         }
-        return decrement_return
 
-    def remove(self, product):
+        if not cart_item_obj or not self.db_cart:
+            return base_return
+
+        should_delete = cart_item_obj.quantity <= 1 or remove
+
+        if not should_delete:
+            cart_item_obj.quantity = F("quantity") - 1
+            cart_item_obj.save()
+            cart_item_obj.refresh_from_db()
+            return {
+                "quantity": cart_item_obj.quantity,
+                "new_item_total_price": cart_item_obj.get_total_price(),
+                "item_total_price_before_discount": cart_item_obj.get_total_price_before_discount(),
+            }
+
+        cart_item_obj.delete()
+
+        return base_return
+
+    def remove(self, product: Product) -> None:
         if self.db_cart:
             cart_item_obj = CartItem.objects.filter(product=product, cart=self.db_cart).first()
             if cart_item_obj:
                 cart_item_obj.delete()
 
-    def clear(self):
+    def clear(self) -> None:
         if self.db_cart:
             self.db_cart.items.all().delete()
 
-    def is_available(self, product):
+    def get_total_price(self) -> int:
+        if self.db_cart is None:
+            return 0
+        return self.db_cart.get_total_price()
+
+    def is_available(self, product: Product) -> bool:
         cart_item_obj = CartItem.objects.filter(cart=self.db_cart, product=product).first()
         if not cart_item_obj or cart_item_obj.quantity == 0:
             return False
         return True
 
-    def get_item_quantity(self, product):
+    def get_item_quantity(self, product: Product) -> int:
         cart = self.db_cart
         cart_item_obj = CartItem.objects.filter(cart=cart, product=product).first()
-        if cart_item_obj:
+        if cart_item_obj is not None:
             return cart_item_obj.quantity
         return 0
 
 
 class Cart:
-    def __init__(self, request):
+    def __init__(self, request: HttpRequest) -> None:
         self.request = request
         self.session = request.session
 
-        cart = self.session.get("cart")
+        cart: dict | None = self.session.get("cart")
         if not cart:
             cart = self.session["cart"] = {}
 
         self.cart = cart
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[dict[str, Any]]:
         product_ids = self.cart.keys()
         products = (
             Product.objects.filter(id__in=product_ids)
             .select_related("parent_product")
             .prefetch_related("parent_product__images")
+            .prefetch_related("attribute_values__attribute")
         )
-
+        # this is necessary for prevent session serialize failure
         cart = self.cart.copy()
+        color_attribute_obj = Attribute.objects.filter(name="رنگ").first()
 
         for product in products:
             product_id = str(product.id)
 
-            # this is necessary for prevent session serialize failure
+            if product_id not in cart:
+                continue
+
             item = cart[product_id].copy()
-
             item["product_obj"] = product
-            item["item_total_price"] = item["product_obj"].final_price * cart[product_id]["quantity"]
-            item["item_total_price_before_discount"] = item["product_obj"].initial_price * cart[product_id]["quantity"]
-            attribute = Attribute.objects.filter(name="رنگ")
-            color_attr = product.attribute_values.filter(attribute__in=attribute).first()
 
-            item["color"] = color_attr.value if color_attr else None
+            qty: int = item["quantity"]
+            item["item_total_price"] = item["product_obj"].final_price * qty
+            item["item_total_price_before_discount"] = item["product_obj"].initial_price * qty
 
-            cart[product_id] = item
+            item["color"] = None
 
-        for item in cart.values():
+            if color_attribute_obj:
+                for attr_val in product.attribute_values.all():
+                    if attr_val.attribute_id == color_attribute_obj.id:
+                        item["color"] = attr_val.value
+                        break
+
             yield item
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.cart.values())
 
-    def add(self, product, quantity=1):
+    def add(self, product: Product, quantity=1) -> dict[str, int]:
         product_id = str(product.id)
 
         if product_id not in self.cart:
@@ -156,7 +186,7 @@ class Cart:
         }
         return add_return
 
-    def decrement(self, product, remove=False):
+    def decrement(self, product: Product, remove=False) -> dict[str, int]:
         product_id = str(product.id)
 
         if product_id in self.cart:
@@ -178,26 +208,23 @@ class Cart:
 
         return add_return
 
-    def remove(self, product):
+    def remove(self, product: Product) -> None:
         product_id = str(product.id)
         if product_id in self.cart:
             del self.cart[product_id]
             self.save()
 
-    def clear(self):
+    def clear(self) -> None:
         del self.session["cart"]
         self.save()
 
-    def get_total_price(self):
+    def get_total_price(self) -> int:
         product_ids = self.cart.keys()
         products = Product.objects.filter(id__in=product_ids)
 
         return sum(product.final_price * self.cart[str(product.id)]["quantity"] for product in products)
 
-    def save(self):
-        self.session.modified = True
-
-    def is_available(self, product):
+    def is_available(self, product) -> bool:
         product_id = str(product.id)
         cart = self.cart
         try:
@@ -206,19 +233,21 @@ class Cart:
             return False
         return True
 
-    def get_item_quantity(self, product):
+    def get_item_quantity(self, product) -> int:
         product_id = str(product.id)
         cart = self.cart
         if self.is_available(product):
             quantity = cart[product_id]["quantity"]
-            print(quantity)
             if quantity:
                 return quantity
             return quantity
         return 0
 
+    def save(self) -> None:
+        self.session.modified = True
 
-def get_cart(request):
+
+def get_cart(request: HttpRequest) -> DBCartWrapper | Cart:
     if request.user.is_authenticated:
         return DBCartWrapper(request)
     else:

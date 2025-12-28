@@ -4,7 +4,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 
 @pytest.fixture
 def sample_product_setup():
-    from products.models import ProductCategory, Brand, ParentProduct
+    from products.models import Brand, ParentProduct, ProductCategory
 
     category = ProductCategory.objects.create(name="General", code="gen")
     brand = Brand.objects.create(name="Generic", code="gnr")
@@ -14,7 +14,7 @@ def sample_product_setup():
 
 @pytest.fixture
 def product_factory(sample_product_setup):
-    from products.models import Attribute, AttributeRule, AttributeValue, Product, AttributeCategory, ProductImage
+    from products.models import Attribute, AttributeCategory, AttributeRule, AttributeValue, Product, ProductImage
 
     product_category = sample_product_setup.category
 

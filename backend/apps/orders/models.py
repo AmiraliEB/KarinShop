@@ -1,10 +1,11 @@
-from django.db import models
-from django.core.exceptions import ValidationError
-from products.models import Product
-from django.contrib.auth import get_user_model
-from django.utils.translation import gettext_lazy as _
-from accounts.models import Address
 import uuid
+
+from accounts.models import Address
+from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
+from django.db import models
+from django.utils.translation import gettext_lazy as _
+from products.models import Product
 
 User = get_user_model()
 

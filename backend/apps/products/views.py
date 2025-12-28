@@ -7,6 +7,7 @@ from django.db.models import Avg, Count, Prefetch
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.text import slugify
 from django.views import generic
+from django.http import HttpResponse, HttpRequest
 
 from products.models import AttributeValue, Comments, ParentProduct, Product
 
@@ -28,8 +29,8 @@ class ProductDetailView(generic.DetailView):
     template_name = "products/product_details.html"
     context_object_name = "product"
 
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
+    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        self.object: Product = self.get_object()
         if "comment_submit" in request.POST:
             return self.process_comment(request)
 
@@ -38,7 +39,7 @@ class ProductDetailView(generic.DetailView):
 
         return redirect(self.object.get_absolute_url())
 
-    def process_comment(self, request):
+    def process_comment(self, request: HttpRequest) -> HttpResponse:
         if not request.user.is_authenticated:
             messages.warning(request, "برای ثبت دیدگاه، لطفا ابتدا وارد شوید.")
             return redirect(f"{settings.LOGIN_URL}?next={self.object.get_absolute_url()}")
@@ -54,7 +55,7 @@ class ProductDetailView(generic.DetailView):
             context = self.get_context_data(comment_form=comment_form)
             return self.render_to_response(context)
 
-    def process_cart(self, request):
+    def process_cart(self, request: HttpRequest) -> HttpResponse:
         cart_form = CartAddPrproductForm(request.POST)
         if cart_form.is_valid():
             cart = get_cart(request)

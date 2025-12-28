@@ -1,8 +1,9 @@
 import locale
 import os
 import sys
-import environ
 from pathlib import Path
+
+import environ
 
 BASE_BACKEND_DIR = Path(__file__).resolve().parent.parent.parent
 BASE_DIR = BASE_BACKEND_DIR.parent

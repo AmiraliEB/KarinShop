@@ -1,5 +1,3 @@
-# users/adapter.py
-
 from allauth.account.adapter import DefaultAccountAdapter
 
 

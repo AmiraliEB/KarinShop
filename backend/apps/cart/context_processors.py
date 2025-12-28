@@ -1,5 +1,6 @@
-from cart.cart import get_cart
 from itertools import islice
+
+from cart.cart import get_cart
 
 
 def cart_context(request):
