@@ -1,6 +1,6 @@
 import pytest
-from django.urls import reverse
 from django.conf import settings
+from django.urls import reverse
 
 
 @pytest.mark.django_db
@@ -12,21 +12,6 @@ def test_product_detail_view_loads(client, product_factory):
 
     assert response.context["product"] == product
     assert "products/product_details.html" in [t.name for t in response.templates]
-
-
-@pytest.mark.django_db
-def test_add_to_cart_from_product_page(client, product_factory):
-    product = product_factory()
-    url = reverse("products:product_detail", kwargs={"pk": product.pk, "slug": "test-slug"})
-
-    data = {"cart_submit": "", "quantity": 3}
-    response = client.post(url, data)
-
-    assert response.status_code == 302
-
-    session = client.session
-    assert str(product.id) in session["cart"]
-    assert session["cart"][str(product.id)]["quantity"] == 3
 
 
 def get_valid_comment_data():
@@ -80,3 +65,39 @@ def test_add_comment(client, product_factory, user_factory, override_data, expec
     else:
         assert comment is None
         assert response.context["comment_form"].errors
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "quantity, expected_status",
+    [
+        (2, 302),
+        (-1, 200),
+    ],
+)
+def test_add_cart(client, product_factory, quantity, expected_status):
+    product = product_factory()
+    url = reverse("products:product_detail", kwargs={"pk": product.id, "slug": "test-slug"})
+    data = {
+        "cart_submit": "",
+        "quantity": quantity,
+    }
+
+    response = client.post(url, data)
+    assert response.status_code == expected_status
+    if expected_status == 302:
+        session = client.session
+        cart = session.get("cart", {})
+        product_id = str(product.id)
+
+        assert product_id in cart
+        assert cart[product_id]["quantity"] == data["quantity"]
+
+    elif expected_status == 200:
+        assert "cart_form" in response.context
+        assert response.context["cart_form"].errors
+
+        session = client.session
+        cart = session.get("cart", {})
+        product_id = str(product.id)
+        assert product_id not in cart
