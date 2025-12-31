@@ -1,4 +1,4 @@
-name: Django CI
+name: Django CI/CD Pipeline
 
 on:
   push:
@@ -8,8 +8,8 @@ on:
 
 jobs:
   test:
+    name: Run Tests & Lint
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -20,7 +20,7 @@ jobs:
           python-version: "3.11"
           cache: 'pip'        
 
-      - name: Install Dependencies for Linting
+      - name: Install Dependencies
         run: |
           pip install flake8
 
@@ -50,6 +50,7 @@ jobs:
         run: docker compose -f docker-compose.prod.yml -f docker-compose.test.yml down -v
 
   build-and-push:
+    name: Build & Push Docker Image
     needs: test
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
@@ -74,6 +75,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/django-backend:v1, ${{ secrets.DOCKERHUB_USERNAME }}/django-backend:${{ github.sha }}
   
   deploy:
+    name: Deploy to VPS
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
