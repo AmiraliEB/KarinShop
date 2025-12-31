@@ -1,6 +1,6 @@
 services:
   web:
-    image: app:django
+    image: ${DOCKERHUB_USERNAME}:django-backend:v1
     working_dir: /app/backend
     command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
     volumes:
