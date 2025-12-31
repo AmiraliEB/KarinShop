@@ -1,4 +1,16 @@
 from datetime import timedelta
+<<<<<<< HEAD
+=======
+from .forms import CartAddAddressFrom, CouponApplyForm
+from .cart import get_cart
+from .models import Cart
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import get_object_or_404
+from products.models import Product
+from accounts.models import Profile, Address
+from orders.models import Coupon
+from django.contrib import messages
+>>>>>>> 45af3a4 (feat: replace shop.html with shop url in all templates)
 
 from accounts.models import Address, Profile
 from django.contrib import messages
@@ -13,9 +25,8 @@ from django.views.generic import View
 from orders.models import Coupon
 from products.models import Product
 
-from .cart import get_cart
+from .cart import Cart, get_cart
 from .forms import CartAddAddressFrom, CouponApplyForm
-from .models import Cart
 
 
 def refresh_shourtcut():
