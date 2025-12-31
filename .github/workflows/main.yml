@@ -38,15 +38,16 @@ jobs:
           echo "POSTGRES_PASSWORD=postgres" >> .env
           echo "POSTGRES_HOST=db-test" >> .env
           echo "POSTGRES_PORT=5432" >> .env
+          echo "DATABASE_URL=postgres://postgres:postgres@db:5432/test_db" >> .env
       
       - name: Build and Run Tests
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         run: |
-          docker compose -f docker-compose.prod.yml -f docker-compose.test.yml up --build --exit-code-from web
+          docker-compose -f docker-compose.prod.yml -f docker-compose.test.yml up --build --exit-code-from web
       - name: Cleanup
         if: always()
-        run: docker compose -f docker-compose.prod.yml -f docker-compose.test.yml down -v
+        run: docker-compose -f docker-compose.prod.yml -f docker-compose.test.yml down -v
 
   build-and-push:
     needs: test
