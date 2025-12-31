@@ -18,7 +18,7 @@ from .forms import CartAddAddressFrom, CouponApplyForm
 from .models import Cart
 
 
-def refresh_shourtcut():
+def refresh_shortcut():
     response = HttpResponse("home")
     response["HX-Refresh"] = "true"
     return response
@@ -36,13 +36,13 @@ class CartView(View):
         page_number = self.request.GET.get("page")
         if not page_number:
             page_number = 1
-        pagiator_page = paginator.page(page_number)
-        page_objects = pagiator_page.object_list
+        paginator_page = paginator.page(page_number)
+        page_objects = paginator_page.object_list
 
         context = {
             "page_objects": page_objects,
             "paginator": paginator,
-            "paginator_page": pagiator_page,
+            "paginator_page": paginator_page,
         }
 
         return render(request, "cart/cart.html", context)
@@ -64,8 +64,13 @@ class CheckoutView(LoginRequiredMixin, View):
         # if dont want it, just remove this block
         coupon = Coupon.objects.filter(code__iexact="DEMO_MODE").first()
         request.session["coupon_id"] = coupon.id
+        address = Address.objects.filter(user=request.user).first()
 
-        return render(request, "cart/checkout.html", {"form": form, "time_to_leave_warehouse": time_to_leave_warehouse})
+        return render(
+            request,
+            "cart/checkout.html",
+            {"form": form, "time_to_leave_warehouse": time_to_leave_warehouse, "address": address},
+        )
 
     def post(self, request, *args, **kwargs):
         form = CartAddAddressFrom(request.POST)
