@@ -1,6 +1,4 @@
-import uuid
-
-from accounts.models import Address
+import nanoid
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -30,8 +28,6 @@ class Order(models.Model):
     is_paid = models.BooleanField(default=False, verbose_name=_("Is Paid?"))
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default="p", verbose_name=_("Status"))
 
-    address = models.ForeignKey(Address, verbose_name=_("address"), on_delete=models.SET_NULL, null=True)
-
     province = models.CharField(verbose_name=_("province"), max_length=50)
     city = models.CharField(verbose_name=_("city"), max_length=50)
     postal_code = models.CharField(max_length=20, verbose_name=_("postal code"))
@@ -52,7 +48,10 @@ class Order(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.order_number:
-            self.order_number = str(uuid.uuid4()).replace("-", "")[:10].upper()
+            alphabet = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ"
+            raw_code = nanoid.generate(alphabet=alphabet, size=10)
+            self.order_number = f"{raw_code[:3]}-{raw_code[3:6]}-{raw_code[6:]}"
+
         super().save(*args, **kwargs)
 
     def get_total_price(self):

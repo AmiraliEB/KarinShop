@@ -17,9 +17,7 @@ class Profile(models.Model):
 
 
 class Address(models.Model):
-    user = models.ForeignKey(
-        CustomUser, verbose_name=_("addresses"), on_delete=models.CASCADE, related_name="addresses"
-    )
+    user = models.ForeignKey(CustomUser, verbose_name=_("user"), on_delete=models.CASCADE, related_name="addresses")
     province = models.CharField(verbose_name=_("province"), max_length=50)
     city = models.CharField(verbose_name=_("city"), max_length=50)
     postal_code = models.CharField(max_length=20, verbose_name=_("postal code"))
