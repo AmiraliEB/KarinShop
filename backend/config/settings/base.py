@@ -16,7 +16,7 @@ sys.path.insert(0, str(BASE_BACKEND_DIR / "apps"))
 env = environ.Env(DEBUG=(bool, False))
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
-SECRET_KEY = env("SECRET_KEY")
+SECRET_KEY = env.str("SECRET_KEY")
 
 DEBUG = env.bool("DEBUG", False)
 

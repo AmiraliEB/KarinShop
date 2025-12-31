@@ -19,7 +19,6 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = [
         "order_number",
         "user",
-        "phone_number",
         "is_paid",
         "status",
         "get_total_price_display",
@@ -27,7 +26,7 @@ class OrderAdmin(admin.ModelAdmin):
     ]
 
     list_filter = ["is_paid", "status", "datetime_created"]
-    search_fields = ["order_number", "user__username", "user__email", "phone_number", "full_address"]
+    search_fields = ["order_number", "user__username", "user__email", "full_address"]
 
     inlines = [OrderItemInline]
 
@@ -35,7 +34,7 @@ class OrderAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ("اطلاعات اصلی", {"fields": ("user", "order_number", "status", "is_paid")}),
-        ("اطلاعات ارسال", {"fields": ("address", "province", "city", "full_address", "postal_code", "phone_number")}),
+        ("اطلاعات ارسال", {"fields": ("province", "city", "full_address", "postal_code", "phone_number")}),
         ("تاریخچه", {"fields": ("datetime_created", "get_total_price_display")}),
     )
 
