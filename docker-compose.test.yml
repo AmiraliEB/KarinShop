@@ -1,0 +1,27 @@
+services:
+  web:
+    build: .
+    command: pytest
+    restart: "no"
+    environment:
+      - DEBUG=False
+      - SECRET_KEY=ci-secret-key
+      - POSTGRES_DB=test_db
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    restart: "no"
+    environment:
+      POSTGRES_DB: test_db
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  nginx:
+    entrypoint: [ "echo", "Nginx disabled for tests" ]
+    restart: "no"
+    profiles: [ "donotstart" ]
