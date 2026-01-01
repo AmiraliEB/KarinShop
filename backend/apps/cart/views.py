@@ -1,3 +1,4 @@
+import uuid
 from datetime import timedelta
 
 from accounts.models import Address, Profile
@@ -148,6 +149,24 @@ class PaymentView(LoginRequiredMixin, View):
             "coupon": coupon,
             "address_obj": address,
         }
+
+        if not user.is_authenticated:
+            return render(request, "payments/failed-payment.html", {"error": "کاربر وارد نشده است."})
+        if address is None:
+            return render(request, "payments/failed-payment.html", {"error": "آدرس برای کاربر یافت نشد."})
+        order = Order.objects.create(
+            user=user,
+            province=address.province,
+            city=address.city,
+            postal_code=address.postal_code,
+            full_address=address.full_address,
+            phone_number=address.phone_number,
+        )
+        order = order.create_order(user=user, address=address)
+
+        base_url = reverse("demo-gateway")
+        params = f"?order_number={order.order_number}"
+        context["payment_url"] = base_url + params
 
         return render(request, template_name="cart/payment.html", context=context)
 
