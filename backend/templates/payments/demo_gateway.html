@@ -30,12 +30,11 @@
                 </p>
             </div>
             <p>لطفا وضعیت تراکنش را تعیین کنید:</p>
-            <a href="{% url 'verify' %}?status=success&order_id={{ order_id }}&ref_id={{ ref_id }}"
-               class="btn btn-success">✅ پرداخت موفق</a>
-            <a href="{% url 'verify' %}?status=failed&order_id={{ order_id }}"
-               class="btn btn-fail">❌ پرداخت ناموفق (خطا)</a>
-            <a href="{% url 'verify' %}?status=cancel&order_id={{ order_id }}"
-               class="btn btn-cancel">🔙 انصراف</a>
+            <form action="" method="post">
+                <button type="submit" name="success" class="btn btn-success">✅ پرداخت موفق</button>
+                <button type="submit" name="failure" class="btn btn-fail">❌ پرداخت ناموفق (خطا)</button>
+                <button type="submit" name="cancel" class="btn btn-cancel">🔙 انصراف</button>
+            </form>
         </div>
     </body>
 </html>
