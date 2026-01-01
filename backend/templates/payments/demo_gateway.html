@@ -20,7 +20,7 @@
             <h3>درگاه پرداخت شبیه‌سازی شده</h3>
             <div class="info">
                 <p>
-                    <strong>شماره سفارش:</strong> {{ order_id }}
+                    <strong>شماره سفارش:</strong> {{ order_number }}
                 </p>
                 <p>
                     <strong>مبلغ:</strong> {{ amount }} تومان
@@ -30,7 +30,11 @@
                 </p>
             </div>
             <p>لطفا وضعیت تراکنش را تعیین کنید:</p>
-            <form action="" method="post">
+            <form action="{% url "verify" %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="ref_id" value="{{ ref_id }}">
+                <input type="hidden" name="amount" value="{{ amount }}">
+                <input type="hidden" name="order_number" value="{{ order_number }}">
                 <button type="submit" name="success" class="btn btn-success">✅ پرداخت موفق</button>
                 <button type="submit" name="failure" class="btn btn-fail">❌ پرداخت ناموفق (خطا)</button>
                 <button type="submit" name="cancel" class="btn btn-cancel">🔙 انصراف</button>
