@@ -2,15 +2,17 @@ from datetime import timedelta
 
 from accounts.models import Address, Profile
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_POST
 from django.views.generic import View
-from orders.models import Coupon
+from orders.models import Coupon, Order
 from products.models import Product
 
 from .cart import get_cart
@@ -109,13 +111,18 @@ class CheckoutView(LoginRequiredMixin, View):
 
 
 class PaymentView(LoginRequiredMixin, View):
-    def get(self, request, *args, **kwargs):
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        user = request.user
 
-        address = Address.objects.filter(user=request.user).first()
+        # this is only for type narrowing and mypy checking, login state is ensured by LoginRequiredMixin
+        if user.is_authenticated is False:
+            return redirect("login")
+
+        address = Address.objects.filter(user=user).first()
         if not address:
             messages.error(request, _("Please add a shipping address first."))
             return redirect("checkout")
-        cart = Cart.objects.filter(user=request.user).first()
+        cart = Cart.objects.filter(user=user).first()
         if not cart.items.first():
             messages.error(request, _("Your cart is empty."))
             return redirect("cart_detail")
@@ -149,9 +156,24 @@ class PaymentView(LoginRequiredMixin, View):
             "coupon": coupon,
             "address_obj": address,
         }
+
+        # prepare data for payment gateway
+        order = Order.objects.create(
+            user=user,
+            province=address.province,
+            city=address.city,
+            postal_code=address.postal_code,
+            full_address=address.full_address,
+            phone_number=address.phone_number,
+        )
+        order: Order | None = order.create_order(user=user, address=address)
+        base_url = reverse("demo_gateway")
+        params = f"?order_number={order.order_number}&amount={order.get_total_price}"
+        context["payment_url"] = f"{base_url}{params}"
+
         return render(request, template_name="cart/payment.html", context=context)
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs) -> HttpResponse:
         coupon = None
         total_price = Cart.objects.get(user=request.user).get_total_price()
         address = Address.objects.filter(user=request.user).first()
