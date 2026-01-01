@@ -1,6 +1,5 @@
 import uuid
 
-from accounts.models import Address
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
@@ -12,13 +11,20 @@ def demo_gateway_view(request: HttpRequest) -> HttpResponse:
         amount = 0
         ref_id = str(uuid.uuid4().int)[:10]
         order_number = request.GET.get("order_number")
-        context = {"order_number": order_number, "amount": amount, "ref_id": ref_id}
         user = request.user
         if not user.is_authenticated:
-            return render(request, "payments/failed-payment.html", context=context)
+            return render(
+                request,
+                "payments/failed-payment.html",
+                {"order_number": order_number, "amount": amount, "ref_id": ref_id},
+            )
         order = Order.objects.filter(order_number=order_number, user=user).first()
         if order is None:
-            return render(request, "payments/failed-payment.html", context=context)
+            return render(
+                request,
+                "payments/failed-payment.html",
+                {"order_number": order_number, "amount": amount, "ref_id": ref_id},
+            )
         coupon_id = request.session.get("coupon_id")
         amount = order.get_total_price
         if coupon_id is not None:
@@ -26,6 +32,7 @@ def demo_gateway_view(request: HttpRequest) -> HttpResponse:
             if coupon is not None:
                 amount, discount_amount = coupon.get_discount_amount(amount)
 
+        context = {"order_number": order_number, "amount": amount, "ref_id": ref_id}
     return render(request, "payments/demo_gateway.html", context=context)
 
 
