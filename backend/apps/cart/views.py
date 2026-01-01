@@ -157,20 +157,6 @@ class PaymentView(LoginRequiredMixin, View):
             "address_obj": address,
         }
 
-        # prepare data for payment gateway
-        order = Order.objects.create(
-            user=user,
-            province=address.province,
-            city=address.city,
-            postal_code=address.postal_code,
-            full_address=address.full_address,
-            phone_number=address.phone_number,
-        )
-        order: Order | None = order.create_order(user=user, address=address)
-        base_url = reverse("demo_gateway")
-        params = f"?order_number={order.order_number}&amount={order.get_total_price}"
-        context["payment_url"] = f"{base_url}{params}"
-
         return render(request, template_name="cart/payment.html", context=context)
 
     def post(self, request, *args, **kwargs) -> HttpResponse:
