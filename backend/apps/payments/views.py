@@ -5,7 +5,7 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.http import require_POST
-from orders.models import Order
+from orders.models import Coupon, Order
 
 
 @require_POST
@@ -27,25 +27,29 @@ def demo_gateway_view(request: HttpRequest) -> HttpResponse:
     order = order.create_order(user=user, address=address)
 
     ref_id = str(uuid.uuid4().int)[:10]
+    amount = order.get_total_price
+    coupon_id: int | None = request.session.get("coupon_id")
+    if coupon_id is not None:
+        coupon = Coupon.objects.filter(id=coupon_id).first()
+        if coupon is not None:
+            amount, discount_amount = coupon.get_discount_amount(amount)
+
     context = {
         "order_id": order.order_number,
-        "amount": order.get_total_price(),
+        "amount": amount,
         "ref_id": ref_id,
     }
-
-    base_url = reverse("demo-gateway")
-    params = f"?order_number={order.order_number}&amount={order.get_total_price()}"
-    context["payment_url"] = f"{base_url}{params}"
 
     return render(request, "payments/demo_gateway.html", context=context)
 
 
-def payment_verify_view(request):
-    status = request.GET.get("status")
-    order_id = request.GET.get("order_id")
-    ref_id = request.GET.get("ref_id")
+@require_POST
+def payment_verify_view(request: HttpRequest) -> HttpResponse:
 
-    if status == "success":
+    if "success" in request.POST:
         return render(request, "payments/success.html", {"ref_id": ref_id})
-    else:
-        return render(request, "payments/failed.html", {"error": "پرداخت توسط کاربر لغو شد یا ناموفق بود."})
+    elif "failure" in request.POST:
+        return render(request, "payments/failed.html", {"error": "پرداخت ناموفق بود."})
+    elif "cancel" in request.POST:
+        return render(request, "payments/failed.html", {"error": "پرداخت توسط کاربر لغو شد"})
+    return render(request, "payments/failed.html", {"error": "خطای ناشناخته رخ داد"})

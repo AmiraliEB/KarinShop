@@ -57,6 +57,7 @@ class Order(models.Model):
 
         super().save(*args, **kwargs)
 
+    @property
     def get_total_price(self) -> int:
         return sum(item.get_cost() for item in self.items.all())
 
@@ -123,17 +124,17 @@ class Coupon(models.Model):
         if self.valid_to and self.valid_from and self.valid_to < self.valid_from:
             raise ValidationError({"valid_to": _("End date cannot be before start date.")})
 
-    @property
-    def calculate_total_price(self, total_price: int) -> int:
+    def get_discount_amount(self, total_price: int) -> tuple[int, int]:
+        discount_amount = 0
         if self.discount_type == "p":
-            discount_amount = total_price * (self.discount_value / 100)
+            discount_amount = int(total_price * (self.discount_value / 100))
         elif self.discount_type == "v":
-            discount_amount = self.discount_value
+            discount_amount = int(self.discount_value)
 
         if discount_amount > total_price:
             discount_amount = total_price
         total_price -= discount_amount
-        return total_price
+        return total_price, discount_amount
 
     @property
     def is_usable(self):

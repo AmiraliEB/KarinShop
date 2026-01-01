@@ -135,15 +135,7 @@ class PaymentView(LoginRequiredMixin, View):
         if coupon_id:
             coupon = Coupon.objects.filter(id=coupon_id).first()
             if coupon and coupon.is_usable:
-                if coupon.discount_type == "p":
-                    discount_amount = total_price * (coupon.discount_value / 100)
-                elif coupon.discount_type == "v":
-                    discount_amount = coupon.discount_value
-
-                if discount_amount > total_price:
-                    discount_amount = total_price
-
-                total_price -= discount_amount
+                total_price, discount_amount = coupon.get_discount_amount(total_price)
             else:
                 del request.session["coupon_id"]
                 coupon = None
@@ -201,7 +193,7 @@ def remove_coupon(request):
 
 
 @require_POST
-def apply_coupon(request):
+def apply_coupon(request: HttpRequest) -> HttpResponse:
     if request.htmx:
         coupon_form = CouponApplyForm(request.POST)
         total_price = Cart.objects.get(user=request.user).get_total_price()
@@ -211,15 +203,7 @@ def apply_coupon(request):
                 coupon = Coupon.objects.get(code__iexact=coupon_code)
                 if coupon.is_usable:
                     request.session["coupon_id"] = coupon.id
-                    if coupon.discount_type == "p":
-                        discount_amount = total_price * (coupon.discount_value / 100)
-                    elif coupon.discount_type == "v":
-                        discount_amount = coupon.discount_value
-
-                    if discount_amount > total_price:
-                        discount_amount = total_price
-
-                    total_price -= discount_amount
+                    total_price, discount_amount = coupon.get_discount_amount(total_price)
                     return render(
                         request,
                         "cart/partials/coupon_area.html",
