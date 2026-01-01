@@ -137,6 +137,18 @@ class Coupon(models.Model):
         return total_price, discount_amount
 
     @property
+    def calculate_total_price(self, total_price: int) -> int:
+        if self.discount_type == "p":
+            discount_amount = total_price * (self.discount_value / 100)
+        elif self.discount_type == "v":
+            discount_amount = self.discount_value
+
+        if discount_amount > total_price:
+            discount_amount = total_price
+        total_price -= discount_amount
+        return total_price
+
+    @property
     def is_usable(self):
         from django.utils import timezone
 

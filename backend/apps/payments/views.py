@@ -1,11 +1,13 @@
 import uuid
 
+from accounts.models import Address
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
 from orders.models import Coupon, Order
 
 
+@require_POST
 def demo_gateway_view(request: HttpRequest) -> HttpResponse:
     if request.method == "GET":
         amount = 0
