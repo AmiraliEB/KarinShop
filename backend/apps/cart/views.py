@@ -1,3 +1,4 @@
+import uuid
 from datetime import timedelta
 
 from accounts.models import Address, Profile
@@ -149,18 +150,37 @@ class PaymentView(LoginRequiredMixin, View):
             "address_obj": address,
         }
 
+        if not user.is_authenticated:
+            return render(request, "payments/failed-payment.html", {"error": "کاربر وارد نشده است."})
+        if address is None:
+            return render(request, "payments/failed-payment.html", {"error": "آدرس برای کاربر یافت نشد."})
+        order = Order.objects.create(
+            user=user,
+            province=address.province,
+            city=address.city,
+            postal_code=address.postal_code,
+            full_address=address.full_address,
+            phone_number=address.phone_number,
+        )
+        order = order.create_order(user=user, address=address)
+
+        base_url = reverse("demo-gateway")
+        params = f"?order_number={order.order_number}"
+        context["payment_url"] = base_url + params
+
         return render(request, template_name="cart/payment.html", context=context)
 
-    def post(self, request, *args, **kwargs) -> HttpResponse:
+    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         coupon = None
-        total_price = Cart.objects.get(user=request.user).get_total_price()
-        address = Address.objects.filter(user=request.user).first()
+        user = request.user
+        total_price = Cart.objects.get(user=user).get_total_price()
+        address = Address.objects.filter(user=user).first()
         discount_amount = 0
         if not address:
             messages.error(request, _("Please add a shipping address first."))
             return redirect("checkout")
 
-        cart = Cart.objects.filter(user=request.user).first()
+        cart = Cart.objects.filter(user=user).first()
         if not cart:
             messages.error(request, _("Your cart is empty."))
             return redirect("cart_detail")
