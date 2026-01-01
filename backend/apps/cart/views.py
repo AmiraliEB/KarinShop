@@ -2,6 +2,7 @@ from datetime import timedelta
 
 from accounts.models import Address, Profile
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
 from django.http import HttpRequest, HttpResponse
@@ -148,10 +149,7 @@ class PaymentView(LoginRequiredMixin, View):
             "address_obj": address,
         }
 
-        if not user.is_authenticated:
-            return render(request, "payments/failed-payment.html", {"error": "کاربر وارد نشده است."})
-        if address is None:
-            return render(request, "payments/failed-payment.html", {"error": "آدرس برای کاربر یافت نشد."})
+        # prepare data for payment gateway
         order = Order.objects.create(
             user=user,
             province=address.province,
