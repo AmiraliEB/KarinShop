@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+    <head>
+        <meta charset="UTF-8">
+        <title>درگاه پرداخت آزمایشی</title>
+        <style>
+        /* استایل ساده و تمیز */
+        body { font-family: sans-serif; background: #eee; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 350px; text-align: center; }
+        .info { background: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px; text-align: right; }
+        .btn { display: block; width: 100%; padding: 12px; margin: 5px 0; border: none; border-radius: 4px; cursor: pointer; color: white; text-decoration: none; font-size: 16px; }
+        .btn-success { background: #28a745; }
+        .btn-fail { background: #dc3545; }
+        .btn-cancel { background: #6c757d; }
+        h3 { margin-top: 0; color: #333; }
+        </style>
+    </head>
+    <body>
+        <div class="card">
+            <h3>درگاه پرداخت شبیه‌سازی شده</h3>
+            <div class="info">
+                <p>
+                    <strong>شماره سفارش:</strong> {{ order_id }}
+                </p>
+                <p>
+                    <strong>مبلغ:</strong> {{ amount }} تومان
+                </p>
+                <p>
+                    <strong>شماره ارجاع:</strong> {{ ref_id }}
+                </p>
+            </div>
+            <p>لطفا وضعیت تراکنش را تعیین کنید:</p>
+            <a href="{% url 'verify' %}?status=success&order_id={{ order_id }}&ref_id={{ ref_id }}"
+               class="btn btn-success">✅ پرداخت موفق</a>
+            <a href="{% url 'verify' %}?status=failed&order_id={{ order_id }}"
+               class="btn btn-fail">❌ پرداخت ناموفق (خطا)</a>
+            <a href="{% url 'verify' %}?status=cancel&order_id={{ order_id }}"
+               class="btn btn-cancel">🔙 انصراف</a>
+        </div>
+    </body>
+</html>

@@ -1,7 +1,10 @@
 import nanoid
+from accounts.models import Address
+from cart.models import Cart, CartItem
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
 from products.models import Product
 
@@ -54,8 +57,31 @@ class Order(models.Model):
 
         super().save(*args, **kwargs)
 
-    def get_total_price(self):
+    def get_total_price(self) -> int:
         return sum(item.get_cost() for item in self.items.all())
+
+    def create_order(self, user, address: Address | None, is_paid=False, status="p") -> "Order | None":
+        if address is None:
+            return None
+        self.is_paid = is_paid
+        self.status = status
+        self.save()
+        self.create_order_items_from_cart(cart=Cart.objects.filter(user=user).first())
+        return self
+
+    def create_order_items_from_cart(self, cart: Cart | None):
+        if cart is None:
+            return
+        cart_items: QuerySet[CartItem] = cart.items.all()
+        for item in cart_items:
+            product: Product = item.product
+            if product.final_price is not None:
+                OrderItem.objects.create(
+                    order=self,
+                    product=product,
+                    quantity=item.quantity,
+                    price=product.final_price,
+                )
 
 
 class OrderItem(models.Model):

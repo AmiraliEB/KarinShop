@@ -89,6 +89,6 @@ jobs:
             cd /var/www/KarinShop
             docker-compose pull
             docker-compose up -d
-            docker-compose -f docker-compose.prod.yml exec -T web python manage.py migrate
-            docker-compose -f docker-compose.prod.yml exec -T web python manage.py collectstatic --noinput
+            docker-compose exec -T web python manage.py migrate
+            docker-compose exec -T web python manage.py collectstatic --noinput
             docker image prune -f
