@@ -39,8 +39,8 @@ class OrderAdmin(admin.ModelAdmin):
     )
 
     @admin.display(description="مبلغ کل سفارش")
-    def get_total_price_display(self, obj):
-        return f"{obj.get_total_price():,} تومان"
+    def get_total_price_display(self, obj: Order):
+        return f"{obj.get_total_price:,} تومان"
 
 
 @admin.register(Coupon)

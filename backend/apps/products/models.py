@@ -174,7 +174,7 @@ class Product(models.Model):
             return True
         return False
 
-    def save(self, *args, **kwargs):
+    def recalculate_prices(self):
         if not self.has_discount():
             self.final_price = self.initial_price
         else:
@@ -186,6 +186,22 @@ class Product(models.Model):
                 self.final_price = final_price
 
         self.is_available = self.stock > 0
+
+    def save(self, *args, **kwargs):
+        self.recalculate_prices()
+
+        # ---------------------------------------------------------
+        # CRITICAL FIX: Handle 'update_fields' Trap
+        # ---------------------------------------------------------
+        # When save(update_fields=['stock']) is called, Django ONLY updates 'stock'.
+        # However, our logic above calculates 'final_price' and 'is_available'.
+        # We MUST forcefully add these calculated fields to 'update_fields' list;
+        # otherwise, their new values will be lost/ignored by the database.
+        if "update_fields" in kwargs and kwargs["update_fields"] is not None:
+            fields = set(kwargs["update_fields"])
+            fields.add("final_price")
+            fields.add("is_available")
+            kwargs["update_fields"] = list(fields)
         super().save(*args, **kwargs)
 
         new_full_name = self._generate_full_name()
@@ -351,7 +367,6 @@ class Brand(models.Model):
 
 
 class Comments(models.Model):
-    # comment should pe linked to parent product
     parent_product: models.ForeignKey[ParentProduct] = models.ForeignKey(
         ParentProduct, on_delete=models.CASCADE, related_name="comments", verbose_name=_("product")
     )
