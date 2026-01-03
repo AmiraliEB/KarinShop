@@ -1,18 +1,18 @@
-{% load static %}  
+{% load static %}
 <!DOCTYPE html>
 <html lang="en" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% block extra_link %}{% endblock extra_link %}
-    
-    <link href="{% static 'css/output.css' %}" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'js/libs/swiper/swiper.css' %}">
-
-    <title>{% block page_title %} کارین شاپ{% endblock %}</title>
-
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% block extra_link %}
+        {% endblock extra_link %}
+        <link href="{% static 'css/output.css' %}" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'js/libs/swiper/swiper.css' %}">
+        <title>
+            {% block page_title %}کارین شاپ{% endblock %}
+        </title>
         <!-- ==========================  DARK MODE SCRIPT ============================= -->
-    <script type="text/javascript">
+        <script type="text/javascript">
         if (
             localStorage.theme === "dark" ||
             (!("theme" in localStorage) &&
@@ -22,26 +22,24 @@
         } else {
             document.documentElement.classList.remove("dark");
         }
-    </script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <script src="https://unpkg.com/htmx.org@1.9.6"></script>
-</head>
-<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
-    {% comment %} {% include "partials/loading.html" %} {% endcomment %}
-    {% include "partials/_messages.html" %}
-    <div id="page-content" class="invisible">  
-
-        <main> 
-            {% block content %}
-            {% endblock %}
-        </main>
-
-    </div> 
-    </div> <div class="overlay"></div>
+        </script>
+        <script defer
+                src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+        <script src="{% static 'js/htmx.min.js' %}"></script>
+    </head>
+    <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+        {% comment %} {% include "partials/loading.html" %} {% endcomment %}
+        {% include "partials/_messages.html" %}
+        <div id="page-content" class="invisible">
+            <main>
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+    <div class="overlay"></div>
     <div class="search-overlay"></div>
     <script src="{% static 'js/libs/swiper/swiper.js' %}"></script>
     <script src="{% static 'js/app.js' %}"></script>
     {% block extra_js %}{% endblock %}
-
 </body>
 </html>
