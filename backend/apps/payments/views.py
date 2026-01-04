@@ -1,13 +1,14 @@
 import uuid
+from datetime import datetime
 
 from cart.cart import get_cart
 from django.core.exceptions import BadRequest
-from django.db import IntegrityError, transaction
-from django.db.models import F
+from django.db import transaction
+from django.db.models import BooleanField, Case, F, Value, When
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
-from orders.models import Coupon, Order, OrderItem
+from orders.models import Coupon, Order
 from products.models import Product
 
 
@@ -16,7 +17,6 @@ def demo_gateway_view(request: HttpRequest) -> HttpResponse:
         amount = 0
         ref_id = str(uuid.uuid4().int)[:10]
         order_number = request.GET.get("order_number")
-        # TODO:order should be for requesting user
         user = request.user
         if not user.is_authenticated:
             return render(
@@ -70,8 +70,14 @@ def payment_verify_view(request: HttpRequest) -> HttpResponse:
                 items = order.items.select_related("product").all()
                 for item in items:
                     product: Product = item.product
-                    product.stock = F("stock") - item.quantity
-                    product.save(update_fields=["stock"])
+                    Product.objects.filter(id=product.id).update(
+                        stock=F("stock") - 1,
+                        is_available=Case(
+                            When(stock__gt=item.quantity, then=Value(True)),
+                            default=Value(False),
+                            output_field=BooleanField(),
+                        ),
+                    ),
 
                 order.is_paid = True
                 order.status = "c"
@@ -79,7 +85,7 @@ def payment_verify_view(request: HttpRequest) -> HttpResponse:
 
                 cart = get_cart(request)
                 cart.clear()
-
+            context["date_now"] = datetime.now().strftime("%Y-%m-%d")
             return render(request, "payments/successful-payment.html", context=context)
 
         except Exception as e:

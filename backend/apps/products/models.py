@@ -189,7 +189,6 @@ class Product(models.Model):
 
     def save(self, *args, **kwargs):
         self.recalculate_prices()
-
         # ---------------------------------------------------------
         # CRITICAL FIX: Handle 'update_fields' Trap
         # ---------------------------------------------------------

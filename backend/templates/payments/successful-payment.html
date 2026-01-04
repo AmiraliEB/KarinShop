@@ -1,7 +1,7 @@
 {% extends "_base.html" %}
 {% load humanize %}
 {% block page_title %}
-    {{ block.super }} | پرداخت موفق
+    پرداخت موفق | {{ block.super }}
 {% endblock page_title %}
 {% block content %}
     <!-- ALL ICONS  -->
@@ -170,7 +170,7 @@
                     </li>
                     <li>
                         <span class="">تاریخ تراکنش :</span>
-                        <span class="text-gray-400 ">1404/2/21</span>
+                        <span class="text-gray-400 ">{{ date_now }}</span>
                     </li>
                     <li>
                         <span class="">شماره پیگیری :</span>
