@@ -1,5 +1,6 @@
 import uuid
 from datetime import datetime
+from typing import Any
 
 from cart.cart import get_cart
 from django.core.exceptions import BadRequest
@@ -40,9 +41,9 @@ def demo_gateway_view(request: HttpRequest) -> HttpResponse:
 
 @require_POST
 def payment_verify_view(request: HttpRequest) -> HttpResponse:
-    context = {"ref_id": request.POST.get("ref_id"), "amount": request.POST.get("amount")}
+    context: dict[str, Any] = {"ref_id": request.POST.get("ref_id"), "amount": request.POST.get("amount")}
     order_number = request.POST.get("order_number")
-
+    context["date_now"] = datetime.now()
     error_template = "payments/failed-payment.html"
 
     if "success" in request.POST:
@@ -85,7 +86,7 @@ def payment_verify_view(request: HttpRequest) -> HttpResponse:
 
                 cart = get_cart(request)
                 cart.clear()
-            context["date_now"] = datetime.now().strftime("%Y-%m-%d")
+
             return render(request, "payments/successful-payment.html", context=context)
 
         except Exception as e:

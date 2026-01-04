@@ -1,7 +1,8 @@
 {% extends "_base.html" %}
 {% load humanize %}
+{% load jalali_tags %}
 {% block page_title %}
-    {{ block.super }} | پرداخت ناموفق
+    پرداخت ناموفق | {{ block.super }}
 {% endblock page_title %}
 {% block content %}
     <!-- ALL ICONS  -->
@@ -620,12 +621,11 @@
                 <span class="w-full border-b-2 border-gray-200 dark:border-gray-600"></span>
                 <ul class="w-full flex flex-col gap-y-5 child:flex child:items-center child:justify-between">
                     <li>
-                        <span class="">مبلغ دریافتی:</span>
-                        <span class="text-gray-400 ">{{ amount|intcomma:False }}</span>
+                        <span class="text-gray-400 ">{{ error }}</span>
                     </li>
                     <li>
                         <span class="">تاریخ تراکنش :</span>
-                        <span class="text-gray-400 ">1404/2/21</span>
+                        <span class="text-gray-400 ">{{ date_now|to_jalali:"%Y/%m/%d" }}</span>
                     </li>
                     <li>
                         <span class="">شماره پیگیری :</span>

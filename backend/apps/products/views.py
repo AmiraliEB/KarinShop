@@ -3,7 +3,7 @@ from cart.forms import CartAddProductForm
 from django.conf import settings
 from django.contrib import messages
 from django.core.paginator import Paginator
-from django.db.models import Avg, Count, Prefetch
+from django.db.models import Avg, Count, Prefetch, Q
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.text import slugify
@@ -120,16 +120,24 @@ class ProductDetailView(generic.DetailView):
 
         category = product.parent_product.category
         brand = product.parent_product.brand
-        related_parent = (
-            ParentProduct.objects.prefetch_related("products")
-            .filter(category=category, brand=brand)
-            .exclude(id=product.parent_product.id)[:6]
+
+        active_products_prefetch = Prefetch(
+            "products",
+            queryset=Product.objects.filter(is_available=True),
         )
-        if not related_parent.exists():
+
+        related_parent = (
+            ParentProduct.objects.prefetch_related(active_products_prefetch)
+            .filter(category=category, brand=brand, products__is_available=True)
+            .exclude(id=product.parent_product.id)
+            .distinct()[:6]
+        )
+        if not related_parent:
             related_parent = (
-                ParentProduct.objects.prefetch_related("products")
-                .filter(category=category)
-                .exclude(id=product.parent_product.id)[:6]
+                ParentProduct.objects.prefetch_related(active_products_prefetch)
+                .filter(category=category, products__is_available=True)
+                .exclude(id=product.parent_product.id)
+                .distinct()[:6]
             )
         context["related_products"] = []
         for parent_obj in related_parent:
