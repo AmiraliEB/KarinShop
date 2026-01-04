@@ -55,8 +55,9 @@ class DBCartWrapper:
             product=product, cart=cart_obj, defaults={"quantity": quantity}
         )
         if cart_item_created is False:
-            cart_item_obj.quantity += quantity
-            cart_item_obj.save()
+            if cart_item_obj.quantity < product.stock:
+                cart_item_obj.quantity += quantity
+                cart_item_obj.save()
         add_return = {
             "quantity": cart_item_obj.quantity,
             "new_item_total_price": cart_item_obj.get_total_price(),

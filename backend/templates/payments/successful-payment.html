@@ -1,5 +1,6 @@
 {% extends "_base.html" %}
 {% load humanize %}
+{% load jalali_tags %}
 {% block page_title %}
     پرداخت موفق | {{ block.super }}
 {% endblock page_title %}
@@ -170,7 +171,7 @@
                     </li>
                     <li>
                         <span class="">تاریخ تراکنش :</span>
-                        <span class="text-gray-400 ">{{ date_now }}</span>
+                        <span class="text-gray-400 ">{{ date_now|to_jalali:"%Y/%m/%d" }}</span>
                     </li>
                     <li>
                         <span class="">شماره پیگیری :</span>
