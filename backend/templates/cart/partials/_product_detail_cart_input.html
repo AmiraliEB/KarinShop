@@ -1,35 +1,31 @@
 {% load humanize %}
-<div id="cart-detail-input{{ product.id }}" {% if oob %} hx-swap-oob="True" {% endif %}>
+<div id="cart-detail-input{{ product.id }}"
+     {% if oob %}hx-swap-oob="True"{% endif %}>
     {% if not product_available_in_cart %}
-        <button
-            id="add-btn-{{ product.id }}"
-            class="w-full relative flex items-center justify-center bg-blue-500 text-white hover:bg-blue-600 transition-all rounded-lg shadow py-3 font-DanaMedium" 
-            type="button"
-            hx-post="{% url 'update_cart_item' pk=product.id action='add'%}" 
-            hx-swap="none"
-            hx-disabled-elt="this">
-            
+        <button id="add-btn-{{ product.id }}"
+                class="w-full relative flex items-center justify-center bg-blue-500 text-white hover:bg-blue-600 transition-all rounded-lg shadow py-3 font-DanaMedium"
+                type="button"
+                hx-post="{% url 'update_cart_item' pk=product.id action='add' %}"
+                hx-swap="none"
+                hx-disabled-elt="this">
             <span class="btn-content flex items-center gap-x-1 transition-opacity duration-200">
                 افزودن به سبد
                 <svg class="w-5 h-5">
                     <use href="#shopping-bag"></use>
                 </svg>
             </span>
-
             <span class="btn-loader hidden absolute inset-0 items-center justify-center gap-1">
                 <span class="w-2 h-2 bg-white rounded-full animate-bounce [animation-delay:-0.3s]"></span>
                 <span class="w-2 h-2 bg-white rounded-full animate-bounce [animation-delay:-0.15s]"></span>
                 <span class="w-2 h-2 bg-white rounded-full animate-bounce"></span>
             </span>
         </button>
-
         <div class="text-sm  text-gray-400 flex xl:items-center gap-x-1 my-3">
             <svg class="w-5 h-5">
                 <use href="#info"></use>
             </svg>
             <p>ارسال رایگان برای خریدهای بالای 400 هزار تومان</p>
         </div>
-
         <style>
             #add-btn-{{ product.id }}.htmx-request .btn-content {
                 opacity: 0; 
@@ -45,34 +41,42 @@
             }
         </style>
     {% else %}
-        <div id="qty-selector-{{ product.id }}" class="loading-wrapper w-full flex items-center justify-between bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 relative h-12">
-            
-            <span hx-post="{% url 'update_cart_item' pk=product.id action='add'%}"
-                hx-swap="none"
-                hx-indicator="#qty-selector-{{ product.id }}"
-                class="cursor-pointer hover:scale-110 transition-transform p-1">
-                <svg class="w-6 h-6 text-green-600">
-                    <use href="#plus"></use>
-                </svg>
-            </span>
-
+        <div id="qty-selector-{{ product.id }}"
+             class="loading-wrapper w-full flex items-center justify-between bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 relative h-12">
+            {% if item_quantity >= product.stock %}
+                <span class="cursor-not-allowed p-1 flex items-center justify-center w-6 h-6"
+                      title="حداکثر موجودی">
+                    <span class="text-[10px] font-DanaDemiBold text-gray-400">حداکثر</span>
+                </span>
+            {% else %}
+                <span hx-post="{% url 'update_cart_item' pk=product.id action='add' %}"
+                      hx-swap="none"
+                      hx-indicator="#qty-selector-{{ product.id }}"
+                      class="cursor-pointer hover:scale-110 transition-transform p-1">
+                    <svg class="w-6 h-6 text-green-600">
+                        <use href="#plus"></use>
+                    </svg>
+                </span>
+            {% endif %}
             <span class="quantity-text font-DanaDemiBold text-gray-700 dark:text-gray-200 text-xl pt-0.5">
-                {{item_quantity}}
+                {{ item_quantity }}
             </span>
-
             <div class="loading-dots hidden items-center justify-center gap-0.5 pt-1">
                 <span class="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
                 <span class="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
                 <span class="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce"></span>
             </div>
-
-            <span hx-post="{% url 'update_cart_item' pk=product.id action='decrement'%}"
-                hx-swap="none"
-                hx-indicator="#qty-selector-{{ product.id }}"
-                class="cursor-pointer hover:scale-110 transition-transform p-1">
-                
+            <span hx-post="{% url 'update_cart_item' pk=product.id action='decrement' %}"
+                  hx-swap="none"
+                  hx-indicator="#qty-selector-{{ product.id }}"
+                  class="cursor-pointer hover:scale-110 transition-transform p-1">
                 {% if item_quantity == 1 %}
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-500">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         fill="none"
+                         viewBox="0 0 24 24"
+                         stroke-width="1.5"
+                         stroke="currentColor"
+                         class="w-6 h-6 text-red-500">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                     </svg>
                 {% else %}
@@ -80,29 +84,25 @@
                         <use href="#minus"></use>
                     </svg>
                 {% endif %}
-                
             </span>
         </div>
-        
         <div class="w-full flex items-center gap-x-1 justify-between dark:bg-gray-900 dark:text-gray-400 bg-gray-100 transition-all rounded-lg py-2 px-2 xl:px-3 font-DanaMedium text-sm xl:text-base mt-4">
             <p>مجموع خرید :</p>
-            <p>{{item_total_price|intcomma:False}} تومان</p>
+            <p>{{ item_total_price|intcomma:False }} تومان</p>
         </div>
-
-        <a href="{% url 'cart_detail' %}" class="w-full flex items-center justify-center gap-x-2 rounded-lg border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white dark:border-blue-400 dark:text-blue-400 dark:hover:bg-blue-500 dark:hover:text-white transition-all py-2.5 mt-3 font-DanaMedium shadow-sm">
+        <a href="{% url 'cart_detail' %}"
+           class="w-full flex items-center justify-center gap-x-2 rounded-lg border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white dark:border-blue-400 dark:text-blue-400 dark:hover:bg-blue-500 dark:hover:text-white transition-all py-2.5 mt-3 font-DanaMedium shadow-sm">
             مشاهده سبد خرید
             <svg class="w-5 h-5 mb-1">
                 <use href="#shopping-cart"></use>
             </svg>
         </a>
-
         <div class="text-sm text-gray-400 flex xl:items-center gap-x-1 my-3">
             <svg class="w-5 h-5">
                 <use href="#info"></use>
             </svg>
             <p>ارسال رایگان برای خریدهای بالای 400 هزار تومان</p>
         </div>
-        
         <style>
             #qty-selector-{{ product.id }}.htmx-request .quantity-text {
                 display: none;
@@ -118,6 +118,5 @@
                 cursor: wait;
             }
         </style>
-
     {% endif %}
 </div>

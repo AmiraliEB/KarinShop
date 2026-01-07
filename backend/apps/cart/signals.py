@@ -23,7 +23,10 @@ def merge_session_cart_to_db_cart(sender, request, user, **kwargs):
                 if item_created:
                     db_item.quantity = session_quantity
                 else:
-                    db_item.quantity += session_quantity
+                    if (db_item.quantity + session_quantity) > product.stock:
+                        db_item.quantity = product.stock
+                    else:
+                        db_item.quantity += session_quantity
 
                 db_item.save()
 

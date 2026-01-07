@@ -58,6 +58,9 @@ class DBCartWrapper:
             if cart_item_obj.quantity < product.stock:
                 cart_item_obj.quantity += quantity
                 cart_item_obj.save()
+            else:
+                cart_item_obj.quantity = product.stock
+                cart_item_obj.save()
         add_return = {
             "quantity": cart_item_obj.quantity,
             "new_item_total_price": cart_item_obj.get_total_price(),
@@ -80,9 +83,13 @@ class DBCartWrapper:
         should_delete = cart_item_obj.quantity <= 1 or remove
 
         if not should_delete:
-            cart_item_obj.quantity = F("quantity") - 1
-            cart_item_obj.save()
-            cart_item_obj.refresh_from_db()
+            if not cart_item_obj.quantity > product.stock:
+                cart_item_obj.quantity = F("quantity") - 1
+                cart_item_obj.save()
+                cart_item_obj.refresh_from_db()
+            else:
+                cart_item_obj.quantity = product.stock
+                cart_item_obj.save()
             return {
                 "quantity": cart_item_obj.quantity,
                 "new_item_total_price": cart_item_obj.get_total_price(),
@@ -177,7 +184,10 @@ class Cart:
         if product_id not in self.cart:
             self.cart[product_id] = {"quantity": quantity}
         else:
-            self.cart[product_id]["quantity"] += quantity
+            if product.stock > self.cart[product_id]["quantity"]:
+                self.cart[product_id]["quantity"] += quantity
+            else:
+                self.cart[product_id]["quantity"] = product.stock
 
         self.session.modified = True
         add_return = {
@@ -199,8 +209,13 @@ class Cart:
                     "item_total_price_before_discount": 0,
                 }
             else:
-                self.cart[product_id]["quantity"] -= 1
-                self.save()
+                if not self.cart[product_id]["quantity"] > product.stock:
+                    self.cart[product_id]["quantity"] -= 1
+                    self.save()
+                else:
+                    self.cart[product_id]["quantity"] = product.stock
+                    self.save()
+
                 add_return = {
                     "quantity": self.cart[product_id]["quantity"],
                     "new_item_total_price": self.cart[product_id]["quantity"] * product.final_price,
