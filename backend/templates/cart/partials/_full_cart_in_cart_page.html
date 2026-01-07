@@ -1,45 +1,40 @@
 {% load humanize %}
 {% load filter_for_main_image %}
 {% load static %}
-<div id="cart-section" {% if oob %} hx-swap-oob="True" {% endif %}>
+<div id="cart-section" {% if oob %}hx-swap-oob="True"{% endif %}>
     {% if global_cart|length > 0 %}
-    <!-- shopping cart -->
-    <section class="flex flex-col lg:flex-row justify-between items-start gap-4 mt-5">
-        <div class="w-full lg:w-3/4 flex flex-col gap-y-8">
-            
-            <div id="product-items">
-                
-                <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-4">
-                    <div class="flex items-center justify-between mb-4">
-                        <span class="flex items-center gap-x-2">
-                            <h2 class="font-DanaMedium text-xl">سبد خرید</h2>
-                            <p class="text-gray-400">({{global_cart|length}} کالا)</p>
-                        </span>
-
-                        <div id="clear-cart-btn" class="flex items-center gap-x-1 text-red-600 dark:text-red-500 cursor-pointer hover:bg-red-50 dark:hover:bg-red-500/10 px-2 py-1 rounded-lg transition-colors duration-200">
-                            
-                            <button class='mt-1 font-DanaMedium' 
-                                    type='button'
-                                    hx-post="{% url "clear_items"%}"
-                                    hx-swap="none"
-                                    hx-indicator="#clear-cart-btn"
-                                    hx-disabled-elt="this">
-                                حذف همه
-                            </button>
-
-                            <svg class="w-5 h-5 default-icon transition-transform group-hover:scale-110">
-                                <use href="#trash"></use>
-                            </svg>
-
-                            <svg class="animate-spin h-5 w-5 hidden loading-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-
+        <!-- shopping cart -->
+        <section class="flex flex-col lg:flex-row justify-between items-start gap-4 mt-5">
+            <div class="w-full lg:w-3/4 flex flex-col gap-y-8">
+                <div id="product-items">
+                    <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="flex items-center gap-x-2">
+                                <h2 class="font-DanaMedium text-xl">سبد خرید</h2>
+                                <p class="text-gray-400">({{ global_cart|length }} کالا)</p>
+                            </span>
+                            <div id="clear-cart-btn"
+                                 class="flex items-center gap-x-1 text-red-600 dark:text-red-500 cursor-pointer hover:bg-red-50 dark:hover:bg-red-500/10 px-2 py-1 rounded-lg transition-colors duration-200">
+                                <button class='mt-1 font-DanaMedium'
+                                        type='button'
+                                        hx-post="{% url "clear_items" %}"
+                                        hx-swap="none"
+                                        hx-indicator="#clear-cart-btn"
+                                        hx-disabled-elt="this">حذف همه</button>
+                                <svg class="w-5 h-5 default-icon transition-transform group-hover:scale-110">
+                                    <use href="#trash"></use>
+                                </svg>
+                                <svg class="animate-spin h-5 w-5 hidden loading-icon"
+                                     xmlns="http://www.w3.org/2000/svg"
+                                     fill="none"
+                                     viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                    </path>
+                                </svg>
+                            </div>
                         </div>
-                    </div>
-
-                    <style>
+                        <style>
                         #clear-cart-btn.htmx-request .default-icon {
                             display: none;
                         }
@@ -50,250 +45,251 @@
                             cursor: wait;
                             opacity: 0.7;
                         }
-                    </style>
-
-                    <div class="w-full flex flex-col gap-y-4 child:p-2 lg:child:p-4">
-                    {% for cart_item in global_cart %}
-                    <div class="w-full flex justify-between relative {% if not forloop.last %} border-b-2 border-gray-200 dark:border-white/20 pb-6 mb-6 {% endif %}">
-                        
-                        <div id="delete-overlay-main-{{ cart_item.product_obj.id }}" 
-                            class="delete-overlay absolute inset-0 z-20 hidden items-center justify-center bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-xl transition-all duration-200">
-                            <svg class="animate-spin h-8 w-8 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                        </div>
-
-                        <div class="flex flex-col sm:flex-row items-center gap-6 w-full">
-                            
-                            <div class="flex w-fit flex-col items-center gap-y-3 shrink-0">
-                                <a href="{{cart_item.product_obj.get_absolute_url}}" class="block bg-gray-50 dark:bg-gray-700/40 p-3 rounded-xl border border-gray-100 dark:border-gray-600">
-                                    <img src="{{cart_item.product_obj.parent_product.images|main_image}}" class="w-32 md:w-36 h-auto object-contain mix-blend-multiply dark:mix-blend-normal" alt="">
-                                </a>            
-                                
-                                <div id="item-area-{{ cart_item.product_obj.id }}" class="loading-wrapper flex flex-col gap-y-2 mt-1 relative transition-all w-full">
-                                    <style>
+                        </style>
+                        <div class="w-full flex flex-col gap-y-4 child:p-2 lg:child:p-4">
+                            {% for cart_item in global_cart %}
+                                <div class="w-full flex justify-between relative {% if not forloop.last %}border-b-2 border-gray-200 dark:border-white/20 pb-6 mb-6{% endif %}">
+                                    <div id="delete-overlay-main-{{ cart_item.product_obj.id }}"
+                                         class="delete-overlay absolute inset-0 z-20 hidden items-center justify-center bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-xl transition-all duration-200">
+                                        <svg class="animate-spin h-8 w-8 text-red-500"
+                                             xmlns="http://www.w3.org/2000/svg"
+                                             fill="none"
+                                             viewBox="0 0 24 24">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                    <div class="flex flex-col sm:flex-row items-center gap-6 w-full">
+                                        <div class="flex w-fit flex-col items-center gap-y-3 shrink-0">
+                                            <a href="{{ cart_item.product_obj.get_absolute_url }}"
+                                               class="block bg-gray-50 dark:bg-gray-700/40 p-3 rounded-xl border border-gray-100 dark:border-gray-600">
+                                                <img src="{{ cart_item.product_obj.parent_product.images|main_image }}"
+                                                     class="w-32 md:w-36 h-auto object-contain mix-blend-multiply dark:mix-blend-normal"
+                                                     alt="">
+                                            </a>
+                                            <div id="item-area-{{ cart_item.product_obj.id }}"
+                                                 class="loading-wrapper flex flex-col gap-y-2 mt-1 relative transition-all w-full">
+                                                <style>
                                         .loading-wrapper.htmx-request .quantity-text { display: none; }
                                         .loading-wrapper.htmx-request .loading-dots { display: flex; }
                                         .loading-wrapper.htmx-request svg { opacity: 0.5; pointer-events: none; }
-                                    </style>
-
-                                    <div class="flex items-center justify-between bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-3 h-10 w-full relative">
-                                        
-                                        <span hx-post="{% url 'update_cart_item' pk=cart_item.product_obj.id action='add'%}"
-                                            hx-swap="none"
-                                            hx-indicator="#item-area-{{ cart_item.product_obj.id }}"
-                                            class="cursor-pointer">
-                                            <svg class="size-5 text-green-600 hover:scale-125 transition-transform increment">
-                                                <use href="#plus"></use>
-                                            </svg>
-                                        </span>
-
-                                        <span class="quantity-text font-DanaDemiBold text-gray-700 dark:text-gray-200 pt-0.5 text-base">
-                                            {{ cart_item.quantity }}
-                                        </span>
-
-                                        <div class="loading-dots hidden items-center justify-center gap-0.5 pt-1">
-                                            <span class="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
-                                            <span class="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
-                                            <span class="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce"></span>
+                                                </style>
+                                                <div class="flex items-center justify-between bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-3 h-10 w-full relative">
+                                                    {% if cart_item.quantity >= cart_item.product_obj.stock %}
+                                                        <span class="font-DanaDemiBold text-xs text-gray-400 cursor-default select-none pt-1"
+                                                              title="حداکثر موجودی">حداکثر</span>
+                                                    {% else %}
+                                                        <span hx-post="{% url 'update_cart_item' pk=cart_item.product_obj.id action='add' %}"
+                                                              hx-swap="none"
+                                                              hx-indicator="#item-area-{{ cart_item.product_obj.id }}"
+                                                              class="cursor-pointer">
+                                                            <svg class="size-5 text-green-600 hover:scale-125 transition-transform increment">
+                                                                <use href="#plus"></use>
+                                                            </svg>
+                                                        </span>
+                                                    {% endif %}
+                                                    <span class="quantity-text font-DanaDemiBold text-gray-700 dark:text-gray-200 pt-0.5 text-base">
+                                                        {{ cart_item.quantity }}
+                                                    </span>
+                                                    <div class="loading-dots hidden items-center justify-center gap-0.5 pt-1">
+                                                        <span class="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                                                        <span class="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                                                        <span class="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce"></span>
+                                                    </div>
+                                                    {% if cart_item.quantity == 1 %}
+                                                        <span hx-post="{% url 'update_cart_item' pk=cart_item.product_obj.id action='remove' %}"
+                                                              hx-swap="none"
+                                                              hx-indicator="#item-area-{{ cart_item.product_obj.id }}"
+                                                              class="cursor-pointer">
+                                                            <svg class="size-5 text-red-600 hover:scale-110 transition-transform decrement">
+                                                                <use href="#trash"></use>
+                                                            </svg>
+                                                        </span>
+                                                    {% else %}
+                                                        <span hx-post="{% url 'update_cart_item' pk=cart_item.product_obj.id action='decrement' %}"
+                                                              hx-swap="none"
+                                                              hx-indicator="#item-area-{{ cart_item.product_obj.id }}"
+                                                              class="cursor-pointer">
+                                                            <svg class="size-5 text-red-500 hover:scale-125 transition-transform decrement">
+                                                                <use href="#minus"></use>
+                                                            </svg>
+                                                        </span>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
                                         </div>
-
-                                        {% if cart_item.quantity == 1 %}
-                                            <span hx-post="{% url 'update_cart_item' pk=cart_item.product_obj.id action='remove'%}"
-                                                hx-swap="none"                
-                                                hx-indicator="#item-area-{{ cart_item.product_obj.id }}"
-                                                class="cursor-pointer">
-                                                <svg class="size-5 text-red-600 hover:scale-110 transition-transform decrement">
-                                                    <use href="#trash"></use>
+                                        <div class="flex flex-col gap-y-4 w-full">
+                                            <h2 class="font-DanaMedium line-clamp-2 text-lg">{{ cart_item.product_obj.full_name }}</h2>
+                                            <ul class="space-y-3 child:text-sm text-gray-500 dark:text-gray-400 child:flex child:items-center child:gap-x-2">
+                                                <li>
+                                                    <span class="size-4 bg-blue-500 rounded-full"
+                                                          style="background-color: {{ cart_item.color_code|default:'gray' }}"></span>
+                                                    <p>{{ cart_item.color }}</p>
+                                                </li>
+                                                <li>
+                                                    <svg class="w-5 h-5">
+                                                        <use href="#shield"></use>
+                                                    </svg>
+                                                    <p class="mt-1">گارانتی 18 ماهه شرکتی</p>
+                                                </li>
+                                                <li>
+                                                    <svg class="w-5 h-5">
+                                                        <use href="#truck"></use>
+                                                    </svg>
+                                                    <p class="mt-1">ارسال 1 روز کاری</p>
+                                                </li>
+                                            </ul>
+                                            <div class="mt-2 flex flex-col items-end sm:items-start"
+                                                 id="total-price-and-discount-{{ cart_item.product_obj.id }}">
+                                                {% if cart_item.product_obj.has_discount %}
+                                                    <div class="flex items-center gap-x-2 mb-1">
+                                                        <del class="text-gray-400 text-xs md:text-sm decoration-red-500/50 decoration-1">
+                                                            {{ cart_item.item_total_price_before_discount|intcomma:False }}
+                                                        </del>
+                                                    </div>
+                                                    <span class="flex items-center gap-x-1 text-gray-800 dark:text-gray-100 font-DanaMedium">
+                                                        <p class="text-lg md:text-xl">{{ cart_item.item_total_price|intcomma:False }}</p>
+                                                        <p class="text-xs md:text-sm text-gray-500">تومان</p>
+                                                    </span>
+                                                {% else %}
+                                                    <span class="flex items-center gap-x-1 text-gray-800 dark:text-gray-100 font-DanaMedium mt-1">
+                                                        <p class="text-lg md:text-xl">{{ cart_item.product_obj.final_price|intcomma:False }}</p>
+                                                        <p class="text-xs md:text-sm text-gray-500">تومان</p>
+                                                    </span>
+                                                {% endif %}
+                                            </div>
+                                            <a hx-post="{% url 'update_cart_item' pk=cart_item.product_obj.id action='remove' %}"
+                                               hx-swap="none"
+                                               hx-indicator="#delete-overlay-main-{{ cart_item.product_obj.id }}"
+                                               class="flex sm:hidden absolute top-0 left-0 text-red-500 p-2 cursor-pointer transition-transform hover:scale-110">
+                                                <svg class="w-5 h-5">
+                                                    <use href="#x-mark"></use>
                                                 </svg>
-                                            </span>
-                                        {% else %}
-                                            <span hx-post="{% url 'update_cart_item' pk=cart_item.product_obj.id action='decrement'%}"
-                                                hx-swap="none"                                                            
-                                                hx-indicator="#item-area-{{ cart_item.product_obj.id }}"
-                                                class="cursor-pointer">
-                                                <svg class="size-5 text-red-500 hover:scale-125 transition-transform decrement">
-                                                    <use href="#minus"></use>
-                                                </svg>
-                                            </span>
-                                        {% endif %}
+                                            </a>
+                                        </div>
                                     </div>
-                                </div>                                            
-                            </div>
-
-                            <div class="flex flex-col gap-y-4 w-full">
-                                <h2 class="font-DanaMedium line-clamp-2 text-lg">
-                                    {{cart_item.product_obj.full_name}}
-                                </h2>
-                                <ul class="space-y-3 child:text-sm text-gray-500 dark:text-gray-400 child:flex child:items-center child:gap-x-2">
-                                    <li>
-                                        <span class="size-4 bg-blue-500 rounded-full" style="background-color: {{cart_item.color_code|default:'gray'}};"></span>
-                                        <p>{{cart_item.color}}</p>
-                                    </li>
-                                    <li>
-                                        <svg class="w-5 h-5">
-                                            <use href="#shield"></use>
-                                        </svg>
-                                        <p class="mt-1">گارانتی 18 ماهه شرکتی</p>
-                                    </li>
-                                    <li>
-                                        <svg class="w-5 h-5">
-                                            <use href="#truck"></use>
-                                        </svg>
-                                        <p class="mt-1">ارسال 1 روز کاری</p>
-                                    </li>
-                                </ul>
-                                <div class="mt-2 flex flex-col items-end sm:items-start" id="total-price-and-discount-{{cart_item.product_obj.id}}"> 
-                                    {% if cart_item.product_obj.has_discount%}
-                                        <div class="flex items-center gap-x-2 mb-1">
-                                            <del class="text-gray-400 text-xs md:text-sm decoration-red-500/50 decoration-1">
-                                                {{cart_item.item_total_price_before_discount|intcomma:False}}
-                                            </del>
-                                        </div>
-                                        <span class="flex items-center gap-x-1 text-gray-800 dark:text-gray-100 font-DanaMedium">
-                                            <p class="text-lg md:text-xl">{{cart_item.item_total_price|intcomma:False}}</p>
-                                            <p class="text-xs md:text-sm text-gray-500">تومان</p>
-                                        </span>
-                                    {% else %}
-                                        <span class="flex items-center gap-x-1 text-gray-800 dark:text-gray-100 font-DanaMedium mt-1">
-                                            <p class="text-lg md:text-xl">{{cart_item.product_obj.final_price|intcomma:False}}</p>
-                                            <p class="text-xs md:text-sm text-gray-500">تومان</p>
-                                        </span>
-                                    {% endif %}
+                                    <div class="hidden sm:flex items-start justify-between flex-col">
+                                        <a hx-post="{% url 'update_cart_item' pk=cart_item.product_obj.id action='remove' %}"
+                                           hx-swap="none"
+                                           hx-indicator="#delete-overlay-main-{{ cart_item.product_obj.id }}"
+                                           class="text-gray-400 hover:text-red-500 transition-colors cursor-pointer">
+                                            <svg class="w-6 h-6 hover:scale-110 transition-transform">
+                                                <use href="#x-mark"></use>
+                                            </svg>
+                                        </a>
+                                    </div>
                                 </div>
-                                
-                                <a hx-post="{% url 'update_cart_item' pk=cart_item.product_obj.id action='remove'%}"
-                                    hx-swap="none" 
-                                    hx-indicator="#delete-overlay-main-{{ cart_item.product_obj.id }}"
-                                    class="flex sm:hidden absolute top-0 left-0 text-red-500 p-2 cursor-pointer transition-transform hover:scale-110">
-                                    <svg class="w-5 h-5">
-                                        <use href="#x-mark"></use>
-                                    </svg>
-                                </a>
-                            </div>
-                        </div>
-                        
-                        <div class="hidden sm:flex items-start justify-between flex-col">
-                            <a hx-post="{% url 'update_cart_item' pk=cart_item.product_obj.id action='remove'%}"
-                            hx-swap="none"
-                            hx-indicator="#delete-overlay-main-{{ cart_item.product_obj.id }}"                          
-                            class="text-gray-400 hover:text-red-500 transition-colors cursor-pointer">
-                                <svg class="w-6 h-6 hover:scale-110 transition-transform">
-                                    <use href="#x-mark"></use>
-                                </svg>
-                            </a>
-                        </div>
-                    </div>
-                    {% endfor %}
-
-                    <style>
+                            {% endfor %}
+                            <style>
                         .delete-overlay.htmx-request {
                             display: flex !important;
                         }
-                    </style>
+                            </style>
+                        </div>
                     </div>
-                </div> 
-                {% if paginator.num_pages > 1 %}
-                <div class="mt-8 w-full flex items-center justify-center">
-                    <ul class="flex items-center gap-x-3 child:flex child:items-center child:justify-center child:w-8 child:h-8 child:cursor-pointer child:shadow child:rounded-lg child:transition-all child:duration-300">
-                    
-                    {% if paginator_page.has_previous %}
-                        <li class="bg-white dark:bg-gray-800 hover:bg-blue-500 dark:hover:bg-blue-500 hover:text-white">
-                            <a href="?page={{ paginator_page.previous_page_number }}" class="flex items-center justify-center w-full h-full">
-                                <svg class="size-5 rotate-180">
-                                    <use href="#chevron-left"></use>
-                                </svg>
-                            </a>
-                        </li>
-                    {% else %}
-                        <li class="bg-gray-100 dark:bg-gray-700 text-gray-400 cursor-not-allowed">
-                            <span class="flex items-center justify-center w-full h-full">
-                                <svg class="size-5 rotate-180">
-                                    <use href="#chevron-left"></use>
-                                </svg>
-                            </span>
-                        </li>
+                    {% if paginator.num_pages > 1 %}
+                        <div class="mt-8 w-full flex items-center justify-center">
+                            <ul class="flex items-center gap-x-3 child:flex child:items-center child:justify-center child:w-8 child:h-8 child:cursor-pointer child:shadow child:rounded-lg child:transition-all child:duration-300">
+                                {% if paginator_page.has_previous %}
+                                    <li class="bg-white dark:bg-gray-800 hover:bg-blue-500 dark:hover:bg-blue-500 hover:text-white">
+                                        <a href="?page={{ paginator_page.previous_page_number }}"
+                                           class="flex items-center justify-center w-full h-full">
+                                            <svg class="size-5 rotate-180">
+                                                <use href="#chevron-left"></use>
+                                            </svg>
+                                        </a>
+                                    </li>
+                                {% else %}
+                                    <li class="bg-gray-100 dark:bg-gray-700 text-gray-400 cursor-not-allowed">
+                                        <span class="flex items-center justify-center w-full h-full">
+                                            <svg class="size-5 rotate-180">
+                                                <use href="#chevron-left"></use>
+                                            </svg>
+                                        </span>
+                                    </li>
+                                {% endif %}
+                                {% for page_num in paginator_page.paginator.page_range %}
+                                    {% if paginator_page.number == page_num %}
+                                        <li class="text-white bg-blue-500">
+                                            <span class="flex items-center justify-center w-full h-full">{{ page_num }}</span>
+                                        </li>
+                                    {% elif page_num > paginator_page.number|add:'-3' and page_num < paginator_page.number|add:'3' %}
+                                        <li class="bg-white dark:bg-gray-800 hover:bg-blue-500 dark:hover:bg-blue-500 hover:text-white">
+                                            <a href="?page={{ page_num }}"
+                                               class="flex items-center justify-center w-full h-full">
+                                                {{ page_num }}
+                                            </a>
+                                        </li>
+                                    {% elif page_num == paginator_page.number|add:'-3' or page_num == paginator_page.number|add:'3' %}
+                                        <li class="bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 cursor-default">
+                                            <span class="flex items-center justify-center w-full h-full">...</span>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                                {% if paginator_page.has_next %}
+                                    <li class="bg-white dark:bg-gray-800 hover:bg-blue-500 dark:hover:bg-blue-500 hover:text-white">
+                                        <a href="?page={{ paginator_page.next_page_number }}"
+                                           class="flex items-center justify-center w-full h-full">
+                                            <svg class="size-5">
+                                                <use href="#chevron-left"></use>
+                                            </svg>
+                                        </a>
+                                    </li>
+                                {% else %}
+                                    <li class="bg-gray-100 dark:bg-gray-700 text-gray-400 cursor-not-allowed">
+                                        <span class="flex items-center justify-center w-full h-full">
+                                            <svg class="size-5">
+                                                <use href="#chevron-left"></use>
+                                            </svg>
+                                        </span>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </div>
                     {% endif %}
-
-                    {% for page_num in paginator_page.paginator.page_range %}
-                        {% if paginator_page.number == page_num %}
-                        <li class="text-white bg-blue-500">
-                            <span class="flex items-center justify-center w-full h-full">{{ page_num }}</span>
-                        </li>
-                        {% elif page_num > paginator_page.number|add:'-3' and page_num < paginator_page.number|add:'3' %} 
-                        <li class="bg-white dark:bg-gray-800 hover:bg-blue-500 dark:hover:bg-blue-500 hover:text-white">
-                            <a href="?page={{ page_num }}" class="flex items-center justify-center w-full h-full">
-                                {{ page_num }}
-                            </a>
-                        </li>
-                        {% elif page_num == paginator_page.number|add:'-3' or page_num == paginator_page.number|add:'3' %}
-                        <li class="bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 cursor-default">
-                            <span class="flex items-center justify-center w-full h-full">...</span>
-                        </li>
-                        {% endif %}
-                    {% endfor %}
-
-                    {% if paginator_page.has_next %}
-                        <li class="bg-white dark:bg-gray-800 hover:bg-blue-500 dark:hover:bg-blue-500 hover:text-white">
-                            <a href="?page={{ paginator_page.next_page_number }}" class="flex items-center justify-center w-full h-full">
-                                <svg class="size-5">
-                                    <use href="#chevron-left"></use>
-                                </svg>
-                            </a>
-                        </li>
-                    {% else %}
-                        <li class="bg-gray-100 dark:bg-gray-700 text-gray-400 cursor-not-allowed">
-                            <span class="flex items-center justify-center w-full h-full">
-                                <svg class="size-5">
-                                    <use href="#chevron-left"></use>
-                                </svg>
-                            </span>
-                        </li>
-                    {% endif %}
-                    </ul>
-                </div>   
-                {% endif %}
-            </div>               
-        </div>
-
-        <div class="w-full lg:w-1/4 lg:sticky top-5 flex flex-col gap-y-4 bg-white dark:bg-gray-800 shadow rounded-lg p-4" id="total_price_box">
-            <ul class="child:flex child:items-center child:justify-between space-y-8">
-                <li>
-                    <p>قیمت کالاها({{global_cart|length}})</p>
-                    <p class="flex gap-x-1 text-gray-600 dark:text-gray-300 ">{{global_cart.get_total_price|intcomma:False}} <span class="hidden xl:flex">تومان</span></p>
-                </li>
-                <li>
-                    <p>تخفیف </p>
-                    <p class="font-DanaMedium text-gray-700 dark:text-gray-200">-</p>
-                </li>                    
-                <li class="border-t-2 border-dashed border-gray-400 pt-8">
-                    <p> مبلغ نهایی  :</p>
-                    <p>{{global_cart.get_total_price|intcomma:False}} تومان</p>
-                </li>
-            </ul>
-
-            <a href="{% url "checkout" %}"
-                class="w-full mt-4 flex items-center gap-x-1 justify-center bg-blue-500 text-white hover:bg-blue-600 transition-all rounded-lg shadow py-2">
-                تایید و تکمیل سفارش
-                <svg class="w-5 h-5">
-                    <use href="#shopping-bag"></use>
+                </div>
+            </div>
+            <div class="w-full lg:w-1/4 lg:sticky top-5 flex flex-col gap-y-4 bg-white dark:bg-gray-800 shadow rounded-lg p-4"
+                 id="total_price_box">
+                <ul class="child:flex child:items-center child:justify-between space-y-8">
+                    <li>
+                        <p>قیمت کالاها({{ global_cart|length }})</p>
+                        <p class="flex gap-x-1 text-gray-600 dark:text-gray-300 ">
+                            {{ global_cart.get_total_price|intcomma:False }} <span class="hidden xl:flex">تومان</span>
+                        </p>
+                    </li>
+                    <li>
+                        <p>تخفیف</p>
+                        <p class="font-DanaMedium text-gray-700 dark:text-gray-200">-</p>
+                    </li>
+                    <li class="border-t-2 border-dashed border-gray-400 pt-8">
+                        <p>مبلغ نهایی  :</p>
+                        <p>{{ global_cart.get_total_price|intcomma:False }} تومان</p>
+                    </li>
+                </ul>
+                <a href="{% url "checkout" %}"
+                   class="w-full mt-4 flex items-center gap-x-1 justify-center bg-blue-500 text-white hover:bg-blue-600 transition-all rounded-lg shadow py-2">
+                    تایید و تکمیل سفارش
+                    <svg class="w-5 h-5">
+                        <use href="#shopping-bag"></use>
+                    </svg>
+                </a>
+            </div>
+        </section>
+    {% else %}
+        <section class="flex flex-col items-center justify-center gap-y-3 mt-5">
+            <img class="max-w-60"
+                 src="{% static "images/svg/empty-cart.svg" %}"
+                 alt="">
+            <h1 class="font-DanaDemiBold text-gray-700 dark:text-gray-300 text-2xl mt-2">سبد خرید شما خالی است!</h1>
+            <a class="flex items-center justify-center w-fit text-sky-500"
+               href="{% url "homepage" %}">
+                مشاهده فروشگاه
+                <svg class="size-4 mb-0.5">
+                    <use href="#chevron-left" />
                 </svg>
             </a>
-        </div>
-    </section>
-    {% else %}
-    <section class="flex flex-col items-center justify-center gap-y-3 mt-5">
-        <img class="max-w-60" src="{% static "images/svg/empty-cart.svg" %}" alt="">
-        <h1 class="font-DanaDemiBold text-gray-700 dark:text-gray-300 text-2xl mt-2">
-            سبد خرید شما خالی است!
-        </h1>
-        <a  class="flex items-center justify-center w-fit text-sky-500" href="{% url "homepage" %}">
-            مشاهده فروشگاه
-                <svg class="size-4 mb-0.5">
-                <use href="#chevron-left" />
-            </svg>
-        </a>
-    </section>
+        </section>
     {% endif %}
 </div>
