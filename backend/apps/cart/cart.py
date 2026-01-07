@@ -55,7 +55,7 @@ class DBCartWrapper:
             product=product, cart=cart_obj, defaults={"quantity": quantity}
         )
         if cart_item_created is False:
-            if cart_item_obj.quantity < product.stock:
+            if cart_item_obj.quantity + quantity < product.stock:
                 cart_item_obj.quantity += quantity
                 cart_item_obj.save()
             else:
@@ -184,10 +184,11 @@ class Cart:
         if product_id not in self.cart:
             self.cart[product_id] = {"quantity": quantity}
         else:
-            if product.stock > self.cart[product_id]["quantity"]:
+            if not self.cart[product_id]["quantity"] + quantity > product.stock:
                 self.cart[product_id]["quantity"] += quantity
             else:
                 self.cart[product_id]["quantity"] = product.stock
+                self.save()
 
         self.session.modified = True
         add_return = {
