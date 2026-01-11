@@ -1,12 +1,19 @@
-from django.views import generic
+from django.shortcuts import render
+from django.views import View
+from products.models import Product
 
 
-class HomePageView(generic.TemplateView):
-    template_name = "core/index.html"
-    slug_field = "slug"
+class HomePageView(View):
+    # if there are no amazing prod , del the amazing section
     slug_url_kwarg = "slug"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # context['attr'] = [str(attr) for attr in Product.objects.get.attribute_values.all()]
-        return context
+    def get(self, request, *args, **kwargs):
+        context = {}
+        amazing_products = (
+            Product.objects.select_related("parent_product")
+            .prefetch_related("parent_product__images", "parent_product__comments")
+            .filter(is_amazing=True)[:6]
+        )
+        context["amazing_products"] = amazing_products
+
+        return render(request, "core/index.html", context=context)

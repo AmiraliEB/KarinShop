@@ -164,8 +164,8 @@ class Product(models.Model):
         if self.discount_type == "percentage":
             return self.discount_value
         elif self.discount_type == "amount":
-            if self.discount_value and self.final_price > 0 and self.final_price > self.discount_value:
-                percentage = (self.discount_value / self.final_price) * 100
+            if self.discount_value and self.final_price > 0 and self.discount_value < self.initial_price:
+                percentage = (self.discount_value / self.initial_price) * 100
                 discount_percentage = ceil(percentage)
             return discount_percentage
 
@@ -186,6 +186,8 @@ class Product(models.Model):
                 self.final_price = final_price
 
         self.is_available = self.stock > 0
+        if self.is_amazing and not self.is_available:
+            self.is_amazing = False
 
     def save(self, *args, **kwargs):
         self.recalculate_prices()
@@ -200,6 +202,7 @@ class Product(models.Model):
             fields = set(kwargs["update_fields"])
             fields.add("final_price")
             fields.add("is_available")
+            fields.add("is_amazing")
             kwargs["update_fields"] = list(fields)
         super().save(*args, **kwargs)
 
