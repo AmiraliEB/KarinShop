@@ -4,7 +4,9 @@
     <div class="flex items-center justify-between pb-2 border-b-2 border-gray-200 dark:border-gray-600 text-gray-800 dark:text-gray-300">
         <h2 class="font-DanaMedium text-lg">
             سبد خرید
-            <span class="text-sm text-gray-400 font-Dana">({{ global_cart|length }} مورد)</span>
+            {% if global_cart|length > 0 %}
+                <span class="text-sm text-gray-400 font-Dana">({{ global_cart|length }} مورد)</span>
+            {% endif %}
         </h2>
         <svg class="size-5 cursor-pointer close-cart mb-.5">
             <use href="#x-mark" />
