@@ -2,7 +2,6 @@
 {% load static %}
 {% load humanize %}
 {% load jalali_tags %}
-{% load filter_for_main_image %}
 {% block page_title %}
     خرید {{ product.full_name }}
 {% endblock page_title %}
@@ -536,7 +535,7 @@
                             <a href="{{ product.get_absolute_url }}"
                                class="block w-full aspect-square relative bg-gray-50 dark:bg-gray-700/40 rounded-xl border border-gray-100 dark:border-gray-600 overflow-hidden mb-3 flex items-center justify-center p-4">
                                 <img class="product-card_img absolute inset-0 w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal p-4 rounded-xl transition-all duration-500 ease-in-out group-hover:scale-110 group-hover:opacity-0"
-                                     src="{{ product.parent_product.images|main_image }}"
+                                     src="{{ product.parent_product.get_main_image }}"
                                      alt="{{ product.full_name }}">
                                 <img class="product-card_img absolute inset-0 w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal p-4 rounded-xl transition-all duration-500 ease-in-out opacity-0 group-hover:scale-110 group-hover:opacity-100"
                                      src="{{ product.parent_product.images|non_main_image }}"

@@ -37,7 +37,7 @@
                     </a>
                     <a href="{{ cart_item.product_obj.get_absolute_url }}"
                        class="w-24 h-24 shrink-0 bg-gray-50 dark:bg-gray-700/40 rounded-xl p-2 border border-gray-200 dark:border-gray-600 flex items-center justify-center group-hover:border-blue-200 transition-colors">
-                        <img src="{{ cart_item.product_obj.parent_product.images|main_image }}"
+                        <img src="{{ cart_item.product_obj.parent_product.get_main_image }}"
                              class="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal rounded-md"
                              alt="product">
                     </a>

@@ -1,7 +1,6 @@
 {% extends "_base.html" %}
 {% load humanize %}
 {% load static %}
-{% load filter_for_main_image %}
 {% block title %}
     {{ attr }}
 {% endblock title %}
@@ -300,7 +299,7 @@
                                     <!-- product img -->
                                     <a href={{ amazing_product.get_absolute_url }}>
                                         <img class="small-card_img"
-                                             src="{{ amazing_product.parent_product.images|main_image }}"
+                                             src="{{ amazing_product.parent_product.get_main_image }}"
                                              alt="">
                                     </a>
                                     <!--  product footer -->

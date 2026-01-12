@@ -1,5 +1,4 @@
 {% load humanize %}
-{% load filter_for_main_image %}
 {% load static %}
 <div id="cart-section" {% if oob %}hx-swap-oob="True"{% endif %}>
     {% if global_cart|length > 0 %}
@@ -64,7 +63,7 @@
                                         <div class="flex w-fit flex-col items-center gap-y-3 shrink-0">
                                             <a href="{{ cart_item.product_obj.get_absolute_url }}"
                                                class="block bg-gray-50 dark:bg-gray-700/40 p-3 rounded-xl border border-gray-100 dark:border-gray-600">
-                                                <img src="{{ cart_item.product_obj.parent_product.images|main_image }}"
+                                                <img src="{{ cart_item.product_obj.parent_product.get_main_image }}"
                                                      class="w-32 md:w-36 h-auto object-contain mix-blend-multiply dark:mix-blend-normal"
                                                      alt="">
                                             </a>
