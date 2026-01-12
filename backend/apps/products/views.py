@@ -67,7 +67,9 @@ class ProductDetailView(generic.DetailView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        return queryset.select_related("parent_product__brand", "parent_product__category").prefetch_related(
+        return queryset.select_related(
+            "parent_product__brand", "parent_product__category", "parent_product"
+        ).prefetch_related(
             Prefetch(
                 "parent_product__specification_values",
                 queryset=AttributeValue.objects.select_related("attribute__attribute_category").order_by(
@@ -76,47 +78,38 @@ class ProductDetailView(generic.DetailView):
                 to_attr="sorted_attribute_values",
             ),
             "parent_product__images",
+            "parent_product__comments",
         )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        cart = get_cart(self.request)
-        product = self.object
 
-        context["discount_percentage"] = product.discount_percentage
-        context["grouped_attributes"] = product.parent_product.grouped_specifications
+        cart = get_cart(self.request)
+
+        product = self.object
 
         comments = (
             Comments.objects.filter(parent_product=product.parent_product, is_approved=True)
             .select_related("user")
             .order_by("-datetime_created")
         )
-        comment_summary_data = comments.aggregate(
-            average_rating=Avg("rating"),
-            comment_count=Count("id"),
-        )
         paginator = Paginator(comments, 5)
         page_number = self.request.GET.get("page")
-        commnts_filter_by_page_number = paginator.get_page(page_number)
+        comments_filter_by_page_number = paginator.get_page(page_number)
 
-        context["comments"] = commnts_filter_by_page_number
-        context["comments_count"] = comment_summary_data.get("comment_count")
+        context["discount_percentage"] = product.discount_percentage
+        context["grouped_attributes"] = product.parent_product.grouped_specifications
 
-        if comment_summary_data.get("average_rating") is not None:
-            context["average_rating"] = "{:.2f}".format(comment_summary_data.get("average_rating"))
-        else:
-            context["average_rating"] = 0
-        context["cart"] = cart
+        context["comments"] = comments_filter_by_page_number
+        context["comments_count"] = product.parent_product.get_comment_count(comments)
+        context["average_rating"] = product.parent_product.get_average_rate(comments)
+
+        context["album_images"] = product.parent_product.images.filter(is_main_image=False)
 
         if "comment_form" not in context:
             context["comment_form"] = CommentForm()
         if "cart_form" not in context:
             context["cart_form"] = CartAddProductForm()
-
-        main_img_obj = product.parent_product.images.filter(is_main_image=True).first()
-        context["main_image"] = main_img_obj.image.url if main_img_obj else None
-
-        context["album_images"] = product.parent_product.images.filter(is_main_image=False)
 
         category = product.parent_product.category
         brand = product.parent_product.brand
@@ -125,7 +118,7 @@ class ProductDetailView(generic.DetailView):
             "products",
             queryset=Product.objects.filter(is_available=True),
         )
-
+        # TODO: related parent should calculate in model
         related_parent = (
             ParentProduct.objects.prefetch_related(active_products_prefetch)
             .filter(category=category, brand=brand, products__is_available=True)

@@ -2,12 +2,13 @@ from __future__ import annotations
 
 from collections import defaultdict
 from math import ceil
+from typing import Any
 
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models import Q, QuerySet
+from django.db.models import Avg, Count, Q, QuerySet
 from django.db.models.signals import m2m_changed, post_delete, post_save
 from django.dispatch import receiver
 from django.urls import reverse
@@ -82,6 +83,39 @@ class ParentProduct(models.Model):
             return None
         main_image: ProductImage | None = images.filter(is_main_image=True).first()
         return main_image.image.url if main_image is not None else None
+
+    @property
+    def get_second_image(self: ParentProduct) -> ProductImage | None:
+        images: QuerySet[ProductImage] = self.images
+        if images is None:
+            return None
+        second_image: ProductImage | None = images.exclude(is_main_image=True).first()
+        return second_image.image.url if second_image is not None else None
+
+    def get_average_rate(self: ParentProduct, comments_query: "QuerySet[Comments]|None" = None) -> int | str:
+        if comments_query is None:
+            comments: QuerySet[Comments] = self.comments
+            if comments is not None:
+                comments = comments.filter(is_approved=True).order_by("-datetime_created")
+        else:
+            comments = comments_query
+        average_rating = comments.aggregate(average_rating=Avg("rating"))
+        average_rating_data = average_rating.get("average_rating")
+        if average_rating_data is not None:
+            return "{:.2f}".format(average_rating_data)
+        else:
+            return 0
+
+    def get_comment_count(self: ParentProduct, comments_query: "QuerySet[Comments]|None" = None) -> Any | None:
+        if comments_query is None:
+            comments: QuerySet[Comments] = self.comments
+            if comments is not None:
+                comments = comments.filter(is_approved=True).order_by("-datetime_created")
+        else:
+            comments = comments_query
+        comment_count = comments.aggregate(comment_count=Count("id"))
+        comment_count_data = comment_count.get("comment_count")
+        return comment_count_data if comment_count_data is not None else 0
 
 
 class Product(models.Model):

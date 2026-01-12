@@ -230,7 +230,7 @@
                     <!-- IMAGE SLIDER -->
                     <div class="w-full md:w-2/5 hidden md:flex flex-col justify-center items-center gap-y-4">
                         <div class="open-sliderModal w-full flex justify-center">
-                            <img src="{{ main_image }}"
+                            <img src="{{ product.parent_product.get_main_image }}"
                                  class="cursor-pointer object-contain w-full h-auto max-h-[450px] rounded-lg"
                                  alt="">
                         </div>
@@ -314,7 +314,7 @@
                             <div class="swiper MobileProductSlider w-full">
                                 <div class="swiper-wrapper w-full child:w-full child:overflow-hidden child:rounded-lg">
                                     <div class="swiper-slide">
-                                        <img src={{ main_image }} alt="">
+                                        <img src={{ product.parent_product.get_main_image }} alt="">
                                     </div>
                                     {% for image_obj in album_images %}
                                         <div class="swiper-slide">
@@ -538,7 +538,7 @@
                                      src="{{ product.parent_product.get_main_image }}"
                                      alt="{{ product.full_name }}">
                                 <img class="product-card_img absolute inset-0 w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal p-4 rounded-xl transition-all duration-500 ease-in-out opacity-0 group-hover:scale-110 group-hover:opacity-100"
-                                     src="{{ product.parent_product.images|non_main_image }}"
+                                     src="{{ product.parent_product.get_second_image }}"
                                      alt="{{ product.full_name }}">
                             </a>
                             <!--  product footer -->

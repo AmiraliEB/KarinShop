@@ -16,4 +16,7 @@ class HomePageView(View):
         )
         context["amazing_products"] = amazing_products
 
+        latest_products = Product.objects.order_by("datetime_modified")[:6]
+        context["latest_products"] = latest_products
+
         return render(request, "core/index.html", context=context)
