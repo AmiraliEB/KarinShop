@@ -253,6 +253,15 @@ class Product(models.Model):
             self._full_name = new_full_name
             super().save(update_fields=["_full_name"])
 
+    # def best_selling_product(self: Product):
+    #     order_items: QuerySet[OrderItem] = self.items
+    #     best_selling = (
+    #         order_items.select_related("order")
+    #         .filter(order__is_paid=True)
+    #         .annotate(order_item_count=Count("id"))
+    #         .order_by("order_item_count")
+    #     )
+
 
 def product_image_upload_to(instance, filename):
     return f"products/{slugify(instance.parent_product.name)}/{filename}"

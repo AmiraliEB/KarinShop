@@ -1,3 +1,4 @@
+from django.db.models import Count, Q
 from django.shortcuts import render
 from django.views import View
 from products.models import Product
@@ -16,7 +17,11 @@ class HomePageView(View):
         )
         context["amazing_products"] = amazing_products
 
-        latest_products = Product.objects.order_by("datetime_modified")[:6]
+        latest_products = Product.objects.filter(is_available=True).order_by("datetime_modified")[:6]
         context["latest_products"] = latest_products
-
+        context["products"] = (
+            Product.objects.select_related("parent_product")
+            .annotate(order_item_count=Count("orderitem", filter=Q(orderitem__order__is_paid=True)))
+            .order_by("-order_item_count")[:6]
+        )
         return render(request, "core/index.html", context=context)
