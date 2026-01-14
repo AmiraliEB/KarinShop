@@ -1,3 +1,4 @@
+from cart.models import CartItem
 from django.db.models import Count, Q
 from django.shortcuts import render
 from django.views import View
@@ -19,9 +20,22 @@ class HomePageView(View):
 
         latest_products = Product.objects.filter(is_available=True).order_by("datetime_modified")[:6]
         context["latest_products"] = latest_products
-        context["products"] = (
+        context["best_selling_products"] = (
             Product.objects.select_related("parent_product")
             .annotate(order_item_count=Count("orderitem", filter=Q(orderitem__order__is_paid=True)))
             .order_by("-order_item_count")[:6]
         )
+        hot_products = (
+            Product.objects.prefetch_related()
+            .annotate(count_cart_items=Count("cart_items"))
+            .order_by("count_cart_items")[:15]
+        )
+
+        def hot_product():
+            for product in hot_products:
+                yield product
+
+        context["hot_products"] = hot_product()
+        context["hot_products_column"] = range(4)
+
         return render(request, "core/index.html", context=context)

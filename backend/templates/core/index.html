@@ -531,7 +531,7 @@
                 <div class="swiper BestSelling mt-5 w-full">
                     <div class="swiper-wrapper py-5">
                         <!-- PRODUCT ITEM -->
-                        {% for product in products %}
+                        {% for product in best_selling_products %}
                             <div class="swiper-slide product-card group">
                                 <!-- product header -->
                                 <div class="product-card_header">
@@ -699,44 +699,24 @@
                         <div class="swiper-wrapper w-full">
                             <!-- PRODUCT ITEM -->
                             <div class="swiper-slide hottest-slide">
-                                <a href="product_details.html" class="hottest-slide_link ">
-                                    <img class="hottest-slide_img "
-                                         src="{% static "./images/products/1.png" %}"
-                                         alt="">
-                                    <p class="hottest-slide_text ">مانیتور گیمینگ ایسوس مدل ROG Swift PG259QN</p>
-                                </a>
-                                <a href="product_details.html" class="hottest-slide_link ">
-                                    <img class="hottest-slide_img "
-                                         src="{% static "./images/products/3.png" %}"
-                                         alt="">
-                                    <p class="hottest-slide_text ">کنسول بازی پلی استیشن 5 نسخه دیسک دار</p>
-                                </a>
-                                <a href="product_details.html" class="hottest-slide_link ">
-                                    <img class="hottest-slide_img "
-                                         src="{% static "./images/products/7.webp" %}"
-                                         alt="">
-                                    <p class="hottest-slide_text ">ساعت هوشمند سامسونگ مدل Galaxy Watch 6</p>
-                                </a>
+                                {% for product in hot_products %}
+                                    <a href={{ product.get_absolute_url }} class="hottest-slide_link ">
+                                        <img class="hottest-slide_img "
+                                             src="{{ product.parent_product.get_main_image }}"
+                                             alt="">
+                                        <p class="hottest-slide_text ">{{ product.full_name }}</p>
+                                    </a>
+                                {% endfor %}
                             </div>
                             <div class="swiper-slide hottest-slide">
-                                <a href="product_details.html" class="hottest-slide_link ">
-                                    <img class="hottest-slide_img "
-                                         src="{% static "./images/products/1.png" %}"
-                                         alt="">
-                                    <p class="hottest-slide_text ">لپ تاپ 14 اینچی لنوو مدل ThinkPad X1 Carbon</p>
-                                </a>
-                                <a href="product_details.html" class="hottest-slide_link ">
-                                    <img class="hottest-slide_img "
-                                         src="{% static "./images/products/3.png" %}"
-                                         alt="">
-                                    <p class="hottest-slide_text ">گوشی موبایل سامسونگ مدل Galaxy S23 Ultra</p>
-                                </a>
-                                <a href="product_details.html" class="hottest-slide_link ">
-                                    <img class="hottest-slide_img "
-                                         src="{% static "./images/products/7.webp" %}"
-                                         alt="">
-                                    <p class="hottest-slide_text ">هدفون بی‌سیم اپل مدل AirPods Pro 2</p>
-                                </a>
+                                {% for product in hot_products %}
+                                    <a href={{ product.get_absolute_url }} class="hottest-slide_link ">
+                                        <img class="hottest-slide_img "
+                                             src="{{ product.parent_product.get_main_image }}"
+                                             alt="">
+                                        <p class="hottest-slide_text ">{{ product.full_name }}</p>
+                                    </a>
+                                {% endfor %}
                             </div>
                             <div class="swiper-slide hottest-slide">
                                 <a href="product_details.html" class="hottest-slide_link ">
