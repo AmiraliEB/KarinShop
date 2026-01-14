@@ -639,7 +639,7 @@
                             </div>
                         </div>
                     </div>
-                    <span class="text-sm text-gray-400 ms-auto py-1.5 px-4">۱3,۰۴۰ کالا</span>
+                    <span class="text-sm text-gray-400 ms-auto py-1.5 px-4">{{ count_all_products }} کالا</span>
                 </div>
                 <!-- TOP FILTER BOX -->
                 <div class="hidden lg:flex items-center justify-between  mb-6">
@@ -657,485 +657,145 @@
                             <li class="text-gray-400">گران ترین</li>
                         </ul>
                     </div>
-                    <span class="text-sm text-gray-400 end">۱۳,۰۴۰ کالا</span>
+                    <span class="text-sm text-gray-400 end">{{ count_all_products }} کالا</span>
                 </div>
                 <!-- PRODUCTS -->
                 <div class="grid grid-cols-1 xxs:grid-cols-2 xs:grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-3 xs:gap-2 sm:gap-4">
                     <!-- PRODUCT ITEM -->
-                    <div class=" product-card group">
-                        <!-- product header -->
-                        <div class="product-card_header">
-                            <div class="flex items-center gap-x-2">
-                                <div class="tooltip">
-                                    <button class="rounded-full p-1.5 app-border app-hover">
-                                        <svg class="size-4">
-                                            <use href="#shopping-cart"></use>
-                                        </svg>
-                                    </button>
-                                    <div class="tooltiptext">سبد خرید</div>
+                    {% for product in products_by_page %}
+                        <div class=" product-card group">
+                            <!-- product header -->
+                            <div class="product-card_header">
+                                <div class="flex items-center gap-x-2">
+                                    <div class="tooltip">
+                                        <button class="rounded-full p-1.5 app-border app-hover">
+                                            <svg class="size-4">
+                                                <use href="#shopping-cart"></use>
+                                            </svg>
+                                        </button>
+                                        <div class="tooltiptext">سبد خرید</div>
+                                    </div>
+                                    <div class="tooltip">
+                                        <button class="rounded-full p-1.5 app-border app-hover">
+                                            <svg class="size-4">
+                                                <use href="#heart"></use>
+                                            </svg>
+                                        </button>
+                                        <div class="tooltiptext">علاقه مندی</div>
+                                    </div>
+                                    <div class="tooltip">
+                                        <button class="rounded-full p-1.5 app-border app-hover">
+                                            <svg class="size-4">
+                                                <use href="#arrows-up-down"></use>
+                                            </svg>
+                                        </button>
+                                        <div class="tooltiptext">مقایسه</div>
+                                    </div>
                                 </div>
-                                <div class="tooltip">
-                                    <button class="rounded-full p-1.5 app-border app-hover">
-                                        <svg class="size-4">
-                                            <use href="#heart"></use>
-                                        </svg>
-                                    </button>
-                                    <div class="tooltiptext">علاقه مندی</div>
-                                </div>
-                                <div class="tooltip">
-                                    <button class="rounded-full p-1.5 app-border app-hover">
-                                        <svg class="size-4">
-                                            <use href="#arrows-up-down"></use>
-                                        </svg>
-                                    </button>
-                                    <div class="tooltiptext">مقایسه</div>
-                                </div>
+                                <!-- badge offer -->
+                                <span class="product-card_badge">{{ product.discount_percentage }}% تخفیف‌</span>
                             </div>
-                            <!-- badge offer -->
-                            <span class="product-card_badge">70% تخفیف‌</span>
-                        </div>
-                        <!-- product img -->
-                        <a href="product-details.html">
-                            <img class="product-card_img group-hover:opacity-0 absolute"
-                                 src="{% static "./images/products/1.png" %}"
-                                 alt="">
-                            <img class="product-card_img opacity-0 group-hover:opacity-100"
-                                 src="{% static "./images/products/2.png" %}"
-                                 alt="">
-                        </a>
-                        <!--  product footer -->
-                        <div class="space-y-2">
-                            <a href="product-details.html" class="product-card_link">
-                                لپ تاپ 15.6 اینچی ایسوس مدل Vivobook15 X515MA-BR001-Celeron N4020-8GB DDR4
+                            <!-- product img -->
+                            <a href={{ product.get_absolute_url }}>
+                                <img class="product-card_img group-hover:opacity-0 absolute"
+                                     src="{% static "./images/products/1.png" %}"
+                                     alt="">
+                                <img class="product-card_img opacity-0 group-hover:opacity-100"
+                                     src="{% static "./images/products/2.png" %}"
+                                     alt="">
                             </a>
-                            <!-- Rate and Price -->
-                            <div class="product-card_price-wrapper">
-                                <!-- RATE -->
-                                <div class="product-card_rate">
-                                    <span class="flex items-center gap-x-0.5">
-                                        <svg class="size-4 text-blue-500 mb-0.5">
-                                            <use href="#rocket"></use>
-                                        </svg>
-                                        <p class="text-xs">ارسال امروز</p>
-                                    </span>
-                                    <span class="text-gray-400 flex items-center text-sm gap-x-0.5">
-                                        <p>5.0</p>
-                                        <svg class="size-4 mb-1">
-                                            <use href="#star"></use>
-                                        </svg>
-                                    </span>
-                                </div>
-                                <!-- Price -->
-                                <div class="product-card_price">
-                                    <del>70,000,000
-                                        <h6>تومان</h6>
-                                    </del>
-                                    <p>70,000,000</p>
-                                    <span>تومان</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- PRODUCT ITEM -->
-                    <div class=" product-card group">
-                        <!-- product header -->
-                        <div class="product-card_header">
-                            <div class="flex items-center gap-x-2">
-                                <div class="tooltip">
-                                    <button class="rounded-full p-1.5 app-border app-hover">
-                                        <svg class="size-4">
-                                            <use href="#shopping-cart"></use>
-                                        </svg>
-                                    </button>
-                                    <div class="tooltiptext">سبد خرید</div>
-                                </div>
-                                <div class="tooltip">
-                                    <button class="rounded-full p-1.5 app-border app-hover">
-                                        <svg class="size-4">
-                                            <use href="#heart"></use>
-                                        </svg>
-                                    </button>
-                                    <div class="tooltiptext">علاقه مندی</div>
-                                </div>
-                                <div class="tooltip">
-                                    <button class="rounded-full p-1.5 app-border app-hover">
-                                        <svg class="size-4">
-                                            <use href="#arrows-up-down"></use>
-                                        </svg>
-                                    </button>
-                                    <div class="tooltiptext">مقایسه</div>
-                                </div>
-                            </div>
-                            <!-- badge offer -->
-                            <span class="product-card_badge">70% تخفیف‌</span>
-                        </div>
-                        <!-- product img -->
-                        <a href="product-details.html">
-                            <img class="product-card_img group-hover:opacity-0 absolute"
-                                 src="{% static "./images/products/3.png" %}"
-                                 alt="">
-                            <img class="product-card_img opacity-0 group-hover:opacity-100"
-                                 src="{% static "./images/products/4.png" %}"
-                                 alt="">
-                        </a>
-                        <!--  product footer -->
-                        <div class="space-y-2">
-                            <a href="product-details.html" class="product-card_link">
-                                لپ تاپ 15.6 اینچی ایسوس مدل Vivobook15 X515MA-BR001-Celeron N4020-8GB DDR4
-                            </a>
-                            <!-- Rate and Price -->
-                            <div class="product-card_price-wrapper">
-                                <!-- RATE -->
-                                <div class="product-card_rate">
-                                    <span class="flex items-center gap-x-0.5">
-                                        <svg class="size-4 text-blue-500 mb-0.5">
-                                            <use href="#rocket"></use>
-                                        </svg>
-                                        <p class="text-xs">ارسال امروز</p>
-                                    </span>
-                                    <span class="text-gray-400 flex items-center text-sm gap-x-0.5">
-                                        <p>5.0</p>
-                                        <svg class="size-4 mb-1">
-                                            <use href="#star"></use>
-                                        </svg>
-                                    </span>
-                                </div>
-                                <!-- Price -->
-                                <div class="product-card_price">
-                                    <del>70,000,000
-                                        <h6>تومان</h6>
-                                    </del>
-                                    <p>70,000,000</p>
-                                    <span>تومان</span>
+                            <!--  product footer -->
+                            <div class="space-y-2">
+                                <a href={{ product.get_absolute_url }} class="product-card_link">{{ product.full_name }}</a>
+                                <!-- Rate and Price -->
+                                <div class="product-card_price-wrapper">
+                                    <!-- RATE -->
+                                    <div class="product-card_rate">
+                                        <span class="flex items-center gap-x-0.5">
+                                            <svg class="size-4 text-blue-500 mb-0.5">
+                                                <use href="#rocket"></use>
+                                            </svg>
+                                            <p class="text-xs">ارسال امروز</p>
+                                        </span>
+                                        <span class="text-gray-400 flex items-center text-sm gap-x-0.5">
+                                            <p>5.0</p>
+                                            <svg class="size-4 mb-1">
+                                                <use href="#star"></use>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                    <!-- Price -->
+                                    <div class="product-card_price">
+                                        <del>70,000,000
+                                            <h6>تومان</h6>
+                                        </del>
+                                        <p>70,000,000</p>
+                                        <span>تومان</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <!-- PRODUCT ITEM -->
-                    <div class=" product-card group">
-                        <!-- product header -->
-                        <div class="product-card_header">
-                            <div class="flex items-center gap-x-2">
-                                <div class="tooltip">
-                                    <button class="rounded-full p-1.5 app-border app-hover">
-                                        <svg class="size-4">
-                                            <use href="#shopping-cart"></use>
-                                        </svg>
-                                    </button>
-                                    <div class="tooltiptext">سبد خرید</div>
-                                </div>
-                                <div class="tooltip">
-                                    <button class="rounded-full p-1.5 app-border app-hover">
-                                        <svg class="size-4">
-                                            <use href="#heart"></use>
-                                        </svg>
-                                    </button>
-                                    <div class="tooltiptext">علاقه مندی</div>
-                                </div>
-                                <div class="tooltip">
-                                    <button class="rounded-full p-1.5 app-border app-hover">
-                                        <svg class="size-4">
-                                            <use href="#arrows-up-down"></use>
-                                        </svg>
-                                    </button>
-                                    <div class="tooltiptext">مقایسه</div>
-                                </div>
-                            </div>
-                            <!-- badge offer -->
-                            <span class="product-card_badge">70% تخفیف‌</span>
-                        </div>
-                        <!-- product img -->
-                        <a href="product-details.html">
-                            <img class="product-card_img group-hover:opacity-0 absolute"
-                                 src="{% static "./images/products/5.webp" %}"
-                                 alt="">
-                            <img class="product-card_img opacity-0 group-hover:opacity-100"
-                                 src="{% static "./images/products/6.webp" %}"
-                                 alt="">
-                        </a>
-                        <!--  product footer -->
-                        <div class="space-y-2">
-                            <a href="product-details.html" class="product-card_link">
-                                لپ تاپ 15.6 اینچی ایسوس مدل Vivobook15 X515MA-BR001-Celeron N4020-8GB DDR4
-                            </a>
-                            <!-- Rate and Price -->
-                            <div class="product-card_price-wrapper">
-                                <!-- RATE -->
-                                <div class="product-card_rate">
-                                    <span class="flex items-center gap-x-0.5">
-                                        <svg class="size-4 text-blue-500 mb-0.5">
-                                            <use href="#rocket"></use>
-                                        </svg>
-                                        <p class="text-xs">ارسال امروز</p>
-                                    </span>
-                                    <span class="text-gray-400 flex items-center text-sm gap-x-0.5">
-                                        <p>5.0</p>
-                                        <svg class="size-4 mb-1">
-                                            <use href="#star"></use>
-                                        </svg>
-                                    </span>
-                                </div>
-                                <!-- Price -->
-                                <div class="product-card_price">
-                                    <del>70,000,000
-                                        <h6>تومان</h6>
-                                    </del>
-                                    <p>70,000,000</p>
-                                    <span>تومان</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- PRODUCT ITEM -->
-                    <div class=" product-card group">
-                        <!-- product header -->
-                        <div class="product-card_header">
-                            <div class="flex items-center gap-x-2">
-                                <div class="tooltip">
-                                    <button class="rounded-full p-1.5 app-border app-hover">
-                                        <svg class="size-4">
-                                            <use href="#shopping-cart"></use>
-                                        </svg>
-                                    </button>
-                                    <div class="tooltiptext">سبد خرید</div>
-                                </div>
-                                <div class="tooltip">
-                                    <button class="rounded-full p-1.5 app-border app-hover">
-                                        <svg class="size-4">
-                                            <use href="#heart"></use>
-                                        </svg>
-                                    </button>
-                                    <div class="tooltiptext">علاقه مندی</div>
-                                </div>
-                                <div class="tooltip">
-                                    <button class="rounded-full p-1.5 app-border app-hover">
-                                        <svg class="size-4">
-                                            <use href="#arrows-up-down"></use>
-                                        </svg>
-                                    </button>
-                                    <div class="tooltiptext">مقایسه</div>
-                                </div>
-                            </div>
-                            <!-- badge offer -->
-                            <span class="product-card_badge">70% تخفیف‌</span>
-                        </div>
-                        <!-- product img -->
-                        <a href="product-details.html">
-                            <img class="product-card_img group-hover:opacity-0 absolute"
-                                 src="{% static "./images/products/7.webp" %}"
-                                 alt="">
-                            <img class="product-card_img opacity-0 group-hover:opacity-100"
-                                 src="{% static "./images/products/8.webp" %}"
-                                 alt="">
-                        </a>
-                        <!--  product footer -->
-                        <div class="space-y-2">
-                            <a href="product-details.html" class="product-card_link">
-                                لپ تاپ 15.6 اینچی ایسوس مدل Vivobook15 X515MA-BR001-Celeron N4020-8GB DDR4
-                            </a>
-                            <!-- Rate and Price -->
-                            <div class="product-card_price-wrapper">
-                                <!-- RATE -->
-                                <div class="product-card_rate">
-                                    <span class="flex items-center gap-x-0.5">
-                                        <svg class="size-4 text-blue-500 mb-0.5">
-                                            <use href="#rocket"></use>
-                                        </svg>
-                                        <p class="text-xs">ارسال امروز</p>
-                                    </span>
-                                    <span class="text-gray-400 flex items-center text-sm gap-x-0.5">
-                                        <p>5.0</p>
-                                        <svg class="size-4 mb-1">
-                                            <use href="#star"></use>
-                                        </svg>
-                                    </span>
-                                </div>
-                                <!-- Price -->
-                                <div class="product-card_price">
-                                    <del>70,000,000
-                                        <h6>تومان</h6>
-                                    </del>
-                                    <p>70,000,000</p>
-                                    <span>تومان</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- PRODUCT ITEM -->
-                    <div class=" product-card group">
-                        <!-- product header -->
-                        <div class="product-card_header">
-                            <div class="flex items-center gap-x-2">
-                                <div class="tooltip">
-                                    <button class="rounded-full p-1.5 app-border app-hover">
-                                        <svg class="size-4">
-                                            <use href="#shopping-cart"></use>
-                                        </svg>
-                                    </button>
-                                    <div class="tooltiptext">سبد خرید</div>
-                                </div>
-                                <div class="tooltip">
-                                    <button class="rounded-full p-1.5 app-border app-hover">
-                                        <svg class="size-4">
-                                            <use href="#heart"></use>
-                                        </svg>
-                                    </button>
-                                    <div class="tooltiptext">علاقه مندی</div>
-                                </div>
-                                <div class="tooltip">
-                                    <button class="rounded-full p-1.5 app-border app-hover">
-                                        <svg class="size-4">
-                                            <use href="#arrows-up-down"></use>
-                                        </svg>
-                                    </button>
-                                    <div class="tooltiptext">مقایسه</div>
-                                </div>
-                            </div>
-                            <!-- badge offer -->
-                            <span class="product-card_badge">70% تخفیف‌</span>
-                        </div>
-                        <!-- product img -->
-                        <a href="product-details.html">
-                            <img class="product-card_img group-hover:opacity-0 absolute"
-                                 src="{% static "./images/products/5.webp" %}"
-                                 alt="">
-                            <img class="product-card_img opacity-0 group-hover:opacity-100"
-                                 src="{% static "./images/products/6.webp" %}"
-                                 alt="">
-                        </a>
-                        <!--  product footer -->
-                        <div class="space-y-2">
-                            <a href="product-details.html" class="product-card_link">
-                                لپ تاپ 15.6 اینچی ایسوس مدل Vivobook15 X515MA-BR001-Celeron N4020-8GB DDR4
-                            </a>
-                            <!-- Rate and Price -->
-                            <div class="product-card_price-wrapper">
-                                <!-- RATE -->
-                                <div class="product-card_rate">
-                                    <span class="flex items-center gap-x-0.5">
-                                        <svg class="size-4 text-blue-500 mb-0.5">
-                                            <use href="#rocket"></use>
-                                        </svg>
-                                        <p class="text-xs">ارسال امروز</p>
-                                    </span>
-                                    <span class="text-gray-400 flex items-center text-sm gap-x-0.5">
-                                        <p>5.0</p>
-                                        <svg class="size-4 mb-1">
-                                            <use href="#star"></use>
-                                        </svg>
-                                    </span>
-                                </div>
-                                <!-- Price -->
-                                <div class="product-card_price">
-                                    <del>70,000,000
-                                        <h6>تومان</h6>
-                                    </del>
-                                    <p>70,000,000</p>
-                                    <span>تومان</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- PRODUCT ITEM -->
-                    <div class=" product-card group">
-                        <!-- product header -->
-                        <div class="product-card_header">
-                            <div class="flex items-center gap-x-2">
-                                <div class="tooltip">
-                                    <button class="rounded-full p-1.5 app-border app-hover">
-                                        <svg class="size-4">
-                                            <use href="#shopping-cart"></use>
-                                        </svg>
-                                    </button>
-                                    <div class="tooltiptext">سبد خرید</div>
-                                </div>
-                                <div class="tooltip">
-                                    <button class="rounded-full p-1.5 app-border app-hover">
-                                        <svg class="size-4">
-                                            <use href="#heart"></use>
-                                        </svg>
-                                    </button>
-                                    <div class="tooltiptext">علاقه مندی</div>
-                                </div>
-                                <div class="tooltip">
-                                    <button class="rounded-full p-1.5 app-border app-hover">
-                                        <svg class="size-4">
-                                            <use href="#arrows-up-down"></use>
-                                        </svg>
-                                    </button>
-                                    <div class="tooltiptext">مقایسه</div>
-                                </div>
-                            </div>
-                            <!-- badge offer -->
-                            <span class="product-card_badge">70% تخفیف‌</span>
-                        </div>
-                        <!-- product img -->
-                        <a href="product-details.html">
-                            <img class="product-card_img group-hover:opacity-0 absolute"
-                                 src="{% static "./images/products/1.png" %}"
-                                 alt="">
-                            <img class="product-card_img opacity-0 group-hover:opacity-100"
-                                 src="{% static "./images/products/2.png" %}"
-                                 alt="">
-                        </a>
-                        <!--  product footer -->
-                        <div class="space-y-2">
-                            <a href="product-details.html" class="product-card_link">
-                                لپ تاپ 15.6 اینچی ایسوس مدل Vivobook15 X515MA-BR001-Celeron N4020-8GB DDR4
-                            </a>
-                            <!-- Rate and Price -->
-                            <div class="product-card_price-wrapper">
-                                <!-- RATE -->
-                                <div class="product-card_rate">
-                                    <span class="flex items-center gap-x-0.5">
-                                        <svg class="size-4 text-blue-500 mb-0.5">
-                                            <use href="#rocket"></use>
-                                        </svg>
-                                        <p class="text-xs">ارسال امروز</p>
-                                    </span>
-                                    <span class="text-gray-400 flex items-center text-sm gap-x-0.5">
-                                        <p>5.0</p>
-                                        <svg class="size-4 mb-1">
-                                            <use href="#star"></use>
-                                        </svg>
-                                    </span>
-                                </div>
-                                <!-- Price -->
-                                <div class="product-card_price">
-                                    <del>70,000,000
-                                        <h6>تومان</h6>
-                                    </del>
-                                    <p>70,000,000</p>
-                                    <span>تومان</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
                 <!-- PAGINATION -->
-                <div class="mt-10 w-full flex items-center justify-center">
-                    <ul class="flex items-center gap-x-3 child:flex child:items-center child:justify-center child:w-8 child:h-8 child:cursor-pointer child:shadow child:rounded-lg child:transition-all child:duration-300">
-                        <li class="bg-white dark:bg-gray-800 hover:bg-gray-800 dark:hover:bg-blue-500 hover:text-white">
-                            <svg class="size-5 rotate-180">
-                                <use href="#chevron-left"></use>
-                            </svg>
-                        </li>
-                        <li class="text-white bg-blue-500">
-                            <a href="#">1</a>
-                        </li>
-                        <li class="bg-white dark:bg-gray-800 hover:bg-blue-500 dark:hover:bg-blue-500 hover:text-white">
-                            <a href="#">2</a>
-                        </li>
-                        <li class="bg-white dark:bg-gray-800 hover:bg-blue-500 dark:hover:bg-blue-500 hover:text-white">
-                            <a href="#">...</a>
-                        </li>
-                        <li class="bg-white dark:bg-gray-800 hover:bg-blue-500 dark:hover:bg-blue-500 hover:text-white">
-                            <svg class="size-5">
-                                <use href="#chevron-left"></use>
-                            </svg>
-                        </li>
-                    </ul>
-                </div>
+                {% if products_by_page.paginator.num_pages > 1 %}
+                    <div class="mt-10 w-full flex items-center justify-center">
+                        <ul class="flex items-center gap-x-3 child:flex child:items-center child:justify-center child:w-8 child:h-8 child:cursor-pointer child:shadow child:rounded-lg child:transition-all child:duration-300">
+                            {% if products_by_page.has_previous %}
+                                <li class="bg-white dark:bg-gray-800 hover:bg-blue-500 dark:hover:bg-blue-500 hover:text-white">
+                                    <a href="?page={{ products_by_page.previous_page_number }}"
+                                       class="flex items-center justify-center w-full h-full">
+                                        <svg class="size-5 rotate-180">
+                                            <use href="#chevron-left"></use>
+                                        </svg>
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="bg-gray-100 dark:bg-gray-700 text-gray-400">
+                                    <span class="flex items-center justify-center w-full h-full cursor-default">
+                                        <svg class="size-5 rotate-180">
+                                            <use href="#chevron-left"></use>
+                                        </svg>
+                                    </span>
+                                </li>
+                            {% endif %}
+                            {% for page_num in products_by_page.paginator.page_range %}
+                                {% if products_by_page.number == page_num %}
+                                    <li class="text-white bg-blue-500">
+                                        <span class="flex items-center justify-center w-full h-full">{{ page_num }}</span>
+                                    </li>
+                                {% elif page_num > products_by_page.number|add:'-3' and page_num < products_by_page.number|add:'3' %}
+                                    <li class="bg-white dark:bg-gray-800 hover:bg-blue-500 dark:hover:bg-blue-500 hover:text-white">
+                                        <a href="?page={{ page_num }}"
+                                           class="flex items-center justify-center w-full h-full">{{ page_num }}</a>
+                                    </li>
+                                {% elif page_num == products_by_page.number|add:'-3' or page_num == products_by_page.number|add:'3' %}
+                                    <li class="bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 cursor-default">
+                                        <span class="flex items-center justify-center w-full h-full">...</span>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                            {% if products_by_page.has_next %}
+                                <li class="bg-white dark:bg-gray-800 hover:bg-blue-500 dark:hover:bg-blue-500 hover:text-white">
+                                    <a href="?page={{ products_by_page.next_page_number }}"
+                                       class="flex items-center justify-center w-full h-full">
+                                        <svg class="size-5">
+                                            <use href="#chevron-left"></use>
+                                        </svg>
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="bg-gray-100 dark:bg-gray-700 text-gray-400 cursor-not-allowed">
+                                    <span class="flex items-center justify-center w-full h-full">
+                                        <svg class="size-5">
+                                            <use href="#chevron-left"></use>
+                                        </svg>
+                                    </span>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </main>

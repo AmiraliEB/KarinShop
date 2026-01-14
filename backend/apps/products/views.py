@@ -5,9 +5,9 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Avg, Count, Prefetch
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.text import slugify
-from django.views import generic
+from django.views.generic import DetailView, View
 from products.models import AttributeValue, Comments, ParentProduct, Product
 
 from .forms import CommentForm
@@ -23,7 +23,7 @@ def post_redirect_view(request, pk):
     )
 
 
-class ProductDetailView(generic.DetailView):
+class ProductDetailView(DetailView):
     model = Product
     template_name = "products/product_details.html"
     context_object_name = "product"
@@ -144,5 +144,14 @@ class ProductDetailView(generic.DetailView):
         return context
 
 
-class ShopView(generic.TemplateView):
-    template_name = "products/shop.html"
+class ShopView(View):
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        context = {}
+        products = Product.objects.select_related("parent_product").all()
+        paginator = Paginator(products, 6)
+        page_number = self.request.GET.get("page")
+        products_filter_by_page_number = paginator.get_page(page_number)
+        context["products_by_page"] = products_filter_by_page_number
+        product_counter = Product.objects.aggregate(count_all_products=Count("id"))
+        context["count_all_products"] = product_counter.get("count_all_products")
+        return render(request, template_name="products/shop.html", context=context)
