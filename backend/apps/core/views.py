@@ -1,7 +1,6 @@
-from cart.models import CartItem
 from django.db.models import Count, Q
 from django.shortcuts import render
-from django.views import View
+from django.views import View, generic
 from products.models import Product
 
 
@@ -39,3 +38,13 @@ class HomePageView(View):
         context["hot_products_column"] = range(4)
 
         return render(request, "core/index.html", context=context)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # context['attr'] = [str(attr) for attr in Product.objects.get.attribute_values.all()]
+        return context
+
+
+class DashboardView(generic.View):
+    def get(self, request, *args, **kwargs):
+        return render(request=request, template_name="core/dashboard.html")
