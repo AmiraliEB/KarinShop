@@ -231,6 +231,14 @@ class Product(models.Model):
         if self.is_amazing and not self.is_available:
             self.is_amazing = False
 
+    @property
+    def get_color(self) -> str:
+        attribute_values = self.attribute_values.all()
+        for attribute_value in attribute_values:
+            if attribute_value.attribute.code == "color":
+                return attribute_value.value
+        return "نامشخص"
+
     def save(self, *args, **kwargs):
         self.recalculate_prices()
         # ---------------------------------------------------------
@@ -323,6 +331,8 @@ class ProductCategory(models.Model):
 
 class Attribute(models.Model):
     name = models.CharField(max_length=255, verbose_name=_("attribute name"))
+    # important: this field is for prevent hardcode name in queries , value should change with cautious
+    code = models.CharField(max_length=20, verbose_name=_("code for lookup (DO NOT CHANGE THE VALUE!)"))
     product_category: models.ManyToManyField[ProductCategory, Attribute] = models.ManyToManyField(
         ProductCategory, related_name="attributes", verbose_name=_("related categories"), through="AttributeRule"
     )

@@ -49,6 +49,7 @@ class CartView(View):
         return render(request, "cart/cart.html", context)
 
 
+# TODO:set timezone for production
 today = timezone.localdate()
 time_to_leave_warehouse = today + timedelta(days=2)
 

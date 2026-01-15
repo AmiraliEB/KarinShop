@@ -2,7 +2,7 @@ from typing import Any, Iterator
 
 from django.db.models import F, QuerySet
 from django.http import HttpRequest
-from products.models import Attribute, Product
+from products.models import Product
 
 from .models import Cart as DBCart
 from .models import CartItem
@@ -13,7 +13,7 @@ class DBCartWrapper:
         self.request = request
         self.user = request.user
         if not self.user.is_authenticated:
-            # Type Narrowing: Ensure user is a concrete 'CustomUser' model,
+            # Type Narrowing: Ensure user is a concrete 'CustomUser' model
             return None
 
         self.db_cart: DBCart | None = DBCart.objects.filter(user=self.user).first()
@@ -22,25 +22,17 @@ class DBCartWrapper:
         if self.db_cart is None:
             return
 
-        items: QuerySet["CartItem"] = (
+        cart_items: QuerySet["CartItem"] = (
             self.db_cart.items.select_related("product").prefetch_related("product__attribute_values__attribute").all()
         )
 
-        color_attribute_obj = Attribute.objects.filter(name="رنگ").first()
-
-        for item in items:
-            color_value = "نامشخص"
-            if color_attribute_obj:
-                for attr_val in item.product.attribute_values.all():
-                    if attr_val.attribute_id == color_attribute_obj.id:
-                        color_value = attr_val.value
-                        break
-
+        for cart_item in cart_items:
+            color_value = cart_item.product.get_color
             yield {
-                "product_obj": item.product,
-                "quantity": item.quantity,
-                "item_total_price": item.get_total_price(),
-                "item_total_price_before_discount": item.get_total_price_before_discount(),
+                "product_obj": cart_item.product,
+                "quantity": cart_item.quantity,
+                "item_total_price": cart_item.get_total_price(),
+                "item_total_price_before_discount": cart_item.get_total_price_before_discount(),
                 "color": color_value,
             }
 
@@ -142,7 +134,7 @@ class Cart:
 
     def __iter__(self) -> Iterator[dict[str, Any]]:
         product_ids = self.cart.keys()
-        products = (
+        products: QuerySet[Product] = (
             Product.objects.filter(id__in=product_ids)
             .select_related("parent_product")
             .prefetch_related("parent_product__images")
@@ -150,7 +142,6 @@ class Cart:
         )
         # this is necessary for prevent session serialize failure
         cart = self.cart.copy()
-        color_attribute_obj = Attribute.objects.filter(name="رنگ").first()
 
         for product in products:
             product_id = str(product.id)
@@ -165,13 +156,7 @@ class Cart:
             item["item_total_price"] = item["product_obj"].final_price * qty
             item["item_total_price_before_discount"] = item["product_obj"].initial_price * qty
 
-            item["color"] = None
-
-            if color_attribute_obj:
-                for attr_val in product.attribute_values.all():
-                    if attr_val.attribute_id == color_attribute_obj.id:
-                        item["color"] = attr_val.value
-                        break
+            item["color"] = item["product_obj"].get_color
 
             yield item
 
