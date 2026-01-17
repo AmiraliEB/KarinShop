@@ -1,3 +1,4 @@
+from cart.models import CartItem
 from django.db.models import Count, Q
 from django.shortcuts import render
 from django.views import View, generic
@@ -41,7 +42,6 @@ class HomePageView(View):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # context['attr'] = [str(attr) for attr in Product.objects.get.attribute_values.all()]
         return context
 
 

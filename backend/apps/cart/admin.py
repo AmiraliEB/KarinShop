@@ -12,3 +12,6 @@ class CartItemInline(admin.TabularInline):
 class CartAdmin(admin.ModelAdmin):
     list_display = ("user", "datetime_created", "datetime_modified")
     inlines = [CartItemInline]
+
+
+admin.site.register(CartItem)
