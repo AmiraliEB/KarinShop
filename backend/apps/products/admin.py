@@ -27,7 +27,7 @@ class ProductInline(admin.TabularInline):
 
 
 class ProductInline(admin.TabularInline):
-    model = models.Product
+    model = models.ProductVariant
     extra = 0
     fields = ("color", "initial_price", "discount_type", "discount_value", "stock", "product_variant")
 
