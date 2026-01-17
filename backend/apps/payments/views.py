@@ -10,8 +10,16 @@ from django.db.models import BooleanField, Case, F, QuerySet, Value, When
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
+
+<<<<<<< HEAD
 from orders.models import Coupon, Order, OrderItem
 from products.models import Product
+
+=======
+from orders.models import Coupon, Order
+from products.models import ProductVariant
+
+>>>>>>> 60665a9 (refactor: change name for productparent amd productvariant)
 
 
 def demo_gateway_view(request: HttpRequest) -> HttpResponse:
