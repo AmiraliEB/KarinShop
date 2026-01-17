@@ -8,7 +8,7 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.text import slugify
 from django.views.generic import DetailView, View
-from products.models import AttributeValue, Comments, ProductParent, ProductVariant
+from products.models import AttributeValue, Comments, Product, ProductParent, ProductVariant
 
 from .forms import CommentForm
 
@@ -26,7 +26,7 @@ def post_redirect_view(request, pk):
 class ProductDetailView(DetailView):
     model = ProductVariant
     template_name = "products/product_details.html"
-    context_object_name = "product"
+    context_object_name = "product_variant"
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         self.object: ProductVariant = self.get_object()
@@ -135,11 +135,14 @@ class ProductDetailView(DetailView):
         if context["related_products"] == []:
             context["related_products"] = None
         context["product_available_in_cart"] = cart.is_available(product_variant.products.all())
-        context["item_quantity"] = cart.get_item_quantity(product_variant)
-        context["item_total_price_before_discount"] = (
-            cart.get_item_quantity(product_variant) * product_variant.initial_price
-        )
-        context["item_total_price"] = cart.get_item_quantity(product_variant) * product_variant.final_price
+        context["product_counts"] = product_variant.products.count()
+        context["first_product"] = product_variant.products.first()
+        context["products"] = product_variant.products.all()[1:]
+        # context["item_quantity"] = cart.get_item_quantity(product_variant)
+        # context["item_total_price_before_discount"] = (
+        #     cart.get_item_quantity(product_variant) * product_variant.initial_price
+        # )
+        # context["item_total_price"] = cart.get_item_quantity(product_variant) * product_variant.final_price
 
         return context
 
@@ -155,3 +158,9 @@ class ShopView(View):
         product_counter = ProductVariant.objects.aggregate(count_all_products=Count("id"))
         context["count_all_products"] = product_counter.get("count_all_products")
         return render(request, template_name="products/shop.html", context=context)
+
+
+def product_selector_view(request, pk):
+    product = Product.objects.filter(pk=pk).first()
+    context = {"product": product}
+    return render(request, template_name="products/partials/update_response_on_color.html", context=context)

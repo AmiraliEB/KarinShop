@@ -1,0 +1,20 @@
+{% load humanize %}
+<div class="flex flex-col items-start gap-y-2"
+     id="price-section-on-color"
+     {% if oob %}hx-swap-oob="True"{% endif %}>
+    {% if product.has_discount %}
+        <div class="flex items-center gap-x-3">
+            <span class="bg-red-500 text-white text-sm font-DanaMedium px-2 py-1 rounded-full">{{ product.discount_percentage }}٪ تخفیف</span>
+            <del class="text-gray-400 text-xl">{{ product.initial_price|intcomma:False }}</del>
+        </div>
+        <div class="flex items-center gap-x-1">
+            <p class="text-2xl font-DanaDemiBold">{{ product.final_price|intcomma:False }}</p>
+            <p class="">تومان</p>
+        </div>
+    {% else %}
+        <div class="flex items-center gap-x-1">
+            <p class="text-2xl font-DanaDemiBold">{{ product.final_price|intcomma:False }}</p>
+            <p class="">تومان</p>
+        </div>
+    {% endif %}
+</div>

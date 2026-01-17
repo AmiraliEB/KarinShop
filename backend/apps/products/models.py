@@ -460,7 +460,7 @@ class Color(models.Model):
     hex_code = models.CharField(_("Hex Code"), max_length=50, unique=True, null=False)
 
     def __str__(self):
-        return f"{self.color_name}: {self.hex_code}"
+        return f"{self.color_name}"
 
 
 @receiver(m2m_changed, sender=ProductVariant.attribute_values.through)
