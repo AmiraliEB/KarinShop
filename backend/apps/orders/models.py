@@ -92,8 +92,8 @@ class OrderItem(models.Model):
     quantity = models.PositiveIntegerField()
     price = models.DecimalField(max_digits=11, decimal_places=0, verbose_name=_("price (Toman)"))
 
-    def __str__(self):
-        return f"{self.quantity} x {self.product} در سفارش {self.order.order_number}"
+    # def __str__(self):
+    #     return f"{self.quantity} x {self.product.full_name} in Order {self.order.order_number}"
 
     def get_cost(self):
         return self.price * self.quantity
