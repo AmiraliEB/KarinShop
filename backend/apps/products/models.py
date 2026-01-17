@@ -18,7 +18,7 @@ from django.utils.translation import gettext_lazy as _
 User = get_user_model()
 
 
-def product_image_upload_to(instance: "ProductVariant", filename):
+def product_image_upload_to(instance, filename):
     return f"products/{slugify(instance.parent_product.name)}/{filename}"
 
 
@@ -123,25 +123,11 @@ class ProductParent(models.Model):
 
 
 class ProductVariant(models.Model):
-    DISCOUNT_TYPE_CHOICE = (
-        ("percentage", _("Percentage")),
-        ("amount", _("Fixed Amount")),
-    )
-
     parent_product: models.ForeignKey[ProductParent] = models.ForeignKey(
         "ProductParent", on_delete=models.PROTECT, related_name="products", verbose_name=_("product name")
     )
 
     _full_name = models.CharField(max_length=500, blank=True, verbose_name=_("Full Name (Cached)"))
-
-    initial_price = models.DecimalField(max_digits=10, decimal_places=0, verbose_name=_("price (Toman)"))
-    discount_type = models.CharField(
-        verbose_name=_("discount type"), max_length=50, choices=DISCOUNT_TYPE_CHOICE, default="amount"
-    )
-    discount_value = models.PositiveIntegerField(verbose_name=_("discount value"), default=0)
-    final_price = models.DecimalField(verbose_name=_("final price"), max_digits=11, decimal_places=0, null=True)
-
-    stock = models.PositiveIntegerField(default=0, verbose_name=_("stock"))
 
     is_available = models.BooleanField(default=True, verbose_name=_("is available"))
     is_amazing = models.BooleanField(default=False, verbose_name=_("is amazing?"))
@@ -151,26 +137,12 @@ class ProductVariant(models.Model):
         "AttributeValue", verbose_name=_("attribute values"), limit_choices_to={"attribute__is_variant_defining": True}
     )
 
-    color_attribute: models.ManyToManyField[AttributeValue, ProductVariant] = models.ManyToManyField(
-        "AttributeValue",
-        verbose_name=_("color values"),
-        limit_choices_to={"attribute__code": "color"},
-        related_name="product_colors",
-    )
-
     datetime_created = models.DateTimeField(auto_now_add=True, verbose_name=_("creation date"))
     datetime_modified = models.DateTimeField(auto_now=True, verbose_name=_("last modified date"))
 
     class Meta:
         verbose_name = _("product")
         verbose_name_plural = _("products")
-
-    def clean(self):
-        if self.discount_type == "amount" and self.discount_value <= 100 and self.discount_value > 0:
-            raise ValidationError({"discount_value": _("fixed amount discount values should be more than 100")})
-
-        if self.discount_type == "percentage" and self.discount_value > 100:
-            raise ValidationError({"discount_value": _("percentage discount values should be less than 100")})
 
     def __str__(self):
         return self._full_name if self._full_name else f"Product {self.id}"
@@ -212,70 +184,11 @@ class ProductVariant(models.Model):
 
         return f"{base_name} {' '.join(final_parts)}".strip()
 
-    def discount_percentage(self):
-        discount_percentage = 0
-        if self.discount_type == "percentage":
-            return self.discount_value
-        elif self.discount_type == "amount":
-            if self.discount_value and self.final_price > 0 and self.discount_value < self.initial_price:
-                percentage = (self.discount_value / self.initial_price) * 100
-                discount_percentage = ceil(percentage)
-            return discount_percentage
-
-    def has_discount(self):
-        if self.discount_value > 0 and self.discount_value < self.initial_price:
-            return True
-        return False
-
-    def recalculate_prices(self):
-        if not self.has_discount():
-            self.final_price = self.initial_price
-        else:
-            if self.discount_type == "percentage":
-                final_price = self.initial_price - ((self.initial_price * self.discount_value) / 100)
-                self.final_price = final_price
-            elif self.discount_type == "amount":
-                final_price = self.initial_price - self.discount_value
-                self.final_price = final_price
-
-        self.is_available = self.stock > 0
-        if self.is_amazing and not self.is_available:
-            self.is_amazing = False
-
-    @property
-    def get_color(self) -> str:
-        attribute_values = self.attribute_values.all()
-        for attribute_value in attribute_values:
-            if attribute_value.attribute.code == "color":
-                return attribute_value.value
-        return "نامشخص"
-
     def save(self, *args, **kwargs):
-        self.recalculate_prices()
-        # ---------------------------------------------------------
-        # CRITICAL FIX: Handle 'update_fields' Trap
-        # ---------------------------------------------------------
-        # When save(update_fields=['stock']) is called, Django ONLY updates 'stock'.
-        # However, our logic above calculates 'final_price' and 'is_available'.
-        # We MUST forcefully add these calculated fields to 'update_fields' list;
-        # otherwise, their new values will be lost/ignored by the database.
-        if "update_fields" in kwargs and kwargs["update_fields"] is not None:
-            fields = set(kwargs["update_fields"])
-            fields.add("final_price")
-            fields.add("is_available")
-            fields.add("is_amazing")
-            kwargs["update_fields"] = list(fields)
-        super().save(*args, **kwargs)
-
         new_full_name = self._generate_full_name()
         if self._full_name != new_full_name:
             self._full_name = new_full_name
             super().save(update_fields=["_full_name"])
-
-
-class Products(models.Model):
-    product_variant = models.ForeignKey(ProductVariant, verbose_name=_("Product Variant"), on_delete=models.CASCADE)
-    color = models.ForeignKey("Color", verbose_name=_("Color"), on_delete=models.CASCADE)
 
 
 class ProductImage(models.Model):
@@ -330,6 +243,66 @@ class ProductCategory(models.Model):
         verbose_name = _("product category")
         verbose_name_plural = _("product categories")
         ordering = ["name"]
+
+
+class Products(models.Model):
+    DISCOUNT_TYPE_CHOICE = (
+        ("percentage", _("Percentage")),
+        ("amount", _("Fixed Amount")),
+    )
+
+    product_variant = models.ForeignKey(ProductVariant, verbose_name=_("Product Variant"), on_delete=models.CASCADE)
+    color = models.ForeignKey("Color", verbose_name=_("Color"), on_delete=models.CASCADE)
+
+    initial_price = models.DecimalField(max_digits=10, decimal_places=0, verbose_name=_("price (Toman)"))
+    discount_type = models.CharField(
+        verbose_name=_("discount type"), max_length=50, choices=DISCOUNT_TYPE_CHOICE, default="amount"
+    )
+    discount_value = models.PositiveIntegerField(verbose_name=_("discount value"), default=0)
+    final_price = models.DecimalField(verbose_name=_("final price"), max_digits=11, decimal_places=0, null=True)
+
+    stock = models.PositiveIntegerField(default=0, verbose_name=_("stock"))
+
+    datetime_created = models.DateTimeField(auto_now_add=True, verbose_name=_("creation date"))
+    datetime_modified = models.DateTimeField(auto_now=True, verbose_name=_("last modified date"))
+
+    def clean(self):
+        if self.discount_type == "amount" and self.discount_value <= 100 and self.discount_value > 0:
+            raise ValidationError({"discount_value": _("fixed amount discount values should be more than 100")})
+
+        if self.discount_type == "percentage" and self.discount_value > 100:
+            raise ValidationError({"discount_value": _("percentage discount values should be less than 100")})
+
+    def discount_percentage(self):
+        discount_percentage = 0
+        if self.discount_type == "percentage":
+            return self.discount_value
+        elif self.discount_type == "amount":
+            if self.discount_value and self.final_price > 0 and self.discount_value < self.initial_price:
+                percentage = (self.discount_value / self.initial_price) * 100
+                discount_percentage = ceil(percentage)
+            return discount_percentage
+
+    def has_discount(self):
+        if self.discount_value > 0 and self.discount_value < self.initial_price:
+            return True
+        return False
+
+    def save(self, *args, **kwargs):
+        if not self.has_discount():
+            self.final_price = self.initial_price
+        else:
+            if self.discount_type == "percentage":
+                final_price = self.initial_price - ((self.initial_price * self.discount_value) / 100)
+                self.final_price = final_price
+            elif self.discount_type == "amount":
+                final_price = self.initial_price - self.discount_value
+                self.final_price = final_price
+
+        self.is_available = self.stock > 0
+        if self.is_amazing and not self.is_available:
+            self.is_amazing = False
+        super().save(*args, **kwargs)
 
 
 class Attribute(models.Model):
