@@ -1,8 +1,7 @@
-from cart.models import CartItem
 from django.db.models import Count, Q
 from django.shortcuts import render
 from django.views import View, generic
-from products.models import ProductVariant
+from products.models import Product, ProductVariant
 
 
 class HomePageView(View):
@@ -13,12 +12,16 @@ class HomePageView(View):
         context = {}
         amazing_products = (
             ProductVariant.objects.select_related("parent_product")
-            .prefetch_related("parent_product__images", "parent_product__comments")
+            .prefetch_related("products", "parent_product__images", "parent_product__comments")
             .filter(is_amazing=True)[:6]
         )
         context["amazing_products"] = amazing_products
 
-        latest_products = ProductVariant.objects.filter(is_available=True).order_by("datetime_modified")[:6]
+        latest_products = (
+            Product.objects.select_related("product_variant")
+            .filter(is_available=True)
+            .order_by("product_variant__datetime_modified")[:6]
+        )
         context["latest_products"] = latest_products
         context["best_selling_products"] = (
             ProductVariant.objects.select_related("parent_product")
@@ -39,10 +42,6 @@ class HomePageView(View):
         context["hot_products_column"] = range(4)
 
         return render(request, "core/index.html", context=context)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
 
 
 class DashboardView(generic.View):

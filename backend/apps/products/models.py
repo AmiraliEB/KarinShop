@@ -124,7 +124,7 @@ class ProductParent(models.Model):
 
 class ProductVariant(models.Model):
     parent_product: models.ForeignKey[ProductParent] = models.ForeignKey(
-        "ProductParent", on_delete=models.PROTECT, related_name="products", verbose_name=_("product name")
+        "ProductParent", on_delete=models.PROTECT, related_name="product_variants", verbose_name=_("product name")
     )
 
     _full_name = models.CharField(max_length=500, blank=True, verbose_name=_("Full Name (Cached)"))
@@ -142,6 +142,29 @@ class ProductVariant(models.Model):
     class Meta:
         verbose_name = _("product")
         verbose_name_plural = _("products")
+
+    def has_discount(self):
+        return self.products.first().has_discount()
+
+    def discount_percentage(self):
+        return self.products.first().discount_percentage()
+
+    @property
+    def initial_price(self):
+        return self.products.first().initial_price
+
+    @property
+    def final_price(self):
+        return self.products.first().final_price
+
+    @property
+    def is_available(self) -> bool:
+        products = self.products.all()
+        product: Product
+        for product in products:
+            if product.is_available is True:
+                return True
+        return False
 
     def __str__(self):
         return self._full_name if self._full_name else f"Product {self.id}"
@@ -252,7 +275,7 @@ class Product(models.Model):
         ("amount", _("Fixed Amount")),
     )
 
-    product_variant = models.ForeignKey(
+    product_variant: models.ForeignKey[ProductVariant] = models.ForeignKey(
         ProductVariant, verbose_name=_("Product Variant"), on_delete=models.CASCADE, related_name="products"
     )
     color = models.ForeignKey("Color", verbose_name=_("Color"), on_delete=models.CASCADE)

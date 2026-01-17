@@ -27,13 +27,12 @@ class DBCartWrapper:
         )
 
         for cart_item in cart_items:
-            color_value = cart_item.product.get_color
             yield {
                 "product_obj": cart_item.product,
                 "quantity": cart_item.quantity,
                 "item_total_price": cart_item.get_total_price(),
                 "item_total_price_before_discount": cart_item.get_total_price_before_discount(),
-                "color": color_value,
+                "color": "undifined",
             }
 
     def __len__(self) -> int:
@@ -156,7 +155,7 @@ class Cart:
             item["item_total_price"] = item["product_obj"].final_price * qty
             item["item_total_price_before_discount"] = item["product_obj"].initial_price * qty
 
-            item["color"] = item["product_obj"].get_color
+            item["color"] = "undifined"
 
             yield item
 
