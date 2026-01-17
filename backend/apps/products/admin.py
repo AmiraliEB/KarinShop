@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from . import models
-from .forms import ParentProductAdminForm, ProductAdminForm, ProductFormSet, ProductImageFormSet
+from .forms import ProductImageFormSet, ProductParentAdminForm, ProductVariantAdminForm, ProductVariantFormSet
 
 
 class ProductImageInline(admin.TabularInline):
@@ -13,12 +13,12 @@ class ProductImageInline(admin.TabularInline):
 
 
 class ProductInline(admin.TabularInline):
-    model = models.Product
+    model = models.ProductVariant
     extra = 0
     fields = ("final_price", "stock", "is_available", "attribute_values")
     readonly_fields = ("is_available",)
     filter_horizontal = ("attribute_values",)
-    formset = ProductFormSet
+    formset = ProductVariantFormSet
 
 
 class AttributeRuleInline(admin.TabularInline):
@@ -32,9 +32,9 @@ class AttributeValueInline(admin.TabularInline):
     extra = 1
 
 
-@admin.register(models.ParentProduct)
-class ParentProductAdmin(admin.ModelAdmin):
-    form = ParentProductAdminForm
+@admin.register(models.ProductParent)
+class ProductParentAdmin(admin.ModelAdmin):
+    form = ProductParentAdminForm
 
     list_display = (
         "name",
@@ -54,9 +54,9 @@ class ParentProductAdmin(admin.ModelAdmin):
     readonly_fields = ("datetime_created", "datetime_modified")
 
 
-@admin.register(models.Product)
+@admin.register(models.ProductVariant)
 class ProductAdmin(admin.ModelAdmin):
-    form = ProductAdminForm
+    form = ProductVariantAdminForm
     list_display = ("id", "parent_product", "_full_name", "final_price", "stock", "is_available")
     list_display_links = ("parent_product",)
     list_filter = ("is_available", "final_price", "parent_product__category", "parent_product__brand")

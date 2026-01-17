@@ -18,7 +18,11 @@ from django.utils.translation import gettext_lazy as _
 User = get_user_model()
 
 
-class ParentProduct(models.Model):
+def product_image_upload_to(instance: "ProductVariant", filename):
+    return f"products/{slugify(instance.parent_product.name)}/{filename}"
+
+
+class ProductParent(models.Model):
     name = models.CharField(max_length=255, verbose_name=_("parent product name"))
     category = models.ForeignKey(
         "ProductCategory",
@@ -32,7 +36,7 @@ class ParentProduct(models.Model):
         "Brand", on_delete=models.PROTECT, related_name="product_parents", verbose_name=_("brand")
     )
 
-    specification_values: models.ManyToManyField[AttributeValue, ParentProduct] = models.ManyToManyField(
+    specification_values: models.ManyToManyField[AttributeValue, ProductParent] = models.ManyToManyField(
         "AttributeValue",
         related_name="parent_products",
         verbose_name=_("shared specifications"),
@@ -77,7 +81,7 @@ class ParentProduct(models.Model):
                 product.save(update_fields=["_full_name"])
 
     @property
-    def get_main_image(self: ParentProduct) -> ProductImage | None:
+    def get_main_image(self: ProductParent) -> ProductImage | None:
         images: QuerySet[ProductImage] = self.images
         if images is None:
             return None
@@ -85,14 +89,14 @@ class ParentProduct(models.Model):
         return main_image.image.url if main_image is not None else None
 
     @property
-    def get_second_image(self: ParentProduct) -> ProductImage | None:
+    def get_second_image(self: ProductParent) -> ProductImage | None:
         images: QuerySet[ProductImage] = self.images
         if images is None:
             return None
         second_image: ProductImage | None = images.exclude(is_main_image=True).first()
         return second_image.image.url if second_image is not None else None
 
-    def get_average_rate(self: ParentProduct, comments_query: "QuerySet[Comments]|None" = None) -> int | str:
+    def get_average_rate(self: ProductParent, comments_query: "QuerySet[Comments]|None" = None) -> int | str:
         if comments_query is None:
             comments: QuerySet[Comments] = self.comments
             if comments is not None:
@@ -106,7 +110,7 @@ class ParentProduct(models.Model):
         else:
             return 0
 
-    def get_comment_count(self: ParentProduct, comments_query: "QuerySet[Comments]|None" = None) -> Any | None:
+    def get_comment_count(self: ProductParent, comments_query: "QuerySet[Comments]|None" = None) -> Any | None:
         if comments_query is None:
             comments: QuerySet[Comments] = self.comments
             if comments is not None:
@@ -118,14 +122,14 @@ class ParentProduct(models.Model):
         return comment_count_data if comment_count_data is not None else 0
 
 
-class Product(models.Model):
+class ProductVariant(models.Model):
     DISCOUNT_TYPE_CHOICE = (
         ("percentage", _("Percentage")),
         ("amount", _("Fixed Amount")),
     )
 
-    parent_product: models.ForeignKey[ParentProduct] = models.ForeignKey(
-        "ParentProduct", on_delete=models.PROTECT, related_name="products", verbose_name=_("product name")
+    parent_product: models.ForeignKey[ProductParent] = models.ForeignKey(
+        "ProductParent", on_delete=models.PROTECT, related_name="products", verbose_name=_("product name")
     )
 
     _full_name = models.CharField(max_length=500, blank=True, verbose_name=_("Full Name (Cached)"))
@@ -143,11 +147,11 @@ class Product(models.Model):
     is_amazing = models.BooleanField(default=False, verbose_name=_("is amazing?"))
     is_best_selling = models.BooleanField(default=False, verbose_name=_("is best selling?"))
 
-    attribute_values: models.ManyToManyField[AttributeValue, Product] = models.ManyToManyField(
+    attribute_values: models.ManyToManyField[AttributeValue, ProductVariant] = models.ManyToManyField(
         "AttributeValue", verbose_name=_("attribute values"), limit_choices_to={"attribute__is_variant_defining": True}
     )
 
-    color_attribute: models.ManyToManyField[AttributeValue, Product] = models.ManyToManyField(
+    color_attribute: models.ManyToManyField[AttributeValue, ProductVariant] = models.ManyToManyField(
         "AttributeValue",
         verbose_name=_("color values"),
         limit_choices_to={"attribute__code": "color"},
@@ -268,23 +272,15 @@ class Product(models.Model):
             self._full_name = new_full_name
             super().save(update_fields=["_full_name"])
 
-    # def best_selling_product(self: Product):
-    #     order_items: QuerySet[OrderItem] = self.items
-    #     best_selling = (
-    #         order_items.select_related("order")
-    #         .filter(order__is_paid=True)
-    #         .annotate(order_item_count=Count("id"))
-    #         .order_by("order_item_count")
-    #     )
 
-
-def product_image_upload_to(instance, filename):
-    return f"products/{slugify(instance.parent_product.name)}/{filename}"
+class Products(models.Model):
+    product_variant = models.ForeignKey(ProductVariant, verbose_name=_("Product Variant"), on_delete=models.CASCADE)
+    color = models.ForeignKey("Color", verbose_name=_("Color"), on_delete=models.CASCADE)
 
 
 class ProductImage(models.Model):
-    parent_product: models.ForeignKey[ParentProduct] = models.ForeignKey(
-        ParentProduct, on_delete=models.CASCADE, related_name="images", verbose_name=_("parent product")
+    parent_product: models.ForeignKey[ProductParent] = models.ForeignKey(
+        ProductParent, on_delete=models.CASCADE, related_name="images", verbose_name=_("parent product")
     )
     image = models.ImageField(upload_to=product_image_upload_to, verbose_name=_("product image"))
     alt_text = models.CharField(max_length=255, blank=True, null=True, verbose_name=_("alt text"))
@@ -437,8 +433,8 @@ class Brand(models.Model):
 
 
 class Comments(models.Model):
-    parent_product: models.ForeignKey[ParentProduct] = models.ForeignKey(
-        ParentProduct, on_delete=models.CASCADE, related_name="comments", verbose_name=_("product")
+    parent_product: models.ForeignKey[ProductParent] = models.ForeignKey(
+        ProductParent, on_delete=models.CASCADE, related_name="comments", verbose_name=_("product")
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments", verbose_name=_("user"))
 
@@ -463,7 +459,12 @@ class Comments(models.Model):
         return f"Comment by {self.user} on {self.parent_product}"
 
 
-@receiver(m2m_changed, sender=Product.attribute_values.through)
+class Color(models.Model):
+    color_name = models.CharField(_("Color Name"), max_length=50)
+    hex_code = models.CharField(_("Hex Code"), max_length=50, unique=True, null=False)
+
+
+@receiver(m2m_changed, sender=ProductVariant.attribute_values.through)
 def update_full_name_on_m2m_change(sender, instance, action, **kwargs):
     if action in ("post_add", "post_remove", "post_clear"):
         new_full_name = instance._generate_full_name()
@@ -477,10 +478,10 @@ def update_product_names_on_rule_change(sender, instance, **kwargs):
     category = instance.category
     brand = instance.brand
     if brand:
-        affected_parent_products = ParentProduct.objects.filter(category=category, brand=brand)
+        affected_parent_products = ProductParent.objects.filter(category=category, brand=brand)
     else:
-        affected_parent_products = ParentProduct.objects.filter(category=category)
-    affected_products = Product.objects.filter(parent_product__in=affected_parent_products).iterator()
+        affected_parent_products = ProductParent.objects.filter(category=category)
+    affected_products = ProductVariant.objects.filter(parent_product__in=affected_parent_products).iterator()
     for product in affected_products:
         new_full_name = product._generate_full_name()
         if product._full_name != new_full_name:

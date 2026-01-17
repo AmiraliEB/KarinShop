@@ -20,7 +20,7 @@ class Cart(models.Model):
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, verbose_name=_("cart"), on_delete=models.CASCADE, related_name="items")
     product = models.ForeignKey(
-        "products.Product", verbose_name=_("product"), on_delete=models.CASCADE, related_name="cart_items"
+        "products.ProductVariant", verbose_name=_("product"), on_delete=models.CASCADE, related_name="cart_items"
     )
     quantity = models.PositiveIntegerField(verbose_name=_("quantity"), default=1)
 

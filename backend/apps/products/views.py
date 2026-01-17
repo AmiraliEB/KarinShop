@@ -8,13 +8,13 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.text import slugify
 from django.views.generic import DetailView, View
-from products.models import AttributeValue, Comments, ParentProduct, Product
+from products.models import AttributeValue, Comments, ProductParent, ProductVariant
 
 from .forms import CommentForm
 
 
 def post_redirect_view(request, pk):
-    product_obj = get_object_or_404(Product, pk=pk)
+    product_obj = get_object_or_404(ProductVariant, pk=pk)
     return redirect(
         "products:product_detail",
         pk=product_obj.pk,
@@ -24,12 +24,12 @@ def post_redirect_view(request, pk):
 
 
 class ProductDetailView(DetailView):
-    model = Product
+    model = ProductVariant
     template_name = "products/product_details.html"
     context_object_name = "product"
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        self.object: Product = self.get_object()
+        self.object: ProductVariant = self.get_object()
         if "comment_submit" in request.POST:
             return self.process_comment(request)
 
@@ -116,18 +116,18 @@ class ProductDetailView(DetailView):
 
         active_products_prefetch = Prefetch(
             "products",
-            queryset=Product.objects.filter(is_available=True),
+            queryset=ProductVariant.objects.filter(is_available=True),
         )
         # TODO: related parent should calculate in model
         related_parent = (
-            ParentProduct.objects.prefetch_related(active_products_prefetch)
+            ProductParent.objects.prefetch_related(active_products_prefetch)
             .filter(category=category, brand=brand, products__is_available=True)
             .exclude(id=product.parent_product.id)
             .distinct()[:6]
         )
         if not related_parent:
             related_parent = (
-                ParentProduct.objects.prefetch_related(active_products_prefetch)
+                ProductParent.objects.prefetch_related(active_products_prefetch)
                 .filter(category=category, products__is_available=True)
                 .exclude(id=product.parent_product.id)
                 .distinct()[:6]
@@ -147,11 +147,11 @@ class ProductDetailView(DetailView):
 class ShopView(View):
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         context = {}
-        products = Product.objects.select_related("parent_product").all()
+        products = ProductVariant.objects.select_related("parent_product").all()
         paginator = Paginator(products, 6)
         page_number = self.request.GET.get("page")
         products_filter_by_page_number = paginator.get_page(page_number)
         context["products_by_page"] = products_filter_by_page_number
-        product_counter = Product.objects.aggregate(count_all_products=Count("id"))
+        product_counter = ProductVariant.objects.aggregate(count_all_products=Count("id"))
         context["count_all_products"] = product_counter.get("count_all_products")
         return render(request, template_name="products/shop.html", context=context)

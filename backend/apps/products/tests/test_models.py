@@ -1,11 +1,10 @@
 import pytest
-
-from products.models import Product
+from products.models import ProductVariant
 
 
 @pytest.mark.django_db
 def test_calculate_percentage_discount(product_factory):
-    product: Product = product_factory(initial_price=1000000, discount_type="percentage", discount_value=20)
+    product: ProductVariant = product_factory(initial_price=1000000, discount_type="percentage", discount_value=20)
 
     assert product.final_price == 800000
     assert product.is_available is True
@@ -13,7 +12,7 @@ def test_calculate_percentage_discount(product_factory):
 
 @pytest.mark.django_db
 def test_calculate_amount_discount(product_factory):
-    product: Product = product_factory(initial_price=500000, discount_type="amount", discount_value=50000)
+    product: ProductVariant = product_factory(initial_price=500000, discount_type="amount", discount_value=50000)
 
     assert product.final_price == 450000
     assert product.is_available is True
@@ -21,7 +20,7 @@ def test_calculate_amount_discount(product_factory):
 
 @pytest.mark.django_db
 def test_no_discount(product_factory):
-    product: Product = product_factory(initial_price=300000, discount_value=0)
+    product: ProductVariant = product_factory(initial_price=300000, discount_value=0)
 
     assert product.final_price == 300000
     assert product.is_available is True
@@ -29,7 +28,7 @@ def test_no_discount(product_factory):
 
 @pytest.mark.django_db
 def test_full_name_generator(product_factory):
-    product: Product = product_factory()
+    product: ProductVariant = product_factory()
 
     parent = product.parent_product
     expected_full_name = f"{parent.category.name} {parent.brand.name} {parent.name} 8GB Blue 256GB"
