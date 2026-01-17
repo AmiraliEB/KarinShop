@@ -12,13 +12,18 @@ class ProductImageInline(admin.TabularInline):
     validate_min = True
 
 
-class ProductInline(admin.TabularInline):
+class ProductVariantInline(admin.TabularInline):
     model = models.ProductVariant
     extra = 0
-    fields = ("final_price", "stock", "is_available", "attribute_values")
-    readonly_fields = ("is_available",)
+    fields = ("attribute_values",)
     filter_horizontal = ("attribute_values",)
     formset = ProductVariantFormSet
+
+
+class ProductInline(admin.TabularInline):
+    model = models.Product
+    extra = 0
+    fields = ("color", "initial_price", "discount_type", "discount_value", "stock", "product_variant")
 
 
 class AttributeRuleInline(admin.TabularInline):
@@ -45,7 +50,7 @@ class ProductParentAdmin(admin.ModelAdmin):
     list_filter = ("category", "brand", "datetime_created")
     search_fields = ("name", "category__name", "brand__name")
     readonly_fields = ("datetime_created", "datetime_modified")
-    inlines = [ProductImageInline, ProductInline]
+    inlines = [ProductImageInline, ProductVariantInline]
 
     fieldsets = (
         (None, {"fields": ("name", "category", "brand", "specification_values")}),
@@ -55,16 +60,28 @@ class ProductParentAdmin(admin.ModelAdmin):
 
 
 @admin.register(models.ProductVariant)
-class ProductAdmin(admin.ModelAdmin):
+class ProductVariantAdmin(admin.ModelAdmin):
     form = ProductVariantAdminForm
-    list_display = ("id", "parent_product", "_full_name", "final_price", "stock", "is_available")
+    list_display = ("id", "parent_product", "_full_name")
     list_display_links = ("parent_product",)
-    list_filter = ("is_available", "final_price", "parent_product__category", "parent_product__brand")
+    list_filter = ("parent_product__category", "parent_product__brand")
     search_fields = ("parent_product__name", "id", "_full_name")
-    readonly_fields = ("_full_name", "datetime_created", "datetime_modified", "is_available", "final_price")
+    readonly_fields = ("_full_name", "datetime_created", "datetime_modified")
     autocomplete_fields = ("parent_product",)
-    filter_horizontal = ("attribute_values", "color_attribute")
+    filter_horizontal = ("attribute_values",)
     list_select_related = ("parent_product",)
+    inlines = [ProductInline]
+
+
+@admin.register(models.Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ("id", "product_variant", "final_price", "stock", "is_available")
+    list_display_links = ("product_variant",)
+    list_filter = ("is_available", "final_price")
+    search_fields = ("product_variant__parent_product__name", "id", "product_variant__full_name")
+    readonly_fields = ("is_available", "final_price")
+    autocomplete_fields = ("product_variant",)
+    list_select_related = ("product_variant", "product_variant__parent_product")
 
 
 @admin.register(models.ProductCategory)
@@ -98,3 +115,6 @@ class CommentsAdmin(admin.ModelAdmin):
     list_filter = ("is_recommend", "rating", "datetime_created")
     search_fields = ("title", "content", "parent_product__name")
     readonly_fields = ("datetime_created", "datetime_modified")
+
+
+admin.site.register(models.Color)
