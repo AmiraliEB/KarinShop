@@ -129,7 +129,6 @@ class ProductVariant(models.Model):
 
     _full_name = models.CharField(max_length=500, blank=True, verbose_name=_("Full Name (Cached)"))
 
-    is_available = models.BooleanField(default=True, verbose_name=_("is available"))
     is_amazing = models.BooleanField(default=False, verbose_name=_("is amazing?"))
     is_best_selling = models.BooleanField(default=False, verbose_name=_("is best selling?"))
 
@@ -185,6 +184,8 @@ class ProductVariant(models.Model):
         return f"{base_name} {' '.join(final_parts)}".strip()
 
     def save(self, *args, **kwargs):
+        # product variant should be saved once before create full name (full name needs attribute values)
+        super().save(*args, **kwargs)
         new_full_name = self._generate_full_name()
         if self._full_name != new_full_name:
             self._full_name = new_full_name
@@ -245,13 +246,15 @@ class ProductCategory(models.Model):
         ordering = ["name"]
 
 
-class Products(models.Model):
+class Product(models.Model):
     DISCOUNT_TYPE_CHOICE = (
         ("percentage", _("Percentage")),
         ("amount", _("Fixed Amount")),
     )
 
-    product_variant = models.ForeignKey(ProductVariant, verbose_name=_("Product Variant"), on_delete=models.CASCADE)
+    product_variant = models.ForeignKey(
+        ProductVariant, verbose_name=_("Product Variant"), on_delete=models.CASCADE, related_name="products"
+    )
     color = models.ForeignKey("Color", verbose_name=_("Color"), on_delete=models.CASCADE)
 
     initial_price = models.DecimalField(max_digits=10, decimal_places=0, verbose_name=_("price (Toman)"))
@@ -263,8 +266,7 @@ class Products(models.Model):
 
     stock = models.PositiveIntegerField(default=0, verbose_name=_("stock"))
 
-    datetime_created = models.DateTimeField(auto_now_add=True, verbose_name=_("creation date"))
-    datetime_modified = models.DateTimeField(auto_now=True, verbose_name=_("last modified date"))
+    is_available = models.BooleanField(_("Is Available?"))
 
     def clean(self):
         if self.discount_type == "amount" and self.discount_value <= 100 and self.discount_value > 0:
@@ -300,8 +302,6 @@ class Products(models.Model):
                 self.final_price = final_price
 
         self.is_available = self.stock > 0
-        if self.is_amazing and not self.is_available:
-            self.is_amazing = False
         super().save(*args, **kwargs)
 
 
@@ -435,6 +435,9 @@ class Comments(models.Model):
 class Color(models.Model):
     color_name = models.CharField(_("Color Name"), max_length=50)
     hex_code = models.CharField(_("Hex Code"), max_length=50, unique=True, null=False)
+
+    def __str__(self):
+        return f"{self.color_name}: {self.hex_code}"
 
 
 @receiver(m2m_changed, sender=ProductVariant.attribute_values.through)
