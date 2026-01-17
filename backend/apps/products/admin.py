@@ -1,6 +1,7 @@
 from django.contrib import admin
+
 from . import models
-from .forms import ProductAdminForm, ProductImageFormSet, ProductFormSet, ParentProductAdminForm
+from .forms import ParentProductAdminForm, ProductAdminForm, ProductFormSet, ProductImageFormSet
 
 
 class ProductImageInline(admin.TabularInline):
@@ -14,7 +15,7 @@ class ProductImageInline(admin.TabularInline):
 class ProductInline(admin.TabularInline):
     model = models.Product
     extra = 0
-    fields = ("price", "stock", "is_available", "attribute_values")
+    fields = ("final_price", "stock", "is_available", "attribute_values")
     readonly_fields = ("is_available",)
     filter_horizontal = ("attribute_values",)
     formset = ProductFormSet
@@ -62,7 +63,7 @@ class ProductAdmin(admin.ModelAdmin):
     search_fields = ("parent_product__name", "id", "_full_name")
     readonly_fields = ("_full_name", "datetime_created", "datetime_modified", "is_available", "final_price")
     autocomplete_fields = ("parent_product",)
-    filter_horizontal = ("attribute_values",)
+    filter_horizontal = ("attribute_values", "color_attribute")
     list_select_related = ("parent_product",)
 
 

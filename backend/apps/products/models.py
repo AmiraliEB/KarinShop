@@ -147,6 +147,13 @@ class Product(models.Model):
         "AttributeValue", verbose_name=_("attribute values"), limit_choices_to={"attribute__is_variant_defining": True}
     )
 
+    color_attribute: models.ManyToManyField[AttributeValue, Product] = models.ManyToManyField(
+        "AttributeValue",
+        verbose_name=_("color values"),
+        limit_choices_to={"attribute__code": "color"},
+        related_name="product_colors",
+    )
+
     datetime_created = models.DateTimeField(auto_now_add=True, verbose_name=_("creation date"))
     datetime_modified = models.DateTimeField(auto_now=True, verbose_name=_("last modified date"))
 
@@ -387,8 +394,8 @@ class AttributeRule(models.Model):
 
     def __str__(self):
         if self.brand:
-            return f"{self.attribute.name} برای {self.category.name} {self.brand.name}"
-        return f"{self.attribute.name} برای {self.category.name}"
+            return f"{self.attribute.name} for {self.category.name} {self.brand.name}"
+        return f"{self.attribute.name} for {self.category.name}"
 
 
 class AttributeValue(models.Model):

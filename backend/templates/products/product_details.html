@@ -236,19 +236,18 @@
                         </div>
                         <div class="w-full grid grid-cols-12 gap-2 mt-2">
                             {% for image_obj in album_images %}
-                                {% if forloop.counter <= 3 %}
-                                    <div class="col-span-3 p-1 rounded-lg border border-gray-200 dark:border-gray-700 open-sliderModal aspect-square cursor-pointer">
-                                        <img src="{{ image_obj.image.url }}"
-                                             class="w-full h-full object-cover rounded-md">
-                                    </div>
-                                {% endif %}
-                                {% if forloop.last %}
+                                {% if forloop.first or forloop.last %}
                                     <div class="col-span-3 relative overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 open-sliderModal aspect-square cursor-pointer flex justify-center items-center">
                                         <svg class="absolute size-8 text-white z-10 drop-shadow-md">
                                             <use href="#ellipsis"></use>
                                         </svg>
                                         <img src="{{ image_obj.image.url }}"
                                              class="w-full h-full object-cover blur-[2px] brightness-75">
+                                    </div>
+                                {% else %}
+                                    <div class="col-span-3 p-1 rounded-lg border border-gray-200 dark:border-gray-700 open-sliderModal aspect-square cursor-pointer">
+                                        <img src="{{ image_obj.image.url }}"
+                                             class="w-full h-full object-cover rounded-md">
                                     </div>
                                 {% endif %}
                             {% endfor %}
@@ -545,7 +544,7 @@
                             <div class="space-y-2">
                                 <a href="product_details.html" class="product-card_link">{{ product.full_name }}</a>
                                 <!-- Rate and Price -->
-                                <div class="product-card_price-wrapper">
+                                <div class="produDct-card_price-wrapper">
                                     <!-- RATE -->
                                     <div class="product-card_rate">
                                         <span class="flex items-center gap-x-0.5">

@@ -1,8 +1,9 @@
-from django.forms.models import BaseInlineFormSet
-from django.core.exceptions import ValidationError
 from django import forms
-from .models import Comments, ParentProduct, Product
+from django.core.exceptions import ValidationError
+from django.forms.models import BaseInlineFormSet
 from django.utils.translation import gettext_lazy as _
+
+from .models import Comments, ParentProduct, Product
 
 
 class CommentForm(forms.ModelForm):
@@ -111,8 +112,8 @@ class ProductFormSet(BaseInlineFormSet):
                 current_ids = sorted([attr.id for attr in selected_values])
                 current_combination = tuple(current_ids)
 
-                if len(current_combination) < 3:
-                    form.add_error("attribute_values", _("حداقل ۳ ویژگی انتخاب کنید."))
+                if len(current_combination) < 2:
+                    form.add_error("attribute_values", _("حداقل 2 ویژگی انتخاب کنید."))
 
                 if current_combination in seen_combinations:
                     raise ValidationError(_("این ترکیب دقیقاً تکراری است."))
@@ -192,8 +193,8 @@ class ProductAdminForm(forms.ModelForm):
         current_ids = sorted([attr.id for attr in selected_values])
         current_combination = tuple(current_ids)
 
-        if len(current_combination) < 3:
-            self.add_error("attribute_values", _("حداقل ۳ ویژگی انتخاب کنید."))
+        if len(current_combination) < 2:
+            self.add_error("attribute_values", _("حداقل 2 ویژگی انتخاب کنید."))
 
         siblings = Product.objects.filter(parent_product=parent)
 
