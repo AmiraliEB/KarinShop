@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.forms.models import BaseInlineFormSet
 from django.utils.translation import gettext_lazy as _
 
-from .models import Comments, ParentProduct, Product
+from .models import Comments, ProductParent, ProductVariant
 
 
 class CommentForm(forms.ModelForm):
@@ -73,7 +73,7 @@ class ProductImageFormSet(BaseInlineFormSet):
             )
 
 
-class ProductFormSet(BaseInlineFormSet):
+class ProductVariantFormSet(BaseInlineFormSet):
     def clean(self):
         super().clean()
 
@@ -121,9 +121,9 @@ class ProductFormSet(BaseInlineFormSet):
                 seen_combinations.append(current_combination)
 
 
-class ParentProductAdminForm(forms.ModelForm):
+class ProductParentAdminForm(forms.ModelForm):
     class Meta:
-        model = ParentProduct
+        model = ProductParent
         fields = "__all__"
 
     def clean_specification_values(self):
@@ -153,9 +153,9 @@ class ParentProductAdminForm(forms.ModelForm):
         return selected_values
 
 
-class ProductAdminForm(forms.ModelForm):
+class ProductVariantAdminForm(forms.ModelForm):
     class Meta:
-        model = Product
+        model = ProductVariant
         fields = "__all__"
 
     def clean(self):
@@ -196,7 +196,7 @@ class ProductAdminForm(forms.ModelForm):
         if len(current_combination) < 2:
             self.add_error("attribute_values", _("حداقل 2 ویژگی انتخاب کنید."))
 
-        siblings = Product.objects.filter(parent_product=parent)
+        siblings = ProductVariant.objects.filter(parent_product=parent)
 
         if self.instance.pk:
             siblings = siblings.exclude(pk=self.instance.pk)

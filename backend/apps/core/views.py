@@ -1,7 +1,7 @@
 from django.db.models import Count, Q
 from django.shortcuts import render
 from django.views import View, generic
-from products.models import Product
+from products.models import ProductVariant
 
 
 class HomePageView(View):
@@ -11,21 +11,21 @@ class HomePageView(View):
     def get(self, request, *args, **kwargs):
         context = {}
         amazing_products = (
-            Product.objects.select_related("parent_product")
+            ProductVariant.objects.select_related("parent_product")
             .prefetch_related("parent_product__images", "parent_product__comments")
             .filter(is_amazing=True)[:6]
         )
         context["amazing_products"] = amazing_products
 
-        latest_products = Product.objects.filter(is_available=True).order_by("datetime_modified")[:6]
+        latest_products = ProductVariant.objects.filter(is_available=True).order_by("datetime_modified")[:6]
         context["latest_products"] = latest_products
         context["best_selling_products"] = (
-            Product.objects.select_related("parent_product")
+            ProductVariant.objects.select_related("parent_product")
             .annotate(order_item_count=Count("orderitem", filter=Q(orderitem__order__is_paid=True)))
             .order_by("-order_item_count")[:6]
         )
         hot_products = (
-            Product.objects.prefetch_related()
+            ProductVariant.objects.prefetch_related()
             .annotate(count_cart_items=Count("cart_items"))
             .order_by("count_cart_items")[:15]
         )

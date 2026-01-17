@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
-from products.models import Product
+from products.models import ProductVariant
 
 User = get_user_model()
 
@@ -75,7 +75,7 @@ class Order(models.Model):
             return
         cart_items: QuerySet[CartItem] = cart.items.all()
         for item in cart_items:
-            product: Product = item.product
+            product: ProductVariant = item.product
             if product.final_price is not None:
                 OrderItem.objects.create(
                     order=self,
@@ -87,7 +87,7 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name="items", on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(ProductVariant, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
     price = models.DecimalField(max_digits=11, decimal_places=0, verbose_name=_("price (Toman)"))
 
