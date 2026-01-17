@@ -114,28 +114,24 @@ class ProductDetailView(DetailView):
         category = product.parent_product.category
         brand = product.parent_product.brand
 
-        active_products_prefetch = Prefetch(
-            "products",
-            queryset=ProductVariant.objects.filter(is_available=True),
-        )
         # TODO: related parent should calculate in model
+        # TODO: related products should be available
         related_parent = (
-            ProductParent.objects.prefetch_related(active_products_prefetch)
-            .filter(category=category, brand=brand, products__is_available=True)
+            ProductParent.objects.filter(category=category, brand=brand)
             .exclude(id=product.parent_product.id)
             .distinct()[:6]
         )
         if not related_parent:
             related_parent = (
-                ProductParent.objects.prefetch_related(active_products_prefetch)
-                .filter(category=category, products__is_available=True)
-                .exclude(id=product.parent_product.id)
-                .distinct()[:6]
+                ProductParent.objects.filter(category=category).exclude(id=product.parent_product.id).distinct()[:6]
             )
         context["related_products"] = []
         for parent_obj in related_parent:
-            context["related_products"].append(parent_obj.products.first())
-
+            if parent_obj.product_variants.first() is None:
+                continue
+            context["related_products"].append(parent_obj.product_variants.first())
+        if context["related_products"] == []:
+            context["related_products"] = None
         context["product_available_in_cart"] = cart.is_available(product)
         context["item_quantity"] = cart.get_item_quantity(product)
         context["item_total_price_before_discount"] = cart.get_item_quantity(product) * product.initial_price
