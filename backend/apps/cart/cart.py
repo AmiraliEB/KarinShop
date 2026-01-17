@@ -23,7 +23,9 @@ class DBCartWrapper:
             return
 
         cart_items: QuerySet["CartItem"] = (
-            self.db_cart.items.select_related("product").prefetch_related("product__attribute_values__attribute").all()
+            self.db_cart.items.select_related("product")
+            .prefetch_related("product__product_variant__attribute_values__attribute")
+            .all()
         )
 
         for cart_item in cart_items:

@@ -1,6 +1,5 @@
 {% load humanize %}
-<div id="cart-detail-input{{ product.id }}"
-     {% if oob %}hx-swap-oob="True"{% endif %}>
+<div id="cart-detail-input" {% if oob %}hx-swap-oob="True"{% endif %}>
     {% if not product_available_in_cart %}
         <button id="add-btn-{{ product.id }}"
                 class="w-full relative flex items-center justify-center bg-blue-500 text-white hover:bg-blue-600 transition-all rounded-lg shadow py-3 font-DanaMedium"
