@@ -2,7 +2,7 @@ from typing import Any, Iterator
 
 from django.db.models import F, QuerySet, Sum
 from django.http import HttpRequest
-from products.models import Product
+from products.models import Product, ProductVariant
 
 from .models import Cart as DBCart
 from .models import CartItem
@@ -50,7 +50,7 @@ class DBCartWrapper:
         else:
             return 0
 
-    def add(self, product: Product, quantity=1) -> dict[str, int]:
+    def add(self, product: ProductVariant, quantity=1) -> dict[str, int]:
         cart_obj, created = DBCart.objects.get_or_create(user=self.request.user)
         cart_item_obj, cart_item_created = CartItem.objects.get_or_create(
             product=product, cart=cart_obj, defaults={"quantity": quantity}
@@ -69,7 +69,7 @@ class DBCartWrapper:
         }
         return add_return
 
-    def decrement(self, product: Product, remove=False) -> dict[str, int]:
+    def decrement(self, product: ProductVariant, remove=False) -> dict[str, int]:
         cart_item_obj = CartItem.objects.filter(product=product, cart=self.db_cart).first()
 
         base_return = {
@@ -101,7 +101,7 @@ class DBCartWrapper:
 
         return base_return
 
-    def remove(self, product: Product) -> None:
+    def remove(self, product: ProductVariant) -> None:
         if self.db_cart:
             cart_item_obj = CartItem.objects.filter(product=product, cart=self.db_cart).first()
             if cart_item_obj:
@@ -116,14 +116,14 @@ class DBCartWrapper:
             return 0
         return self.db_cart.get_cart_total_price()
 
-    def is_available(self, product: Product) -> bool:
+    def is_available(self, product: ProductVariant) -> bool:
         cart_item_obj = CartItem.objects.filter(cart=self.db_cart, product=product).first()
         if not cart_item_obj or cart_item_obj.quantity == 0:
             return False
         else:
             return True
 
-    def get_item_quantity(self, product: Product) -> int:
+    def get_item_quantity(self, product: ProductVariant) -> int:
         cart = self.db_cart
         cart_item_obj = CartItem.objects.filter(cart=cart, product=product).first()
         if cart_item_obj is not None:
@@ -176,7 +176,7 @@ class Cart:
             cart_count += item.get("quantity", 0)
         return cart_count
 
-    def add(self, product: Product, quantity=1) -> dict[str, int]:
+    def add(self, product: ProductVariant, quantity=1) -> dict[str, int]:
         product_id = str(product.id)
 
         if product_id not in self.cart:
@@ -196,7 +196,7 @@ class Cart:
         }
         return add_return
 
-    def decrement(self, product: Product, remove=False) -> dict[str, int]:
+    def decrement(self, product: ProductVariant, remove=False) -> dict[str, int]:
         product_id = str(product.id)
 
         if product_id in self.cart:
@@ -223,7 +223,7 @@ class Cart:
 
         return add_return
 
-    def remove(self, product: Product) -> None:
+    def remove(self, product: ProductVariant) -> None:
         product_id = str(product.id)
         if product_id in self.cart:
             del self.cart[product_id]
@@ -235,7 +235,7 @@ class Cart:
 
     def get_cart_total_price(self) -> int:
         product_ids = self.cart.keys()
-        products = Product.objects.filter(id__in=product_ids)
+        products = ProductVariant.objects.filter(id__in=product_ids)
 
         return sum(product.final_price * self.cart[str(product.id)]["quantity"] for product in products)
 

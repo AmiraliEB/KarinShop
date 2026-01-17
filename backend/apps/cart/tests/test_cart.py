@@ -4,7 +4,7 @@ from cart.models import Cart as DBCart
 from cart.models import CartItem
 from django.contrib.auth import get_user_model
 from model_bakery import baker
-from products.models import Product
+from products.models import ProductVariant
 
 User = get_user_model()
 
@@ -80,7 +80,7 @@ def test_cart_iterator_contains_product_info(request_with_session):
 @pytest.mark.django_db
 def test_db_cart_wrapper_add_limited_by_stock(client, rf):
     request = rf.get("/")
-    product = baker.make(Product, stock=5)
+    product = baker.make(ProductVariant, stock=5)
     user = baker.make(User)
     request.user = user
     client.force_login(user)
@@ -97,7 +97,7 @@ def test_db_cart_wrapper_add_limited_by_stock(client, rf):
 @pytest.mark.django_db
 def test_db_cart_wrapper_decrement_limited_by_stock(client, rf):
     request = rf.get("/")
-    product = baker.make(Product, stock=5)
+    product = baker.make(ProductVariant, stock=5)
     user = baker.make(User)
     request.user = user
     client.force_login(user)
@@ -110,7 +110,7 @@ def test_db_cart_wrapper_decrement_limited_by_stock(client, rf):
 
 @pytest.mark.django_db
 def test_cart_add_limited_by_stock_session(request_with_session):
-    product = baker.make(Product, stock=4)
+    product = baker.make(ProductVariant, stock=4)
     cart = Cart(request_with_session)
     cart.add(product, quantity=3)
     assert cart.get_item_quantity(product) == 3
@@ -120,7 +120,7 @@ def test_cart_add_limited_by_stock_session(request_with_session):
 
 @pytest.mark.django_db
 def test_cart_decrement_limited_by_stock_session(request_with_session):
-    product = baker.make(Product, stock=6)
+    product = baker.make(ProductVariant, stock=6)
     cart = Cart(request_with_session)
     cart.add(product=product, quantity=5)
     cart.decrement(product)
