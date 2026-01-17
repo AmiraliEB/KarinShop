@@ -1,5 +1,12 @@
+<<<<<<< HEAD
 from django.db.models import Q, Sum
 from django.db.models.functions import Coalesce
+
+=======
+from cart.models import CartItem
+from django.db.models import Count, Q
+
+>>>>>>> 575743f (refactor: transfer price field and methods from ProductVariant into Products)
 from django.shortcuts import render
 from django.views import View, generic
 from products.models import ProductVariant
