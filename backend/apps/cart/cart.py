@@ -2,7 +2,7 @@ from typing import Any, Iterator
 
 from django.db.models import F, QuerySet
 from django.http import HttpRequest
-from products.models import ProductVariant
+from products.models import Product, ProductVariant
 
 from .models import Cart as DBCart
 from .models import CartItem
@@ -106,11 +106,14 @@ class DBCartWrapper:
             return 0
         return self.db_cart.get_total_price()
 
-    def is_available(self, product: ProductVariant) -> bool:
-        cart_item_obj = CartItem.objects.filter(cart=self.db_cart, product=product).first()
-        if not cart_item_obj or cart_item_obj.quantity == 0:
-            return False
-        return True
+    def is_available(self, products: QuerySet[Product]) -> bool:
+        for product in products:
+            cart_item_obj = CartItem.objects.filter(cart=self.db_cart, product=product).first()
+            if not cart_item_obj or cart_item_obj.quantity == 0:
+                continue
+            else:
+                return True
+        return
 
     def get_item_quantity(self, product: ProductVariant) -> int:
         cart = self.db_cart

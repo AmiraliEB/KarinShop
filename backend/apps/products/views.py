@@ -86,10 +86,10 @@ class ProductDetailView(DetailView):
 
         cart = get_cart(self.request)
 
-        product = self.object
+        product_variant = self.object
 
         comments = (
-            Comments.objects.filter(parent_product=product.parent_product, is_approved=True)
+            Comments.objects.filter(parent_product=product_variant.parent_product, is_approved=True)
             .select_related("user")
             .order_by("-datetime_created")
         )
@@ -97,33 +97,35 @@ class ProductDetailView(DetailView):
         page_number = self.request.GET.get("page")
         comments_filter_by_page_number = paginator.get_page(page_number)
 
-        context["discount_percentage"] = product.discount_percentage
-        context["grouped_attributes"] = product.parent_product.grouped_specifications
+        context["discount_percentage"] = product_variant.discount_percentage
+        context["grouped_attributes"] = product_variant.parent_product.grouped_specifications
 
         context["comments"] = comments_filter_by_page_number
-        context["comments_count"] = product.parent_product.get_comment_count(comments)
-        context["average_rating"] = product.parent_product.get_average_rate(comments)
+        context["comments_count"] = product_variant.parent_product.get_comment_count(comments)
+        context["average_rating"] = product_variant.parent_product.get_average_rate(comments)
 
-        context["album_images"] = product.parent_product.images.filter(is_main_image=False)
+        context["album_images"] = product_variant.parent_product.images.filter(is_main_image=False)
 
         if "comment_form" not in context:
             context["comment_form"] = CommentForm()
         if "cart_form" not in context:
             context["cart_form"] = CartAddProductForm()
 
-        category = product.parent_product.category
-        brand = product.parent_product.brand
+        category = product_variant.parent_product.category
+        brand = product_variant.parent_product.brand
 
         # TODO: related parent should calculate in model
         # TODO: related products should be available
         related_parent = (
             ProductParent.objects.filter(category=category, brand=brand)
-            .exclude(id=product.parent_product.id)
+            .exclude(id=product_variant.parent_product.id)
             .distinct()[:6]
         )
         if not related_parent:
             related_parent = (
-                ProductParent.objects.filter(category=category).exclude(id=product.parent_product.id).distinct()[:6]
+                ProductParent.objects.filter(category=category)
+                .exclude(id=product_variant.parent_product.id)
+                .distinct()[:6]
             )
         context["related_products"] = []
         for parent_obj in related_parent:
@@ -132,10 +134,12 @@ class ProductDetailView(DetailView):
             context["related_products"].append(parent_obj.product_variants.first())
         if context["related_products"] == []:
             context["related_products"] = None
-        context["product_available_in_cart"] = cart.is_available(product)
-        context["item_quantity"] = cart.get_item_quantity(product)
-        context["item_total_price_before_discount"] = cart.get_item_quantity(product) * product.initial_price
-        context["item_total_price"] = cart.get_item_quantity(product) * product.final_price
+        context["product_available_in_cart"] = cart.is_available(product_variant.products.all())
+        context["item_quantity"] = cart.get_item_quantity(product_variant)
+        context["item_total_price_before_discount"] = (
+            cart.get_item_quantity(product_variant) * product_variant.initial_price
+        )
+        context["item_total_price"] = cart.get_item_quantity(product_variant) * product_variant.final_price
 
         return context
 
