@@ -23,7 +23,7 @@ class DBCartWrapper:
             return
 
         cart_items: QuerySet["CartItem"] = (
-            self.db_cart.items.select_related("product")
+            self.db_cart.items.select_related("product", "product__product_variant")
             .prefetch_related("product__product_variant__attribute_values__attribute")
             .all()
         )
@@ -42,7 +42,7 @@ class DBCartWrapper:
             return 0
         return self.db_cart.items.count()
 
-    def add(self, product: ProductVariant, quantity=1) -> dict[str, int]:
+    def add(self, product: Product, quantity=1) -> dict[str, int]:
         cart_obj, created = DBCart.objects.get_or_create(user=self.request.user)
         cart_item_obj, cart_item_created = CartItem.objects.get_or_create(
             product=product, cart=cart_obj, defaults={"quantity": quantity}
@@ -61,7 +61,7 @@ class DBCartWrapper:
         }
         return add_return
 
-    def decrement(self, product: ProductVariant, remove=False) -> dict[str, int]:
+    def decrement(self, product: Product, remove=False) -> dict[str, int]:
         cart_item_obj = CartItem.objects.filter(product=product, cart=self.db_cart).first()
 
         base_return = {
@@ -93,7 +93,7 @@ class DBCartWrapper:
 
         return base_return
 
-    def remove(self, product: ProductVariant) -> None:
+    def remove(self, product: Product) -> None:
         if self.db_cart:
             cart_item_obj = CartItem.objects.filter(product=product, cart=self.db_cart).first()
             if cart_item_obj:
@@ -108,16 +108,14 @@ class DBCartWrapper:
             return 0
         return self.db_cart.get_total_price()
 
-    def is_available(self, products: QuerySet[Product]) -> bool:
-        for product in products:
-            cart_item_obj = CartItem.objects.filter(cart=self.db_cart, product=product).first()
-            if not cart_item_obj or cart_item_obj.quantity == 0:
-                continue
-            else:
-                return True
-        return
+    def is_available(self, product: Product) -> bool:
+        cart_item_obj = CartItem.objects.filter(cart=self.db_cart, product=product).first()
+        if not cart_item_obj or cart_item_obj.quantity == 0:
+            return False
+        else:
+            return True
 
-    def get_item_quantity(self, product: ProductVariant) -> int:
+    def get_item_quantity(self, product: Product) -> int:
         cart = self.db_cart
         cart_item_obj = CartItem.objects.filter(cart=cart, product=product).first()
         if cart_item_obj is not None:

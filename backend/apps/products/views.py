@@ -134,9 +134,11 @@ class ProductDetailView(DetailView):
             context["related_products"].append(parent_obj.product_variants.first())
         if context["related_products"] == []:
             context["related_products"] = None
-        context["product_available_in_cart"] = cart.is_available(product_variant.products.all())
         context["product_counts"] = product_variant.products.count()
-        context["first_product"] = product_variant.products.first()
+        product = product_variant.products.first()
+        context["first_product"] = product
+        context["first_product_available_in_cart"] = cart.is_available(product)
+
         context["products"] = product_variant.products.all()[1:]
         # context["item_quantity"] = cart.get_item_quantity(product_variant)
         # context["item_total_price_before_discount"] = (
@@ -161,6 +163,8 @@ class ShopView(View):
 
 
 def product_selector_view(request, pk):
+    cart = get_cart(request)
     product = Product.objects.filter(pk=pk).first()
-    context = {"product": product}
+    product_available_in_cart = cart.is_available(product)
+    context = {"product": product, "product_available_in_cart": product_available_in_cart}
     return render(request, template_name="products/partials/update_response_on_color.html", context=context)
