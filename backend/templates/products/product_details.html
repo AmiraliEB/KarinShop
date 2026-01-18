@@ -420,7 +420,7 @@
                 </div>
             </div>
             <!-- PRICE & ADD TO CART BOX -->
-            {% include "products/partials/_input_and_price_section.html" %}
+            {% include "products/partials/_input_and_price_section.html" with product=first_product product_available_in_cart=first_product_available_in_cart %}
         </section>
         <!-- Best-selling products -->
         {% if related_products != None %}
