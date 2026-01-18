@@ -12,7 +12,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_POST
 from django.views.generic import View
 from orders.models import Coupon, Order
-from products.models import ProductVariant
+from products.models import Product, ProductVariant
 
 from .cart import get_cart
 from .forms import CartAddAddressFrom, CouponApplyForm
@@ -258,7 +258,7 @@ def clear_items_form_cart(request):
 @require_POST
 def update_cart_item(request, action, pk):
     cart = get_cart(request)
-    product_obj = get_object_or_404(ProductVariant, pk=pk)
+    product_obj = get_object_or_404(Product, pk=pk)
 
     if action == "add":
         action_return = cart.add(product_obj)
