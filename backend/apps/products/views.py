@@ -135,16 +135,18 @@ class ProductDetailView(DetailView):
         if context["related_products"] == []:
             context["related_products"] = None
         context["product_counts"] = product_variant.products.count()
-        product = product_variant.products.first()
-        context["first_product"] = product
-        context["first_product_available_in_cart"] = cart.is_available(product)
+
+        first_product = product_variant.products.first()
+
+        context["first_product"] = first_product
+        context["first_product_available_in_cart"] = cart.is_available(first_product)
 
         context["products"] = product_variant.products.all()[1:]
-        # context["item_quantity"] = cart.get_item_quantity(product_variant)
-        # context["item_total_price_before_discount"] = (
-        #     cart.get_item_quantity(product_variant) * product_variant.initial_price
-        # )
-        # context["item_total_price"] = cart.get_item_quantity(product_variant) * product_variant.final_price
+        context["item_quantity"] = cart.get_item_quantity(first_product)
+        context["item_total_price_before_discount"] = (
+            cart.get_item_quantity(first_product) * first_product.initial_price
+        )
+        context["item_total_price"] = cart.get_item_quantity(first_product) * first_product.final_price
 
         return context
 
@@ -166,5 +168,12 @@ def product_selector_view(request, pk):
     cart = get_cart(request)
     product = Product.objects.filter(pk=pk).first()
     product_available_in_cart = cart.is_available(product)
-    context = {"product": product, "product_available_in_cart": product_available_in_cart}
+    item_quantity = cart.get_item_quantity(product)
+    item_total_price = item_quantity * product.final_price
+    context = {
+        "product": product,
+        "product_available_in_cart": product_available_in_cart,
+        "item_quantity": item_quantity,
+        "item_total_price": item_total_price,
+    }
     return render(request, template_name="products/partials/update_response_on_color.html", context=context)
