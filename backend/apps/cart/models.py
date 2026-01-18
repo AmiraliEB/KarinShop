@@ -19,8 +19,12 @@ class Cart(models.Model):
 
 
 class CartItem(models.Model):
-    cart = models.ForeignKey(Cart, verbose_name=_("cart"), on_delete=models.CASCADE, related_name="items")
-    product = models.ForeignKey(Product, verbose_name=_("product"), on_delete=models.CASCADE, related_name="cart_items")
+    cart: models.ForeignKey[Cart] = models.ForeignKey(
+        Cart, verbose_name=_("cart"), on_delete=models.CASCADE, related_name="items"
+    )
+    product: models.ForeignKey[Product] = models.ForeignKey(
+        Product, verbose_name=_("product"), on_delete=models.CASCADE, related_name="cart_items"
+    )
     quantity = models.PositiveIntegerField(verbose_name=_("quantity"), default=1)
 
     datetime_created = models.DateTimeField(auto_now_add=True, verbose_name=_("creation date"))
