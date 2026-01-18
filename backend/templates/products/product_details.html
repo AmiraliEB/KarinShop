@@ -353,7 +353,7 @@
                                         <span class="bg-black w-full h-full rounded-full flex"></span>
                                     </button>
                                     {% for product in products %}
-                                        <button hx-post="{% url "products:product_selector" first_product.id %}"
+                                        <button hx-post="{% url "products:product_selector" product.id %}"
                                                 hx-swap="None"
                                                 class="color-select-btn ring-1 ring-gray-400 transition-all duration-300 ease-in-out">
                                             <span class="bg-white app-border w-full h-full rounded-full flex"></span>
@@ -420,27 +420,7 @@
                 </div>
             </div>
             <!-- PRICE & ADD TO CART BOX -->
-            <div class="w-full lg:w-1/4 lg:sticky top-5 flex flex-col gap-y-6">
-                {% if first_product.is_available %}
-                    {% include "products/partials/_price_section.html" with product=first_product %}
-                    {% include "cart/partials/_product_detail_cart_input.html" with product=first_product %}
-                {% else %}
-                    <div class="bg-gray-50 dark:bg-gray-700/30 border border-gray-200 dark:border-gray-600/50 rounded-xl p-6 flex flex-col items-center text-center gap-y-5">
-                        <div class="flex flex-col items-center gap-y-3">
-                            <div class="w-16 h-16 flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-600">
-                                <svg class="size-8 text-gray-500 dark:text-gray-300">
-                                    <use href="#x-mark"></use>
-                                </svg>
-                            </div>
-                            <h3 class="font-DanaDemiBold text-xl text-gray-700 dark:text-gray-200">ناموجود</h3>
-                        </div>
-                        <div class="w-full h-px bg-gray-200 dark:bg-gray-600"></div>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 leading-7">
-                            این کالا فعلاً موجود نیست. به محض موجود شدن، اطلاعیه آن به ایمیل شما ارسال خواهد شد.
-                        </p>
-                    </div>
-                {% endif %}
-            </div>
+            {% include "products/partials/_input_and_price_section.html" %}
         </section>
         <!-- Best-selling products -->
         {% if related_products != None %}
