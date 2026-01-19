@@ -528,6 +528,7 @@
                                                 </svg>
                                             </span>
                                         </div>
+                                        <<<<<<< HEAD
                                         <!-- قیمت -->
                                         <div class="flex items-center justify-between pt-2.5 border-t border-gray-100 dark:border-white/[0.06]">
                                             {% if product_variant.has_discount %}
@@ -536,289 +537,302 @@
                                                 </del>
                                             {% else %}
                                                 <span></span>
-                                            {% endif %}
-                                            <div class="flex items-baseline gap-x-1">
-                                                <span class="text-sm font-DanaDemiBold text-gray-900 dark:text-gray-50">
-                                                    {{ product_variant.final_price|intcomma:False }}
-                                                </span>
-                                                <span class="text-xs text-gray-500 dark:text-gray-400">تومان</span>
+                                                =======
+                                                <!-- Price -->
+                                                <div class="product-card_price">
+                                                    {% if product_variant.has_discount %}
+                                                        <del>{{ product.initial_price|intcomma:False }}
+                                                            <h6>تومان</h6>
+                                                        </del>
+                                                        <p>{{ product_variant.final_price|intcomma:False }}</p>
+                                                        <span>تومان</span>
+                                                    {% else %}
+                                                        <p>{{ product_variant.final_price|intcomma:False }}</p>
+                                                        <span>تومان</span>
+                                                        >>>>>>> ac56d3a (feat: add is_available field into product_variant and write save method for both product and product_variant to calculate is_available field)
+                                                    {% endif %}
+                                                    <div class="flex items-baseline gap-x-1">
+                                                        <span class="text-sm font-DanaDemiBold text-gray-900 dark:text-gray-50">
+                                                            {{ product_variant.final_price|intcomma:False }}
+                                                        </span>
+                                                        <span class="text-xs text-gray-500 dark:text-gray-400">تومان</span>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </section>
+                {% endif %}
+                <section class="relative mt-10 flex flex-col items-start gap-4 rounded-lg bg-white dark:bg-gray-800 shadow p-4">
+                    <div class="w-full py-3 flex items-center gap-x-6 child:font-DanaMedium tab-buttons z-10 border-b  border-gray-600/20 dark:border-b-gray-200/20">
+                        <button class="tab-btn text-blue-500" data-target="tab1">معرفی محصول</button>
+                        <button class="tab-btn text-gray-500 dark:text-gray-300" data-target="tab2">مشخصات</button>
+                        <button class="tab-btn text-gray-500 dark:text-gray-300" data-target="tab3">دیدگاه‌ها</button>
+                    </div>
+                    <div class="tab-content tab1 block">
+                        <h2 class="font-D anaDemiBold border-b-2 border-blue-500 w-fit p-1 text-lg">معرفی</h2>
+                        <p class="mt-4 leading-8">
+                            گوشی موبایل اپل مدل iPhone 16، به عنوان یکی از جدیدترین مدل‌های این برند معتبر، با طراحی مدرن و ویژگی‌های پیشرفته، تجربه‌ای بی‌نظیر از دنیای تکنولوژی را برای کاربران فراهم می‌کند. این گوشی با ظرفیت 128 گیگابایت و رم 8 گیگابایت، عملکردی سریع و روان را ارائه می‌دهد که به راحتی از پس کارهای روزمره و multitasking برمی‌آید. طراحی این دستگاه با دقت و ظرافت بالا انجام شده و بدنه آن از مواد با کیفیت ساخته شده است که حس لوکس بودن را به کاربر منتقل می‌کند. قابلیت پشتیبانی از دو سیم کارت، امکان استفاده هر مفید است. دوربین‌های با کیفیت پارت نامبر CH مربوط به کشور چین است که تفاوت خاصی با دیگر پارت نامبرها ندارند و تنها در مورد استفاده از تماس‌های صوتی و تماس‌های گروهی در نرم افزار فیس تایم شامل محدودیت است. این پارت نامبر از دو سیم‌کارت فیزیکی پشتیبانی می‌کند که یک نکته مثبت محسوب می‌شود. این گوشی، مانند تمامی گوشی‌های عرضه‌شده در دیجی‌کالا، به صورت قانونی و تجاری وارد کشور شده و با رجیستر رسمی، کارت گارانتی معتبر و کد فعال‌سازی به شما تحویل داده می‌شود.
+                            <a href="#" class="flex gap-x-1 items-center text-blue-400">
+                                مشاهده بیشتر
+                                <svg class="size-4">
+                                    <use href="#chevron-left" />
+                                </svg>
+                            </a>
+                        </p>
+                    </div>
+                    <div class="tab-content tab2 hidden w-full">
+                        {% for category , value_list in grouped_attributes.items %}
+                            <div class="spec-category-group px-4 {% if not forloop.first %}hidden hidden-spec-category-group{% endif %}">
+                                <h2 class="font-DanaDemiBold border-b-2 border-blue-500 w-fit p-1 text-lg">{{ category }}</h2>
+                                <div class="my-5 w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                    {% for value in value_list %}
+                                        <div class="spec-item py-4 {% if forloop.parentloop.first and forloop.counter > 5 %}hidden hidden-spec-item{% endif %}">
+                                            <p class="text-sm text-gray-500 dark:text-gray-400">{{ value.attribute.name }}:</p>
+                                            <p class="font-DanaMedium text-gray-800 dark:text-gray-200 mt-2">{{ value.value }}</p>
+                                        </div>
+                                    {% endfor %}
                                 </div>
                             </div>
                         {% endfor %}
-                    </div>
-                </div>
-            </section>
-        {% endif %}
-        <section class="relative mt-10 flex flex-col items-start gap-4 rounded-lg bg-white dark:bg-gray-800 shadow p-4">
-            <div class="w-full py-3 flex items-center gap-x-6 child:font-DanaMedium tab-buttons z-10 border-b  border-gray-600/20 dark:border-b-gray-200/20">
-                <button class="tab-btn text-blue-500" data-target="tab1">معرفی محصول</button>
-                <button class="tab-btn text-gray-500 dark:text-gray-300" data-target="tab2">مشخصات</button>
-                <button class="tab-btn text-gray-500 dark:text-gray-300" data-target="tab3">دیدگاه‌ها</button>
-            </div>
-            <div class="tab-content tab1 block">
-                <h2 class="font-D anaDemiBold border-b-2 border-blue-500 w-fit p-1 text-lg">معرفی</h2>
-                <p class="mt-4 leading-8">
-                    گوشی موبایل اپل مدل iPhone 16، به عنوان یکی از جدیدترین مدل‌های این برند معتبر، با طراحی مدرن و ویژگی‌های پیشرفته، تجربه‌ای بی‌نظیر از دنیای تکنولوژی را برای کاربران فراهم می‌کند. این گوشی با ظرفیت 128 گیگابایت و رم 8 گیگابایت، عملکردی سریع و روان را ارائه می‌دهد که به راحتی از پس کارهای روزمره و multitasking برمی‌آید. طراحی این دستگاه با دقت و ظرافت بالا انجام شده و بدنه آن از مواد با کیفیت ساخته شده است که حس لوکس بودن را به کاربر منتقل می‌کند. قابلیت پشتیبانی از دو سیم کارت، امکان استفاده هر مفید است. دوربین‌های با کیفیت پارت نامبر CH مربوط به کشور چین است که تفاوت خاصی با دیگر پارت نامبرها ندارند و تنها در مورد استفاده از تماس‌های صوتی و تماس‌های گروهی در نرم افزار فیس تایم شامل محدودیت است. این پارت نامبر از دو سیم‌کارت فیزیکی پشتیبانی می‌کند که یک نکته مثبت محسوب می‌شود. این گوشی، مانند تمامی گوشی‌های عرضه‌شده در دیجی‌کالا، به صورت قانونی و تجاری وارد کشور شده و با رجیستر رسمی، کارت گارانتی معتبر و کد فعال‌سازی به شما تحویل داده می‌شود.
-                    <a href="#" class="flex gap-x-1 items-center text-blue-400">
-                        مشاهده بیشتر
-                        <svg class="size-4">
-                            <use href="#chevron-left" />
-                        </svg>
-                    </a>
-                </p>
-            </div>
-            <div class="tab-content tab2 hidden w-full">
-                {% for category , value_list in grouped_attributes.items %}
-                    <div class="spec-category-group px-4 {% if not forloop.first %}hidden hidden-spec-category-group{% endif %}">
-                        <h2 class="font-DanaDemiBold border-b-2 border-blue-500 w-fit p-1 text-lg">{{ category }}</h2>
-                        <div class="my-5 w-full divide-y divide-gray-200 dark:divide-gray-700">
-                            {% for value in value_list %}
-                                <div class="spec-item py-4 {% if forloop.parentloop.first and forloop.counter > 5 %}hidden hidden-spec-item{% endif %}">
-                                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ value.attribute.name }}:</p>
-                                    <p class="font-DanaMedium text-gray-800 dark:text-gray-200 mt-2">{{ value.value }}</p>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                {% endfor %}
-                {% if product_variant.parent_product.specification_values.all|length > 5 %}
-                    <button class="more-specs-btn flex gap-x-1 items-center text-blue-400">
-                        <span class="more-specs-text">مشاهده بیشتر</span>
-                        <svg class="size-4 more-specs-icon transition-transform">
-                            <use href="#chevron"></use>
-                        </svg>
-                    </button>
-                {% endif %}
-            </div>
-            <div class="tab-content tab3 hidden w-full" id="comments-section">
-                <div class="flex items-center gap-x-2 mb-6">
-                    <h2 class="font-DanaMedium text-2xl ">دیدگاه ها</h2>
-                    <p class="text-sm text-blue-500">({{ comments_count }} دیدگاه)</p>
-                </div>
-                <div class="w-full flex flex-col md:flex-row items-start gap-10">
-                    <!-- SUBMIT COMMENT -->
-                    <div class="lg:w-1/4 flex flex-col w-full items-start">
-                        <p class="font-DanaMedium text-lg mb-2">ثبت دیدگاه</p>
-                        {% if not user.is_authenticated %}
-                            <p class="text-sm/4 text-gray-500 mb-4">
-                                برای ثبت دیدگاه ابتدا باید
-                                <a class='text-blue-500'
-                                   href="{% url 'account_login' %}?next={{ object.get_absolute_url|urlencode }}">وارد حساب کاربری</a>
-                                خود شوید
-                            </p>
-                        {% else %}
-                            <form action="{% url "products:post_redirect" product_variant.id %}"
-                                  method="post"
-                                  class='w-full flex flex-col items-start'>
-                                {% csrf_token %}
-                                <div class="flex flex-col items-start mb-4">
-                                    <p class="text-gray-500 dark:text-white text-sm mb-2">امتیاز شما:</p>
-                                    <div id="rating-stars-container" class="flex items-center" dir="ltr">
-                                        <svg class="w-6 h-6 text-gray-300 dark:text-gray-600 cursor-pointer rating-star"
-                                             data-value="1">
-                                            <use href="#start"></use>
-                                        </svg>
-                                        <svg class="w-6 h-6 text-gray-300 dark:text-gray-600 cursor-pointer rating-star"
-                                             data-value="2">
-                                            <use href="#start"></use>
-                                        </svg>
-                                        <svg class="w-6 h-6 text-gray-300 dark:text-gray-600 cursor-pointer rating-star"
-                                             data-value="3">
-                                            <use href="#start"></use>
-                                        </svg>
-                                        <svg class="w-6 h-6 text-gray-300 dark:text-gray-600 cursor-pointer rating-star"
-                                             data-value="4">
-                                            <use href="#start"></use>
-                                        </svg>
-                                        <svg class="w-6 h-6 text-gray-300 dark:text-gray-600 cursor-pointer rating-star"
-                                             data-value="5">
-                                            <use href="#start"></use>
-                                        </svg>
-                                    </div>
-                                </div>
-                                {% for error in comment_form.rating.errors %}<p class="text-sm text-red-600">{{ error }}</p>{% endfor %}
-                                {{ comment_form.title }}
-                                {% for error in comment_form.title.errors %}<p class="text-sm text-red-600">{{ error }}</p>{% endfor %}
-                                {{ comment_form.rating }}
-                                <p class="text-gray-500 dark:text-white text-sm mb-4">این محصول را به دیگران پیشنهاد :</p>
-                                <div class="w-full grid grid-cols-12 child:col-span-6 gap-4 child:w-full  child:flex child:items-center child:justify-center child:gap-x-2 child:rounded-lg child:shadow child:py-2 mb-5 child:font-DanaMedium child:duration-300 child:transition-all">
-                                    <button id="recommend-btn"
-                                            class="text-green-600 ring-transparent ring-1 focus:ring-green-600 dark:ring-white/20 dark:focus:ring-green-600"
-                                            type='button'>
-                                        <svg class="w-5 h-5">
-                                            <use href="#hand-up"></use>
-                                        </svg>
-                                        میکنم
-                                    </button>
-                                    <button id="dont-recommend-btn"
-                                            class="text-red-500 ring-transparent ring-1 focus:ring-[#EF4343] dark:ring-white/20 dark:focus:ring-[#EF4343]"
-                                            type='button'>
-                                        <svg class="w-5 h-5">
-                                            <use href="#hand-down"></use>
-                                        </svg>
-                                        نمیکنم
-                                    </button>
-                                </div>
-                                {{ comment_form.is_recommend }}
-                                {% for error in comment_form.is_recommend.errors %}<p class="text-sm text-red-600">{{ error }}</p>{% endfor %}
-                                {{ comment_form.content }}
-                                {% for error in comment_form.content.errors %}<p class="text-sm text-red-600">{{ error }}</p>{% endfor %}
-                                <button class="rounded-lg p-2 bg-blue-500 hover:bg-blue-600 text-white transition-all w-full"
-                                        type='submit'
-                                        name='comment_submit'>ثبت</button>
-                            </form>
+                        {% if product_variant.parent_product.specification_values.all|length > 5 %}
+                            <button class="more-specs-btn flex gap-x-1 items-center text-blue-400">
+                                <span class="more-specs-text">مشاهده بیشتر</span>
+                                <svg class="size-4 more-specs-icon transition-transform">
+                                    <use href="#chevron"></use>
+                                </svg>
+                            </button>
                         {% endif %}
                     </div>
-                    <!-- ALL COMMENTS -->
-                    <ul class="lg:w-3/4 flex flex-col gap-y-2 child:w-full ">
-                        <!-- COMMENT ITEMS -->
-                        {% for comment_item in comments %}
-                            <li class="child:flex py-4 border-b border-gray-200 dark:border-b-gray-200/20 child:border-white/20">
-                                <div class="flex flex-wrap items-center gap-x-2">
-                                    <h2 class="font-DanaMedium text-lg mb-1">{{ comment_item.title }}</h2>
-                                    <span class="px-2 py-1 mb-2 rounded-lg bg-blue-500 text-white text-xs">خریدار</span>
-                                </div>
-                                {% if comment_item.is_recommend %}
-                                    <div class="flex-col items-start">
-                                        <h2 class="flex items-center gap-x-1 text-green-500 mb-2">
-                                            <svg class="w-4 h-4">
-                                                <use href="#hand-up"></use>
-                                            </svg>
-                                            پیشهاد میشود
-                                        </h2>
-                                    {% else %}
-                                        <div class="flex-col items-start">
-                                            <h2 class="flex items-center gap-x-1 text-red-500 mb-2">
-                                                <svg class="w-4 h-4">
+                    <div class="tab-content tab3 hidden w-full" id="comments-section">
+                        <div class="flex items-center gap-x-2 mb-6">
+                            <h2 class="font-DanaMedium text-2xl ">دیدگاه ها</h2>
+                            <p class="text-sm text-blue-500">({{ comments_count }} دیدگاه)</p>
+                        </div>
+                        <div class="w-full flex flex-col md:flex-row items-start gap-10">
+                            <!-- SUBMIT COMMENT -->
+                            <div class="lg:w-1/4 flex flex-col w-full items-start">
+                                <p class="font-DanaMedium text-lg mb-2">ثبت دیدگاه</p>
+                                {% if not user.is_authenticated %}
+                                    <p class="text-sm/4 text-gray-500 mb-4">
+                                        برای ثبت دیدگاه ابتدا باید
+                                        <a class='text-blue-500'
+                                           href="{% url 'account_login' %}?next={{ object.get_absolute_url|urlencode }}">وارد حساب کاربری</a>
+                                        خود شوید
+                                    </p>
+                                {% else %}
+                                    <form action="{% url "products:post_redirect" product_variant.id %}"
+                                          method="post"
+                                          class='w-full flex flex-col items-start'>
+                                        {% csrf_token %}
+                                        <div class="flex flex-col items-start mb-4">
+                                            <p class="text-gray-500 dark:text-white text-sm mb-2">امتیاز شما:</p>
+                                            <div id="rating-stars-container" class="flex items-center" dir="ltr">
+                                                <svg class="w-6 h-6 text-gray-300 dark:text-gray-600 cursor-pointer rating-star"
+                                                     data-value="1">
+                                                    <use href="#start"></use>
+                                                </svg>
+                                                <svg class="w-6 h-6 text-gray-300 dark:text-gray-600 cursor-pointer rating-star"
+                                                     data-value="2">
+                                                    <use href="#start"></use>
+                                                </svg>
+                                                <svg class="w-6 h-6 text-gray-300 dark:text-gray-600 cursor-pointer rating-star"
+                                                     data-value="3">
+                                                    <use href="#start"></use>
+                                                </svg>
+                                                <svg class="w-6 h-6 text-gray-300 dark:text-gray-600 cursor-pointer rating-star"
+                                                     data-value="4">
+                                                    <use href="#start"></use>
+                                                </svg>
+                                                <svg class="w-6 h-6 text-gray-300 dark:text-gray-600 cursor-pointer rating-star"
+                                                     data-value="5">
+                                                    <use href="#start"></use>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        {% for error in comment_form.rating.errors %}<p class="text-sm text-red-600">{{ error }}</p>{% endfor %}
+                                        {{ comment_form.title }}
+                                        {% for error in comment_form.title.errors %}<p class="text-sm text-red-600">{{ error }}</p>{% endfor %}
+                                        {{ comment_form.rating }}
+                                        <p class="text-gray-500 dark:text-white text-sm mb-4">این محصول را به دیگران پیشنهاد :</p>
+                                        <div class="w-full grid grid-cols-12 child:col-span-6 gap-4 child:w-full  child:flex child:items-center child:justify-center child:gap-x-2 child:rounded-lg child:shadow child:py-2 mb-5 child:font-DanaMedium child:duration-300 child:transition-all">
+                                            <button id="recommend-btn"
+                                                    class="text-green-600 ring-transparent ring-1 focus:ring-green-600 dark:ring-white/20 dark:focus:ring-green-600"
+                                                    type='button'>
+                                                <svg class="w-5 h-5">
+                                                    <use href="#hand-up"></use>
+                                                </svg>
+                                                میکنم
+                                            </button>
+                                            <button id="dont-recommend-btn"
+                                                    class="text-red-500 ring-transparent ring-1 focus:ring-[#EF4343] dark:ring-white/20 dark:focus:ring-[#EF4343]"
+                                                    type='button'>
+                                                <svg class="w-5 h-5">
                                                     <use href="#hand-down"></use>
                                                 </svg>
-                                                پیشهاد نمیشود
-                                            </h2>
-                                        {% endif %}
-                                        <div class="flex items-center mb-4" dir="ltr">
-                                            {% for i in '12345' %}
-                                                {% if forloop.counter0 < comment_item.rating %}
-                                                    <svg class="w-4 h-4 text-yellow-400">
-                                                        <use href="#start"></use>
-                                                    </svg>
-                                                {% else %}
-                                                    <svg class="w-4 h-4 text-gray-300 dark:text-gray-600">
-                                                        <use href="#start"></use>
-                                                    </svg>
-                                                {% endif %}
-                                            {% endfor %}
+                                                نمیکنم
+                                            </button>
                                         </div>
-                                        <p class="text-gray-500 dark:text-gray-200 mb-2 line-clamp-2">{{ comment_item.content }}</p>
-                                    </div>
-                                    <div class="mt-2 lg:mt-0 flex-col lg:flex-row gap-y-2 lg:items-center justify-between">
-                                        <div class="flex items-center gap-x-4 text-gray-400 text-sm">
-                                            <p>{{ comment_item.datetime_created|to_jalali:"%Y/%m/%d" }}</p>
-                                            <p>{{ comment_item.user.username }}</p>
+                                        {{ comment_form.is_recommend }}
+                                        {% for error in comment_form.is_recommend.errors %}<p class="text-sm text-red-600">{{ error }}</p>{% endfor %}
+                                        {{ comment_form.content }}
+                                        {% for error in comment_form.content.errors %}<p class="text-sm text-red-600">{{ error }}</p>{% endfor %}
+                                        <button class="rounded-lg p-2 bg-blue-500 hover:bg-blue-600 text-white transition-all w-full"
+                                                type='submit'
+                                                name='comment_submit'>ثبت</button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                            <!-- ALL COMMENTS -->
+                            <ul class="lg:w-3/4 flex flex-col gap-y-2 child:w-full ">
+                                <!-- COMMENT ITEMS -->
+                                {% for comment_item in comments %}
+                                    <li class="child:flex py-4 border-b border-gray-200 dark:border-b-gray-200/20 child:border-white/20">
+                                        <div class="flex flex-wrap items-center gap-x-2">
+                                            <h2 class="font-DanaMedium text-lg mb-1">{{ comment_item.title }}</h2>
+                                            <span class="px-2 py-1 mb-2 rounded-lg bg-blue-500 text-white text-xs">خریدار</span>
                                         </div>
-                                        <div class="flex items-center gap-x-2 flex-wrap mt-2">
-                                            <p class="text-gray-400 text-sm">آیا این دیدگاه برایتان مفید بود؟</p>
-                                            <div class="flex items-center gap-x-2 child:flex child:items-center child:gap-x-1 child:rounded-lg child:p-2 child:font-DanaMedium child:duration-300 child:transition-all child:text-sm">
-                                                <button class="text-green-600 ring-transparent ring-1 focus:ring-green-600  dark:focus:ring-green-600">
-                                                    78
+                                        {% if comment_item.is_recommend %}
+                                            <div class="flex-col items-start">
+                                                <h2 class="flex items-center gap-x-1 text-green-500 mb-2">
                                                     <svg class="w-4 h-4">
                                                         <use href="#hand-up"></use>
                                                     </svg>
-                                                </button>
-                                                <button class="text-red-500 ring-transparent ring-1 focus:ring-[#EF4343]  dark:focus:ring-[#EF4343]">
-                                                    25
-                                                    <svg class="w-4 h-4">
-                                                        <use href="#hand-down"></use>
-                                                    </svg>
-                                                </button>
+                                                    پیشهاد میشود
+                                                </h2>
+                                            {% else %}
+                                                <div class="flex-col items-start">
+                                                    <h2 class="flex items-center gap-x-1 text-red-500 mb-2">
+                                                        <svg class="w-4 h-4">
+                                                            <use href="#hand-down"></use>
+                                                        </svg>
+                                                        پیشهاد نمیشود
+                                                    </h2>
+                                                {% endif %}
+                                                <div class="flex items-center mb-4" dir="ltr">
+                                                    {% for i in '12345' %}
+                                                        {% if forloop.counter0 < comment_item.rating %}
+                                                            <svg class="w-4 h-4 text-yellow-400">
+                                                                <use href="#start"></use>
+                                                            </svg>
+                                                        {% else %}
+                                                            <svg class="w-4 h-4 text-gray-300 dark:text-gray-600">
+                                                                <use href="#start"></use>
+                                                            </svg>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                                <p class="text-gray-500 dark:text-gray-200 mb-2 line-clamp-2">{{ comment_item.content }}</p>
                                             </div>
-                                        </div>
-                                    </div>
-                                </li>
-                            {% empty %}
-                                <li class="flex flex-col items-center justify-center py-12 w-full border-2 border-dashed border-gray-300 rounded-xl dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
-                                    <svg class="w-16 h-16 text-gray-300 dark:text-gray-600 mb-4">
-                                        <path fill="currentColor" d="M12 3c5.5 0 10 3.58 10 8s-4.5 8-10 8c-1.24 0-2.43-.18-3.53-.5C5.55 21 2 21 2 21c2.33-2.33 2.7-3.9 2.75-4.5C3.05 15.07 2 13.13 2 11c0-4.42 4.5-8 10-8z" opacity="0.5" />
-                                    </svg>
-                                    <p class="text-gray-500 dark:text-gray-400 font-DanaDemiBold text-lg">هنوز دیدگاهی برای این محصول ثبت نشده است!</p>
-                                    <p class="text-gray-400 dark:text-gray-500 text-sm mt-2">اولین نفری باشید که نظر خود را ثبت می‌کند.</p>
-                                    <p class="text-gray-400 dark:text-gray-500 text-sm mt-2">
-                                        نکته: در حالت دمو دیدگاه ها بلافاصله و بدون بررسی توسط ادمین نمایش داده میشوند.
-                                    </p>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                    <!-- PAGINATION -->
-                    {% if comments.paginator.num_pages > 1 %}
-                        <div class="mt-10 w-full flex items-center justify-center">
-                            <ul class="flex items-center gap-x-3 child:flex child:items-center child:justify-center child:w-8 child:h-8 child:cursor-pointer child:shadow child:rounded-lg child:transition-all child:duration-300">
-                                {% if comments.has_previous %}
-                                    <li class="bg-white dark:bg-gray-800 hover:bg-blue-500 dark:hover:bg-blue-500 hover:text-white">
-                                        <a href="?page={{ comments.previous_page_number }}#comments-section"
-                                           class="flex items-center justify-center w-full h-full">
-                                            <svg class="size-5 rotate-180">
-                                                <use href="#chevron-left"></use>
-                                            </svg>
-                                        </a>
-                                    </li>
-                                {% else %}
-                                    <li class="bg-gray-100 dark:bg-gray-700 text-gray-400 cursor-not-allowed">
-                                        <span class="flex items-center justify-center w-full h-full">
-                                            <svg class="size-5 rotate-180">
-                                                <use href="#chevron-left"></use>
-                                            </svg>
-                                        </span>
-                                    </li>
-                                {% endif %}
-                                {% for page_num in comments.paginator.page_range %}
-                                    {% if comments.number == page_num %}
-                                        <li class="text-white bg-blue-500">
-                                            <span class="flex items-center justify-center w-full h-full">{{ page_num }}</span>
+                                            <div class="mt-2 lg:mt-0 flex-col lg:flex-row gap-y-2 lg:items-center justify-between">
+                                                <div class="flex items-center gap-x-4 text-gray-400 text-sm">
+                                                    <p>{{ comment_item.datetime_created|to_jalali:"%Y/%m/%d" }}</p>
+                                                    <p>{{ comment_item.user.username }}</p>
+                                                </div>
+                                                <div class="flex items-center gap-x-2 flex-wrap mt-2">
+                                                    <p class="text-gray-400 text-sm">آیا این دیدگاه برایتان مفید بود؟</p>
+                                                    <div class="flex items-center gap-x-2 child:flex child:items-center child:gap-x-1 child:rounded-lg child:p-2 child:font-DanaMedium child:duration-300 child:transition-all child:text-sm">
+                                                        <button class="text-green-600 ring-transparent ring-1 focus:ring-green-600  dark:focus:ring-green-600">
+                                                            78
+                                                            <svg class="w-4 h-4">
+                                                                <use href="#hand-up"></use>
+                                                            </svg>
+                                                        </button>
+                                                        <button class="text-red-500 ring-transparent ring-1 focus:ring-[#EF4343]  dark:focus:ring-[#EF4343]">
+                                                            25
+                                                            <svg class="w-4 h-4">
+                                                                <use href="#hand-down"></use>
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </li>
-                                    {% elif page_num > comments.number|add:'-3' and page_num < comments.number|add:'3' %}
-                                        <li class="bg-white dark:bg-gray-800 hover:bg-blue-500 dark:hover:bg-blue-500 hover:text-white">
-                                            <a href="?page={{ page_num }}"
-                                               class="flex items-center justify-center w-full h-full">
-                                                {{ page_num }}
-                                            </a>
-                                        </li>
-                                    {% elif page_num == comments.number|add:'-3' or page_num == comments.number|add:'3' %}
-                                        <li class="bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 cursor-default">
-                                            <span class="flex items-center justify-center w-full h-full">...</span>
-                                        </li>
-                                    {% endif %}
-                                {% endfor %}
-                                {% if comments.has_next %}
-                                    <li class="bg-white dark:bg-gray-800 hover:bg-blue-500 dark:hover:bg-blue-500 hover:text-white">
-                                        <a href="?page={{ comments.next_page_number }}"
-                                           class="flex items-center justify-center w-full h-full">
-                                            <svg class="size-5">
-                                                <use href="#chevron-left"></use>
+                                    {% empty %}
+                                        <li class="flex flex-col items-center justify-center py-12 w-full border-2 border-dashed border-gray-300 rounded-xl dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+                                            <svg class="w-16 h-16 text-gray-300 dark:text-gray-600 mb-4">
+                                                <path fill="currentColor" d="M12 3c5.5 0 10 3.58 10 8s-4.5 8-10 8c-1.24 0-2.43-.18-3.53-.5C5.55 21 2 21 2 21c2.33-2.33 2.7-3.9 2.75-4.5C3.05 15.07 2 13.13 2 11c0-4.42 4.5-8 10-8z" opacity="0.5" />
                                             </svg>
-                                        </a>
-                                    </li>
-                                {% else %}
-                                    <li class="bg-gray-100 dark:bg-gray-700 text-gray-400 cursor-not-allowed">
-                                        <span class="flex items-center justify-center w-full h-full">
-                                            <svg class="size-5">
-                                                <use href="#chevron-left"></use>
-                                            </svg>
-                                        </span>
-                                    </li>
-                                {% endif %}
-                            </ul>
+                                            <p class="text-gray-500 dark:text-gray-400 font-DanaDemiBold text-lg">هنوز دیدگاهی برای این محصول ثبت نشده است!</p>
+                                            <p class="text-gray-400 dark:text-gray-500 text-sm mt-2">اولین نفری باشید که نظر خود را ثبت می‌کند.</p>
+                                            <p class="text-gray-400 dark:text-gray-500 text-sm mt-2">
+                                                نکته: در حالت دمو دیدگاه ها بلافاصله و بدون بررسی توسط ادمین نمایش داده میشوند.
+                                            </p>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <!-- PAGINATION -->
+                            {% if comments.paginator.num_pages > 1 %}
+                                <div class="mt-10 w-full flex items-center justify-center">
+                                    <ul class="flex items-center gap-x-3 child:flex child:items-center child:justify-center child:w-8 child:h-8 child:cursor-pointer child:shadow child:rounded-lg child:transition-all child:duration-300">
+                                        {% if comments.has_previous %}
+                                            <li class="bg-white dark:bg-gray-800 hover:bg-blue-500 dark:hover:bg-blue-500 hover:text-white">
+                                                <a href="?page={{ comments.previous_page_number }}#comments-section"
+                                                   class="flex items-center justify-center w-full h-full">
+                                                    <svg class="size-5 rotate-180">
+                                                        <use href="#chevron-left"></use>
+                                                    </svg>
+                                                </a>
+                                            </li>
+                                        {% else %}
+                                            <li class="bg-gray-100 dark:bg-gray-700 text-gray-400 cursor-not-allowed">
+                                                <span class="flex items-center justify-center w-full h-full">
+                                                    <svg class="size-5 rotate-180">
+                                                        <use href="#chevron-left"></use>
+                                                    </svg>
+                                                </span>
+                                            </li>
+                                        {% endif %}
+                                        {% for page_num in comments.paginator.page_range %}
+                                            {% if comments.number == page_num %}
+                                                <li class="text-white bg-blue-500">
+                                                    <span class="flex items-center justify-center w-full h-full">{{ page_num }}</span>
+                                                </li>
+                                            {% elif page_num > comments.number|add:'-3' and page_num < comments.number|add:'3' %}
+                                                <li class="bg-white dark:bg-gray-800 hover:bg-blue-500 dark:hover:bg-blue-500 hover:text-white">
+                                                    <a href="?page={{ page_num }}"
+                                                       class="flex items-center justify-center w-full h-full">
+                                                        {{ page_num }}
+                                                    </a>
+                                                </li>
+                                            {% elif page_num == comments.number|add:'-3' or page_num == comments.number|add:'3' %}
+                                                <li class="bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 cursor-default">
+                                                    <span class="flex items-center justify-center w-full h-full">...</span>
+                                                </li>
+                                            {% endif %}
+                                        {% endfor %}
+                                        {% if comments.has_next %}
+                                            <li class="bg-white dark:bg-gray-800 hover:bg-blue-500 dark:hover:bg-blue-500 hover:text-white">
+                                                <a href="?page={{ comments.next_page_number }}"
+                                                   class="flex items-center justify-center w-full h-full">
+                                                    <svg class="size-5">
+                                                        <use href="#chevron-left"></use>
+                                                    </svg>
+                                                </a>
+                                            </li>
+                                        {% else %}
+                                            <li class="bg-gray-100 dark:bg-gray-700 text-gray-400 cursor-not-allowed">
+                                                <span class="flex items-center justify-center w-full h-full">
+                                                    <svg class="size-5">
+                                                        <use href="#chevron-left"></use>
+                                                    </svg>
+                                                </span>
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            {% endif %}
                         </div>
-                    {% endif %}
-                </div>
-            </div>
-        </section>
-    </main>
-    {% include 'partials/footer.html' %}
-{% endblock content %}
-{% block extra_js %}
-    <script src="{% static "products/js/productDetails.js" %}"></script>
-    <script src="{% static "products/js/slider.js" %}"></script>
-{% endblock extra_js %}
+                    </div>
+                </section>
+            </main>
+            {% include 'partials/footer.html' %}
+        {% endblock content %}
+        {% block extra_js %}
+            <script src="{% static "products/js/productDetails.js" %}"></script>
+            <script src="{% static "products/js/slider.js" %}"></script>
+        {% endblock extra_js %}
