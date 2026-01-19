@@ -129,8 +129,8 @@ class ProductVariant(models.Model):
 
     _full_name = models.CharField(max_length=500, blank=True, verbose_name=_("Full Name (Cached)"))
 
+    is_available = models.BooleanField(_("is available?"))
     is_amazing = models.BooleanField(default=False, verbose_name=_("is amazing?"))
-    is_best_selling = models.BooleanField(default=False, verbose_name=_("is best selling?"))
 
     attribute_values: models.ManyToManyField[AttributeValue, ProductVariant] = models.ManyToManyField(
         "AttributeValue", verbose_name=_("attribute values"), limit_choices_to={"attribute__is_variant_defining": True}
@@ -156,15 +156,6 @@ class ProductVariant(models.Model):
     @property
     def final_price(self):
         return self.products.first().final_price
-
-    @property
-    def is_available(self) -> bool:
-        products = self.products.all()
-        product: Product
-        for product in products:
-            if product.is_available is True:
-                return True
-        return False
 
     def __str__(self):
         return self._full_name if self._full_name else f"Product {self.id}"
@@ -207,6 +198,15 @@ class ProductVariant(models.Model):
         return f"{base_name} {' '.join(final_parts)}".strip()
 
     def save(self, *args, **kwargs):
+        product_counter = self.products.count()
+        for product in self.products.all():
+            product_counter -= 1
+            if product.is_available is True:
+                self.is_available = True
+                break
+            if product_counter == 0:
+                if self.is_available is True:
+                    self.is_available = False
         # product variant should be saved once before create full name (full name needs attribute values)
         super().save(*args, **kwargs)
         new_full_name = self._generate_full_name()
@@ -289,7 +289,7 @@ class Product(models.Model):
 
     stock = models.PositiveIntegerField(default=0, verbose_name=_("stock"))
 
-    is_available = models.BooleanField(_("Is Available?"))
+    is_available = models.BooleanField(_("is available?"))
 
     def clean(self):
         if self.discount_type == "amount" and self.discount_value <= 100 and self.discount_value > 0:
@@ -326,6 +326,21 @@ class Product(models.Model):
 
         self.is_available = self.stock > 0
         super().save(*args, **kwargs)
+        if self.is_available is not self.product_variant.is_available:
+            product_counter = self.product_variant.products.count()
+            for product in self.product_variant.products.all():
+                product_counter -= 1
+                if product.is_available is True:
+                    self.product_variant.is_available = True
+                    self.product_variant.save()
+                    break
+                if product_counter == 0:
+                    if self.product_variant.is_available is True:
+                        self.product_variant.is_available = False
+                        self.product_variant.save()
+
+    def get_absolute_url(self):
+        return reverse("products:post_redirect", kwargs={"pk": self.product_variant.pk})
 
 
 class Attribute(models.Model):

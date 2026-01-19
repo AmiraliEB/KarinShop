@@ -468,7 +468,7 @@
                 <!-- Latest products Slider -->
                 <div class="swiper BestSelling mt-5 w-full">
                     <div class="swiper-wrapper py-5">
-                        {% for product in related_products %}
+                        {% for product_variant in related_products %}
                             <!-- PRODUCT ITEM -->
                             <div class="swiper-slide product-card group">
                                 <!-- product header -->
@@ -499,24 +499,24 @@
                                             <div class="tooltiptext">مقایسه</div>
                                         </div>
                                     </div>
-                                    {% if product.discount_percentage > 0 %}
+                                    {% if product_variant.discount_percentage > 0 %}
                                         <!-- badge offer -->
-                                        <span class="product-card_badge">{{ product.discount_percentage }}% تخفیف‌</span>
+                                        <span class="product-card_badge">{{ product_variant.discount_percentage }}% تخفیف‌</span>
                                     {% endif %}
                                 </div>
                                 <!-- product img -->
-                                <a href="{{ product.get_absolute_url }}"
+                                <a href="{{ product_variant.get_absolute_url }}"
                                    class="block w-full aspect-square relative bg-gray-50 dark:bg-gray-700/40 rounded-xl border border-gray-100 dark:border-gray-600 overflow-hidden mb-3 flex items-center justify-center p-4">
                                     <img class="product-card_img absolute inset-0 w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal p-4 rounded-xl transition-all duration-500 ease-in-out group-hover:scale-110 group-hover:opacity-0"
-                                         src="{{ product.parent_product.get_main_image }}"
-                                         alt="{{ product.full_name }}">
+                                         src="{{ product_variant.parent_product.get_main_image }}"
+                                         alt="{{ product_variant.full_name }}">
                                     <img class="product-card_img absolute inset-0 w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal p-4 rounded-xl transition-all duration-500 ease-in-out opacity-0 group-hover:scale-110 group-hover:opacity-100"
-                                         src="{{ product.parent_product.get_second_image }}"
-                                         alt="{{ product.full_name }}">
+                                         src="{{ product_variant.parent_product.get_second_image }}"
+                                         alt="{{ product_variant.full_name }}">
                                 </a>
                                 <!--  product footer -->
                                 <div class="space-y-2">
-                                    <a href="product_details.html" class="product-card_link">{{ product.full_name }}</a>
+                                    <a href="product_details.html" class="product-card_link">{{ product_variant.full_name }}</a>
                                     <!-- Rate and Price -->
                                     <div class="produDct-card_price-wrapper">
                                         <!-- RATE -->
@@ -536,14 +536,14 @@
                                         </div>
                                         <!-- Price -->
                                         <div class="product-card_price">
-                                            {% if product.has_discount %}
+                                            {% if product_variant.has_discount %}
                                                 <del>{{ product.initial_price|intcomma:False }}
                                                     <h6>تومان</h6>
                                                 </del>
-                                                <p>{{ product.final_price|intcomma:False }}</p>
+                                                <p>{{ product_variant.final_price|intcomma:False }}</p>
                                                 <span>تومان</span>
                                             {% else %}
-                                                <p>{{ product.final_price|intcomma:False }}</p>
+                                                <p>{{ product_variant.final_price|intcomma:False }}</p>
                                                 <span>تومان</span>
                                             {% endif %}
                                         </div>

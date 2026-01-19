@@ -41,7 +41,7 @@ class TestDemoGatewayView:
 class TestPaymentVerifyView:
     def test_verify_success(self, client, django_user_model):
         user = baker.make(django_user_model)
-        product = baker.make("products.Product", stock=5)
+        product = baker.make("products.ProductVariant", stock=5)
         order = baker.make(Order, user=user, order_number="ORDER-SUCCESS-TEST", is_paid=False)
         baker.make("orders.OrderItem", order=order, product=product, quantity=1, price=1000)
 
