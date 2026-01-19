@@ -1,7 +1,8 @@
-from django.db.models import Count, Q
+from django.db.models import Count, Prefetch
 from django.shortcuts import render
 from django.views import View, generic
-from products.models import ProductVariant
+from orders.models import OrderItem
+from products.models import Product, ProductVariant
 
 
 class HomePageView(View):
@@ -19,11 +20,20 @@ class HomePageView(View):
 
         latest_product_variants = ProductVariant.objects.filter(is_available=True).order_by("datetime_modified")[:6]
         context["latest_product_variants"] = latest_product_variants
-        context["best_selling_product_variants"] = (
-            ProductVariant.objects.select_related("parent_product")
-            .annotate(order_item_count=Count("orderitem", filter=Q(orderitem__order__is_paid=True)))
-            .order_by("-order_item_count")[:6]
-        )
+        context["best_selling_product_variants"] = None
+        # print(
+        #     ProductVariant.objects.select_related("parent_product")
+        #     .prefetch_related(
+        #         Prefetch(
+        #             "products",
+        #             queryset=Product.objects.prefetch_related(
+        #                 Prefetch("order_items", queryset=OrderItem.objects.filter(order__is_paid=True))
+        #             ).annotate(order_item_count=Count(("order_items"))),
+        #         )
+        #     )
+        #     .order_by("-products")
+        #     .distinct()[:6]
+        # )
         # hot_products = (
         #     ProductVariant.objects.prefetch_related()
         #     .annotate(count_cart_items=Count("cart_items"))

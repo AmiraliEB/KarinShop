@@ -4,6 +4,7 @@
 {% endblock page_title %}
 {% load static %}
 {% load jalali_tags %}
+{% load humanize %}
 {% block content %}
     <svg class="hidden">
         <symbol id="arrow-right" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -333,14 +334,18 @@
                     <!-- PRICE -->
                     <ul class="child:flex child:items-center child:justify-between space-y-8">
                         <li>
-                            <p>قیمت کالاها(۱)</p>
+                            <p>قیمت کالاها({{ global_cart|length }})</p>
                             <p class="flex gap-x-1 text-gray-600 dark:text-gray-300 ">
-                                ۱۲۵,۰۰۰,۰۰۰ <span class="hidden xl:flex">تومان</span>
+                                {{ global_cart.get_cart_total_price|intcomma:False }} <span class="hidden xl:flex">تومان</span>
                             </p>
+                        </li>
+                        <li class="text-red-500 dark:text-red-400">
+                            <p>تخفیف</p>
+                            <p class="font-DanaMedium ">-</p>
                         </li>
                         <li class="border-t-2 border-dashed border-gray-400 pt-8">
                             <p>مبلغ نهایی  :</p>
-                            <p>۱۱۹,۵۰۰,۰۰۰ تومان</p>
+                            <p>{{ global_cart.get_cart_total_price|intcomma:False }} تومان</p>
                         </li>
                     </ul>
                     <div class="mt-4">

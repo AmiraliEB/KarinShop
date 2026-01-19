@@ -10,11 +10,11 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
 from orders.models import Coupon, Order
-from products.models import Product, ProductVariant
 
 
 def demo_gateway_view(request: HttpRequest) -> HttpResponse:
     if request.method == "GET":
+        # TODO: add an already paid page too
         amount = 0
         ref_id = str(uuid.uuid4().int)[:10]
         order_number = request.GET.get("order_number")
