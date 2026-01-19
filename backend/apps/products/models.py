@@ -342,6 +342,9 @@ class Product(models.Model):
     def get_absolute_url(self):
         return reverse("products:post_redirect", kwargs={"pk": self.product_variant.pk})
 
+    def __str__(self):
+        return f"{self.product_variant.full_name} {self.color}"
+
 
 class Attribute(models.Model):
     name = models.CharField(max_length=255, verbose_name=_("attribute name"))
