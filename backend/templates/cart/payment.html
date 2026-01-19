@@ -349,7 +349,7 @@
                         <p>قیمت کالاها ({{ global_cart|length }})</p>
                         <p class="flex gap-x-1 text-gray-600 dark:text-gray-300"
                            id="total-price">
-                            {{ global_cart.get_total_price|intcomma:False }} <span class="hidden xl:flex">تومان</span>
+                            {{ global_cart.get_cart_total_price|intcomma:False }} <span class="hidden xl:flex">تومان</span>
                         </p>
                     </li>
                     <li class="text-red-500 dark:text-red-400" id="discount-amount">

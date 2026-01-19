@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import F, Sum
 from django.utils.translation import gettext_lazy as _
-from products.models import Product, ProductVariant
+from products.models import Product
 
 User = get_user_model()
 
@@ -13,7 +13,7 @@ class Cart(models.Model):
     datetime_created = models.DateTimeField(auto_now_add=True, verbose_name=_("creation date"))
     datetime_modified = models.DateTimeField(auto_now=True, verbose_name=_("last modified date"))
 
-    def get_total_price(self):
+    def get_cart_total_price(self):
         result = self.items.aggregate(total=Sum(F("quantity") * F("product__final_price")))
         return result["total"] or 0
 
@@ -30,10 +30,10 @@ class CartItem(models.Model):
     datetime_created = models.DateTimeField(auto_now_add=True, verbose_name=_("creation date"))
     datetime_modified = models.DateTimeField(auto_now=True, verbose_name=_("last modified date"))
 
-    # def __str__(self):
-    #     return f"{self.quantity} عدد از {self.product.parent_product.name} در سبد {self.cart.user.username}"
+    def __str__(self):
+        return f"{self.quantity} عدد از {self.product.product_variant.parent_product.name} در سبد {self.cart.user.username}"
 
-    def get_total_price(self):
+    def get_item_total_price(self):
         price = self.product.final_price
         return price * self.quantity
 
