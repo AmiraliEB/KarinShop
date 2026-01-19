@@ -9,8 +9,16 @@ from django.db.models import BooleanField, Case, F, QuerySet, Value, When
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
+
+<<<<<<< HEAD
 from orders.models import Coupon, Order, OrderItem
 from products.models import Product
+
+=======
+from orders.models import Coupon, Order
+from products.models import Product, ProductVariant
+
+>>>>>>> 667098c (fix: in payment replace name product to product_variant in both context name and template var)
 
 
 def demo_gateway_view(request: HttpRequest) -> HttpResponse:
