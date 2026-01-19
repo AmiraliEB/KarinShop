@@ -126,7 +126,7 @@ class PaymentView(LoginRequiredMixin, View):
         if not cart.items.first():
             messages.error(request, _("Your cart is empty."))
             return redirect("cart_detail")
-        total_price = cart.get_total_price()
+        total_price = cart.get_cart_total_price()
 
         coupon_id = request.session.get("coupon_id")
         coupon = None
@@ -172,7 +172,7 @@ class PaymentView(LoginRequiredMixin, View):
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         coupon = None
         user = request.user
-        total_price = Cart.objects.get(user=user).get_total_price()
+        total_price = Cart.objects.get(user=user).get_cart_total_price()
         address = Address.objects.filter(user=user).first()
         discount_amount = 0
         if not address:
@@ -183,7 +183,7 @@ class PaymentView(LoginRequiredMixin, View):
         if not cart:
             messages.error(request, _("Your cart is empty."))
             return redirect("cart_detail")
-        total_price = cart.get_total_price()
+        total_price = cart.get_cart_total_price()
 
         return render(
             request,
@@ -205,7 +205,7 @@ def remove_coupon(request):
         del request.session["coupon_id"]
 
     if request.htmx:
-        total_price = Cart.objects.get(user=request.user).get_total_price()
+        total_price = Cart.objects.get(user=request.user).get_cart_total_price()
         context = {"coupon_form": CouponApplyForm(), "coupon": None, "total_price": total_price}
         return render(request, "cart/partials/coupon_area.html", context=context)
     return redirect("payment")
@@ -215,7 +215,7 @@ def remove_coupon(request):
 def apply_coupon(request: HttpRequest) -> HttpResponse:
     if request.htmx:
         coupon_form = CouponApplyForm(request.POST)
-        total_price = Cart.objects.get(user=request.user).get_total_price()
+        total_price = Cart.objects.get(user=request.user).get_cart_total_price()
         if coupon_form.is_valid():
             coupon_code = coupon_form.cleaned_data["code"]
             try:

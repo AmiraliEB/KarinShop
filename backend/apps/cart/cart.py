@@ -1,6 +1,6 @@
 from typing import Any, Iterator
 
-from django.db.models import F, QuerySet
+from django.db.models import F, QuerySet, Sum
 from django.http import HttpRequest
 from products.models import Product, ProductVariant
 
@@ -23,24 +23,32 @@ class DBCartWrapper:
             return
 
         cart_items: QuerySet["CartItem"] = (
-            self.db_cart.items.select_related("product", "product__product_variant")
+            self.db_cart.items.select_related(
+                "product",
+                "product__product_variant",
+            )
             .prefetch_related("product__product_variant__attribute_values__attribute")
             .all()
         )
-
         for cart_item in cart_items:
             yield {
                 "product_obj": cart_item.product,
                 "quantity": cart_item.quantity,
-                "item_total_price": cart_item.get_total_price(),
+                "item_total_price": cart_item.get_item_total_price(),
                 "item_total_price_before_discount": cart_item.get_total_price_before_discount(),
-                "color": "undifined",
+                "color": cart_item.product.color,
             }
 
     def __len__(self) -> int:
         if self.db_cart is None:
             return 0
-        return self.db_cart.items.count()
+        total_quantity_query: dict[str, int] = self.db_cart.items.aggregate(total_quantity=Sum(F("quantity")))
+        total_quantity = total_quantity_query.get("total_quantity")
+        # type narrowing
+        if total_quantity is not None:
+            return total_quantity
+        else:
+            return 0
 
     def add(self, product: Product, quantity=1) -> dict[str, int]:
         cart_obj, created = DBCart.objects.get_or_create(user=self.request.user)
@@ -56,7 +64,7 @@ class DBCartWrapper:
                 cart_item_obj.save()
         add_return = {
             "quantity": cart_item_obj.quantity,
-            "new_item_total_price": cart_item_obj.get_total_price(),
+            "new_item_total_price": cart_item_obj.get_item_total_price(),
             "item_total_price_before_discount": cart_item_obj.get_total_price_before_discount(),
         }
         return add_return
@@ -85,7 +93,7 @@ class DBCartWrapper:
                 cart_item_obj.save()
             return {
                 "quantity": cart_item_obj.quantity,
-                "new_item_total_price": cart_item_obj.get_total_price(),
+                "new_item_total_price": cart_item_obj.get_item_total_price(),
                 "item_total_price_before_discount": cart_item_obj.get_total_price_before_discount(),
             }
 
@@ -103,10 +111,10 @@ class DBCartWrapper:
         if self.db_cart:
             self.db_cart.items.all().delete()
 
-    def get_total_price(self) -> int:
+    def get_cart_total_price(self) -> int:
         if self.db_cart is None:
             return 0
-        return self.db_cart.get_total_price()
+        return self.db_cart.get_cart_total_price()
 
     def is_available(self, product: Product) -> bool:
         cart_item_obj = CartItem.objects.filter(cart=self.db_cart, product=product).first()

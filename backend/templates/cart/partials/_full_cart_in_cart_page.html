@@ -63,7 +63,7 @@
                                         <div class="flex w-fit flex-col items-center gap-y-3 shrink-0">
                                             <a href="{{ cart_item.product_obj.get_absolute_url }}"
                                                class="block bg-gray-50 dark:bg-gray-700/40 p-3 rounded-xl border border-gray-100 dark:border-gray-600">
-                                                <img src="{{ cart_item.product_obj.parent_product.get_main_image }}"
+                                                <img src="{{ cart_item.product_obj.product_variant.parent_product.get_main_image }}"
                                                      class="w-32 md:w-36 h-auto object-contain mix-blend-multiply dark:mix-blend-normal"
                                                      alt="">
                                             </a>
@@ -119,7 +119,7 @@
                                             </div>
                                         </div>
                                         <div class="flex flex-col gap-y-4 w-full">
-                                            <h2 class="font-DanaMedium line-clamp-2 text-lg">{{ cart_item.product_obj.full_name }}</h2>
+                                            <h2 class="font-DanaMedium line-clamp-2 text-lg">{{ cart_item.product_obj.product_variant.full_name }}</h2>
                                             <ul class="space-y-3 child:text-sm text-gray-500 dark:text-gray-400 child:flex child:items-center child:gap-x-2">
                                                 <li>
                                                     <span class="size-4 bg-blue-500 rounded-full"
@@ -153,7 +153,7 @@
                                                     </span>
                                                 {% else %}
                                                     <span class="flex items-center gap-x-1 text-gray-800 dark:text-gray-100 font-DanaMedium mt-1">
-                                                        <p class="text-lg md:text-xl">{{ cart_item.product_obj.final_price|intcomma:False }}</p>
+                                                        <p class="text-lg md:text-xl">{{ cart_item.item_total_price|intcomma:False }}</p>
                                                         <p class="text-xs md:text-sm text-gray-500">تومان</p>
                                                     </span>
                                                 {% endif %}
@@ -255,7 +255,7 @@
                     <li>
                         <p>قیمت کالاها({{ global_cart|length }})</p>
                         <p class="flex gap-x-1 text-gray-600 dark:text-gray-300 ">
-                            {{ global_cart.get_total_price|intcomma:False }} <span class="hidden xl:flex">تومان</span>
+                            {{ global_cart.get_cart_total_price|intcomma:False }} <span class="hidden xl:flex">تومان</span>
                         </p>
                     </li>
                     <li>
@@ -264,7 +264,7 @@
                     </li>
                     <li class="border-t-2 border-dashed border-gray-400 pt-8">
                         <p>مبلغ نهایی  :</p>
-                        <p>{{ global_cart.get_total_price|intcomma:False }} تومان</p>
+                        <p>{{ global_cart.get_cart_total_price|intcomma:False }} تومان</p>
                     </li>
                 </ul>
                 <a href="{% url "checkout" %}"
