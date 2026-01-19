@@ -67,11 +67,11 @@ class CheckoutView(LoginRequiredMixin, View):
         coupon = Coupon.objects.filter(code__iexact="DEMO_MODE").first()
         request.session["coupon_id"] = coupon.id
         address = Address.objects.filter(user=request.user).first()
-
+        context = {"form": form, "time_to_leave_warehouse": time_to_leave_warehouse, "address": address}
         return render(
             request,
             "cart/checkout.html",
-            {"form": form, "time_to_leave_warehouse": time_to_leave_warehouse, "address": address},
+            context=context,
         )
 
     def post(self, request, *args, **kwargs):
