@@ -2,7 +2,7 @@ from django.db.models import Q, Sum
 from django.db.models.functions import Coalesce
 from django.shortcuts import render
 from django.views import View, generic
-from products.models import Product, ProductVariant
+from products.models import ProductVariant
 
 
 class HomePageView(View):
