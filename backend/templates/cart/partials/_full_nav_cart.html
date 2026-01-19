@@ -36,14 +36,14 @@
                     </a>
                     <a href="{{ cart_item.product_obj.get_absolute_url }}"
                        class="w-24 h-24 shrink-0 bg-gray-50 dark:bg-gray-700/40 rounded-xl p-2 border border-gray-200 dark:border-gray-600 flex items-center justify-center group-hover:border-blue-200 transition-colors">
-                        <img src="{{ cart_item.product_obj.parent_product.get_main_image }}"
+                        <img src="{{ cart_item.product_obj.product_variant.parent_product.get_main_image }}"
                              class="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal rounded-md"
                              alt="product">
                     </a>
                     <div class="flex flex-col justify-between w-full pl-6">
                         <a href="{{ cart_item.product_obj.get_absolute_url }}"
                            class="font-DanaMedium text-sm text-gray-800 dark:text-gray-200 line-clamp-2 leading-6 hover:text-blue-500 transition-colors">
-                            {{ cart_item.product_obj.full_name }}
+                            {{ cart_item.product_obj.product_variant.full_name }}
                         </a>
                         <div id="item-area-nav{{ cart_item.product_obj.id }}"
                              class="loading-wrapper flex flex-col gap-y-2 mt-1 relative transition-all">

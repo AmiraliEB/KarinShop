@@ -66,7 +66,7 @@ class ProductVariantAdmin(admin.ModelAdmin):
     list_display_links = ("parent_product",)
     list_filter = ("parent_product__category", "parent_product__brand")
     search_fields = ("parent_product__name", "id", "_full_name")
-    readonly_fields = ("_full_name", "datetime_created", "datetime_modified")
+    readonly_fields = ("_full_name", "datetime_created", "datetime_modified", "is_available")
     autocomplete_fields = ("parent_product",)
     filter_horizontal = ("attribute_values",)
     list_select_related = ("parent_product",)
