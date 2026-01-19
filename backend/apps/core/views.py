@@ -10,16 +10,16 @@ class HomePageView(View):
 
     def get(self, request, *args, **kwargs):
         context = {}
-        amazing_products = (
+        amazing_product_variants = (
             ProductVariant.objects.select_related("parent_product")
             .prefetch_related("products", "parent_product__images", "parent_product__comments")
             .filter(is_amazing=True, is_available=True)[:6]
         )
-        context["amazing_products"] = amazing_products
+        context["amazing_product_variants"] = amazing_product_variants
 
-        latest_products = ProductVariant.objects.filter(is_available=True).order_by("datetime_modified")[:6]
-        context["latest_products"] = latest_products
-        context["best_selling_products"] = (
+        latest_product_variants = ProductVariant.objects.filter(is_available=True).order_by("datetime_modified")[:6]
+        context["latest_product_variants"] = latest_product_variants
+        context["best_selling_product_variants"] = (
             ProductVariant.objects.select_related("parent_product")
             .annotate(order_item_count=Count("orderitem", filter=Q(orderitem__order__is_paid=True)))
             .order_by("-order_item_count")[:6]
@@ -34,8 +34,8 @@ class HomePageView(View):
         #     for product in hot_products:
         #         yield product
 
-        context["hot_products"] = None
-        context["hot_products_column"] = range(4)
+        context["hot_product_variants"] = None
+        context["hot_product_variants_column"] = range(4)
 
         return render(request, "core/index.html", context=context)
 
