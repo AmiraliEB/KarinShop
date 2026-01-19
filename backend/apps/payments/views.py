@@ -10,7 +10,7 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
 from orders.models import Coupon, Order
-from products.models import ProductVariant
+from products.models import Product, ProductVariant
 
 
 def demo_gateway_view(request: HttpRequest) -> HttpResponse:
@@ -50,13 +50,18 @@ def payment_verify_view(request: HttpRequest) -> HttpResponse:
         if not order_number:
             context["error"] = "شماره سفارش یافت نشد"
             return render(request, error_template, context)
+        if order_number is not None:
+            order = Order.objects.filter(order_number=order_number).first()
+            if order is not None and order.status == "failed":
+                context["error"] = "این سفارش قبلا ناموفق بوده است, مبلغ به حساب شما بازمی‌گردد"
+                return render(request, error_template, context)
 
         try:
             with transaction.atomic():
                 order = Order.objects.select_for_update().filter(order_number=order_number).first()
 
                 if order is None or order.is_paid:
-                    context["error"] = "این سفارش قبلاً پرداخت شده یا وجود ندارد."
+                    context["error"] = "این سفارش قبلاً پرداخت شده یا وجود ندارد, مبلغ به حساب شما بازمی‌گردد"
                     return render(request, error_template, context)
 
                 coupon_id = request.session.get("coupon_id")
@@ -70,8 +75,8 @@ def payment_verify_view(request: HttpRequest) -> HttpResponse:
 
                 items = order.items.select_related("product").all()
                 for item in items:
-                    product: ProductVariant = item.product
-                    ProductVariant.objects.filter(id=product.id).update(
+                    product: Product = item.product
+                    Product.objects.filter(id=product.id).update(
                         stock=F("stock") - 1,
                         is_available=Case(
                             When(stock__gt=item.quantity, then=Value(True)),
@@ -92,6 +97,11 @@ def payment_verify_view(request: HttpRequest) -> HttpResponse:
         except Exception as e:
             print(f"Payment Error: {e}")
             context["error"] = "خطایی در ثبت نهایی سفارش رخ داد. مبلغ به حساب شما بازمی‌گردد."
+            order = Order.objects.filter(order_number=order_number).first()
+            if order is not None and order.status != "failed":
+                order.is_paid = True
+                order.status = "failed"
+                order.save()
             return render(request, error_template, context)
 
     elif "failure" in request.POST:

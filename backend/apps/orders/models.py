@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
-from products.models import ProductVariant
+from products.models import Product, ProductVariant
 
 User = get_user_model()
 
@@ -17,6 +17,7 @@ class Order(models.Model):
         ("c", _("Confirmed")),
         ("s", _("Sent")),
         ("f", _("Finished")),
+        ("failed", _("Failed")),
     )
 
     SHIPPING_CHOICES = (
@@ -29,7 +30,7 @@ class Order(models.Model):
     order_number = models.CharField(max_length=20, unique=True)
 
     is_paid = models.BooleanField(default=False, verbose_name=_("Is Paid?"))
-    status = models.CharField(max_length=1, choices=STATUS_CHOICES, default="p", verbose_name=_("Status"))
+    status = models.CharField(max_length=6, choices=STATUS_CHOICES, default="p", verbose_name=_("Status"))
 
     province = models.CharField(verbose_name=_("province"), max_length=50)
     city = models.CharField(verbose_name=_("city"), max_length=50)
@@ -74,25 +75,25 @@ class Order(models.Model):
         if cart is None:
             return
         cart_items: QuerySet[CartItem] = cart.items.all()
-        for item in cart_items:
-            product: ProductVariant = item.product
+        for cart_item in cart_items:
+            product: Product = cart_item.product
             if product.final_price is not None:
                 OrderItem.objects.create(
                     order=self,
                     product=product,
-                    quantity=item.quantity,
+                    quantity=cart_item.quantity,
                     price=product.final_price,
                 )
 
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name="items", on_delete=models.CASCADE)
-    product = models.ForeignKey(ProductVariant, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
     price = models.DecimalField(max_digits=11, decimal_places=0, verbose_name=_("price (Toman)"))
 
-    # def __str__(self):
-    #     return f"{self.quantity} x {self.product.full_name} in Order {self.order.order_number}"
+    def __str__(self):
+        return f"{self.quantity} x {self.product} در سفارش {self.order.order_number}"
 
     def get_cost(self):
         return self.price * self.quantity

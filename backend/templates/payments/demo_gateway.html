@@ -1,3 +1,4 @@
+{% load humanize %}
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
     <head>
@@ -23,7 +24,7 @@
                     <strong>شماره سفارش:</strong> {{ order_number }}
                 </p>
                 <p>
-                    <strong>مبلغ:</strong> {{ amount }} تومان
+                    <strong>مبلغ:</strong> {{ amount|intcomma:False }} تومان
                 </p>
                 <p>
                     <strong>شماره ارجاع:</strong> {{ ref_id }}
