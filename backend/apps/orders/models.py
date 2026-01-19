@@ -6,7 +6,11 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
+<<<<<<< HEAD
 from products.models import Product
+=======
+from products.models import Product, ProductVariant
+>>>>>>> 667098c (fix: in payment replace name product to product_variant in both context name and template var)
 
 User = get_user_model()
 
@@ -88,12 +92,16 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name="items", on_delete=models.CASCADE)
+<<<<<<< HEAD
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="order_items")
+=======
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+>>>>>>> 667098c (fix: in payment replace name product to product_variant in both context name and template var)
     quantity = models.PositiveIntegerField()
     price = models.DecimalField(max_digits=11, decimal_places=0, verbose_name=_("price (Toman)"))
 
-    # def __str__(self):
-    #     return f"{self.quantity} x {self.product.full_name} in Order {self.order.order_number}"
+    def __str__(self):
+        return f"{self.quantity} x {self.product} در سفارش {self.order.order_number}"
 
     def get_cost(self):
         return self.price * self.quantity
