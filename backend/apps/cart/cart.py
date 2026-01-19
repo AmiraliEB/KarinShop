@@ -23,7 +23,10 @@ class DBCartWrapper:
             return
 
         cart_items: QuerySet["CartItem"] = (
-            self.db_cart.items.select_related("product", "product__product_variant")
+            self.db_cart.items.select_related(
+                "product",
+                "product__product_variant",
+            )
             .prefetch_related("product__product_variant__attribute_values__attribute")
             .all()
         )
@@ -33,7 +36,7 @@ class DBCartWrapper:
                 "quantity": cart_item.quantity,
                 "item_total_price": cart_item.get_item_total_price(),
                 "item_total_price_before_discount": cart_item.get_total_price_before_discount(),
-                "color": "undifined",
+                "color": cart_item.product.color,
             }
 
     def __len__(self) -> int:
