@@ -219,15 +219,6 @@ class ProductVariant(models.Model):
     def final_price(self):
         return self.products.first().final_price
 
-    @property
-    def is_available(self) -> bool:
-        products = self.products.all()
-        product: Product
-        for product in products:
-            if product.is_available is True:
-                return True
-        return False
-
     def __str__(self):
         return self._full_name if self._full_name else f"Product {self.id}"
 
