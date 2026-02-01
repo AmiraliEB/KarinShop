@@ -16,6 +16,7 @@ from products.models import Product
 
 =======
 from orders.models import Coupon, Order
+from products.models import Product
 
 >>>>>>> 667098c (fix: in payment replace name product to product_variant in both context name and template var)
 
