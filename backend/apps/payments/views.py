@@ -10,6 +10,7 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
 from orders.models import Coupon, Order
+from products.models import Product
 
 
 def demo_gateway_view(request: HttpRequest) -> HttpResponse:
