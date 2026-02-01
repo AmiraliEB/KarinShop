@@ -47,7 +47,7 @@
                         </style>
                         <div class="w-full flex flex-col gap-y-4 child:p-2 lg:child:p-4">
                             {% for cart_item in global_cart %}
-                                <div class="w-full flex justify-between relative {% if not forloop.last %}border-b-2 border-gray-200 dark:border-white/20 pb-6 mb-6{% endif %}">
+                                <div class="w-full flex justify-between relative {% if not forloop.last or not forloop.first %}border-b-2 border-gray-200 dark:border-white/20 pb-6 mb-6{% endif %}">
                                     <div id="delete-overlay-main-{{ cart_item.product_obj.id }}"
                                          class="delete-overlay absolute inset-0 z-20 hidden items-center justify-center bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-xl transition-all duration-200">
                                         <svg class="animate-spin h-8 w-8 text-red-500"

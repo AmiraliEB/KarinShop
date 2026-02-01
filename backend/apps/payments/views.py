@@ -5,11 +5,12 @@ from typing import Any
 from cart.cart import get_cart
 from django.core.exceptions import BadRequest
 from django.db import transaction
-from django.db.models import BooleanField, Case, F, Value, When
+from django.db.models import BooleanField, Case, F, Value, When, QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
-from orders.models import Coupon, Order
+from cart.models import Cart, CartItem
+from orders.models import Coupon, Order, OrderItem
 from products.models import Product
 
 
@@ -74,11 +75,15 @@ def payment_verify_view(request: HttpRequest) -> HttpResponse:
                             coupon.save(update_fields=["used_count"])
                         del request.session["coupon_id"]
 
-                items = order.items.select_related("product").all()
-                for item in items:
-                    product: Product = item.product
+                order_items:QuerySet[OrderItem] = order.items.select_related("product").all()
+                
+                for order_item in order_items:
+                    product: Product = order_item.product
+                    cart = Cart.objects.filter(user=request.user).first()
+                    order_item = CartItem.objects.filter(cart=cart, product=product).first()
+
                     Product.objects.filter(id=product.id).update(
-                        stock=F("stock") - 1,
+                        stock=F("stock") - ,
                         is_available=Case(
                             When(stock__gt=item.quantity, then=Value(True)),
                             default=Value(False),
@@ -88,7 +93,7 @@ def payment_verify_view(request: HttpRequest) -> HttpResponse:
 
                 order.is_paid = True
                 order.status = "c"
-                order.save(update_fields=["is_paid", "status"])
+                order.save()
 
                 cart = get_cart(request)
                 cart.clear()
