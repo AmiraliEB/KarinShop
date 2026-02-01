@@ -12,7 +12,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_POST
 from django.views.generic import View
 from orders.models import Coupon, Order
-from products.models import Product, ProductVariant
+from products.models import Product
 
 from .cart import get_cart
 from .forms import CartAddAddressFrom, CouponApplyForm
