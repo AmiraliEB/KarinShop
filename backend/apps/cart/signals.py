@@ -1,6 +1,6 @@
 from django.contrib.auth.signals import user_logged_in
 from django.dispatch import receiver
-from products.models import ProductVariant
+from products.models import Product, ProductVariant
 
 from .models import Cart, CartItem
 
@@ -18,7 +18,7 @@ def merge_session_cart_to_db_cart(sender, request, user, **kwargs):
             product_id = int(product_id_str)
             session_quantity = session_item_data.get("quantity", 1)
             try:
-                product = ProductVariant.objects.get(id=product_id)
+                product = Product.objects.get(id=product_id)
                 db_item, item_created = CartItem.objects.get_or_create(cart=db_cart, product=product)
                 if item_created:
                     db_item.quantity = session_quantity
@@ -30,7 +30,7 @@ def merge_session_cart_to_db_cart(sender, request, user, **kwargs):
 
                 db_item.save()
 
-            except ProductVariant.DoesNotExist:
+            except Product.DoesNotExist:
                 continue
         del request.session["cart"]
         request.session.modified = True

@@ -2,7 +2,7 @@ from typing import Any, Iterator
 
 from django.db.models import F, QuerySet, Sum
 from django.http import HttpRequest
-from products.models import Product, ProductVariant
+from products.models import Product
 
 from .models import Cart as DBCart
 from .models import CartItem
@@ -144,11 +144,10 @@ class Cart:
 
     def __iter__(self) -> Iterator[dict[str, Any]]:
         product_ids = self.cart.keys()
-        products: QuerySet[ProductVariant] = (
-            ProductVariant.objects.filter(id__in=product_ids)
-            .select_related("parent_product")
-            .prefetch_related("parent_product__images")
-            .prefetch_related("attribute_values__attribute")
+        products: QuerySet[Product] = (
+            Product.objects.filter(id__in=product_ids)
+            .select_related("product_variant__parent_product", "product_variant")
+            .prefetch_related("product_variant__parent_product__images", "product_variant__attribute_values__attribute")
         )
         # this is necessary for prevent session serialize failure
         cart = self.cart.copy()
@@ -166,7 +165,7 @@ class Cart:
             item["item_total_price"] = item["product_obj"].final_price * qty
             item["item_total_price_before_discount"] = item["product_obj"].initial_price * qty
 
-            item["color"] = "undifined"
+            item["color"] = item["product_obj"].color
 
             yield item
 
@@ -177,7 +176,7 @@ class Cart:
             cart_count += item.get("quantity", 0)
         return cart_count
 
-    def add(self, product: ProductVariant, quantity=1) -> dict[str, int]:
+    def add(self, product: Product, quantity=1) -> dict[str, int]:
         product_id = str(product.id)
 
         if product_id not in self.cart:
@@ -197,7 +196,7 @@ class Cart:
         }
         return add_return
 
-    def decrement(self, product: ProductVariant, remove=False) -> dict[str, int]:
+    def decrement(self, product: Product, remove=False) -> dict[str, int]:
         product_id = str(product.id)
 
         if product_id in self.cart:
@@ -224,7 +223,7 @@ class Cart:
 
         return add_return
 
-    def remove(self, product: ProductVariant) -> None:
+    def remove(self, product: Product) -> None:
         product_id = str(product.id)
         if product_id in self.cart:
             del self.cart[product_id]
@@ -236,7 +235,7 @@ class Cart:
 
     def get_cart_total_price(self) -> int:
         product_ids = self.cart.keys()
-        products = ProductVariant.objects.filter(id__in=product_ids)
+        products = Product.objects.filter(id__in=product_ids)
 
         return sum(product.final_price * self.cart[str(product.id)]["quantity"] for product in products)
 
