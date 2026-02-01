@@ -1,6 +1,6 @@
 from django.contrib.auth.signals import user_logged_in
 from django.dispatch import receiver
-from products.models import Product, ProductVariant
+from products.models import Product
 
 from .models import Cart, CartItem
 
