@@ -1,8 +1,6 @@
-from django.db.models import Count, Prefetch
 from django.shortcuts import render
 from django.views import View, generic
-from orders.models import OrderItem
-from products.models import Product, ProductVariant
+from products.models import ProductVariant
 
 
 class HomePageView(View):
