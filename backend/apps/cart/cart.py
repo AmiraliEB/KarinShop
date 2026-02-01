@@ -2,7 +2,7 @@ from typing import Any, Iterator
 
 from django.db.models import F, QuerySet, Sum
 from django.http import HttpRequest
-from products.models import Product, ProductVariant
+from products.models import Product
 
 from .models import Cart as DBCart
 from .models import CartItem
@@ -176,7 +176,7 @@ class Cart:
             cart_count += item.get("quantity", 0)
         return cart_count
 
-    def add(self, product: ProductVariant, quantity=1) -> dict[str, int]:
+    def add(self, product: Product, quantity=1) -> dict[str, int]:
         product_id = str(product.id)
 
         if product_id not in self.cart:
@@ -196,7 +196,7 @@ class Cart:
         }
         return add_return
 
-    def decrement(self, product: ProductVariant, remove=False) -> dict[str, int]:
+    def decrement(self, product: Product, remove=False) -> dict[str, int]:
         product_id = str(product.id)
 
         if product_id in self.cart:
@@ -223,7 +223,7 @@ class Cart:
 
         return add_return
 
-    def remove(self, product: ProductVariant) -> None:
+    def remove(self, product: Product) -> None:
         product_id = str(product.id)
         if product_id in self.cart:
             del self.cart[product_id]
@@ -235,7 +235,7 @@ class Cart:
 
     def get_cart_total_price(self) -> int:
         product_ids = self.cart.keys()
-        products = ProductVariant.objects.filter(id__in=product_ids)
+        products = Product.objects.filter(id__in=product_ids)
 
         return sum(product.final_price * self.cart[str(product.id)]["quantity"] for product in products)
 
