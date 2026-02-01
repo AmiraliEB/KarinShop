@@ -27,6 +27,7 @@ def refresh_shortcut():
 
 class CartView(View):
     def get(self, request, *args, **kwargs):
+
         cart = get_cart(request)
         product_obj = []
 
@@ -258,7 +259,11 @@ def clear_items_form_cart(request):
 def update_cart_item(request, action, pk):
     cart = get_cart(request)
     product_obj = get_object_or_404(Product, pk=pk)
-
+    count = 0
+    for cart_item in cart:
+        count += 1
+        print(cart_item)
+        print(count)
     if action == "add":
         action_return = cart.add(product_obj)
     elif action == "remove":

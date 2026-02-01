@@ -54,13 +54,13 @@ def test_cart_total_price_calculation(request_with_session, product_factory):
 
     cart.add(p1, quantity=2)
     assert len(cart) == 1
-    assert cart.get_total_price() == 200000
+    assert cart.get_cart_total_price() == 200000
     cart.add(p2, quantity=1)
     assert len(cart) == 2
-    assert cart.get_total_price() == 400000
+    assert cart.get_cart_total_price() == 400000
     cart.add(p3, quantity=3)
     assert len(cart) == 3
-    assert cart.get_total_price() == 850000
+    assert cart.get_cart_total_price() == 850000
 
 
 @pytest.mark.django_db
