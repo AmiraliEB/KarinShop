@@ -62,3 +62,5 @@ src/
 
 frontend/
 pyproject.toml
+
+*.orig

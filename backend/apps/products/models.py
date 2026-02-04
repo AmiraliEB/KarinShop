@@ -73,7 +73,7 @@ class ProductParent(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        products = self.products.all()
+        products = self.product_variants.all()
         for product in products:
             new_full_name = product._generate_full_name()
             if product._full_name != new_full_name:
@@ -140,8 +140,8 @@ class ProductVariant(models.Model):
     datetime_modified = models.DateTimeField(auto_now=True, verbose_name=_("last modified date"))
 
     class Meta:
-        verbose_name = _("product")
-        verbose_name_plural = _("products")
+        verbose_name = _("product variant")
+        verbose_name_plural = _("product variants")
 
     def has_discount(self):
         return self.products.first().has_discount()
@@ -198,15 +198,18 @@ class ProductVariant(models.Model):
         return f"{base_name} {' '.join(final_parts)}".strip()
 
     def save(self, *args, **kwargs):
-        product_counter = self.products.count()
-        for product in self.products.all():
-            product_counter -= 1
-            if product.is_available is True:
-                self.is_available = True
-                break
-            if product_counter == 0:
-                if self.is_available is True:
-                    self.is_available = False
+        if self.pk:
+            product_counter = self.products.count()
+            for product in self.products.all():
+                product_counter -= 1
+                if product.is_available is True:
+                    self.is_available = True
+                    break
+                if product_counter == 0:
+                    if self.is_available is True:
+                        self.is_available = False
+        elif self.is_available is None:
+            self.is_available = False
         # product variant should be saved once before create full name (full name needs attribute values)
         super().save(*args, **kwargs)
         new_full_name = self._generate_full_name()
