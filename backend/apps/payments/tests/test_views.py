@@ -55,6 +55,8 @@ class TestPaymentVerifyView:
         response = client.post(url, data)
 
         assert response.status_code == 200
+        for t in response.templates:
+            print(t.name)
         assert "payments/successful-payment.html" in [t.name for t in response.templates]
 
         order.refresh_from_db()
