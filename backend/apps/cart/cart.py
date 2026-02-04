@@ -171,8 +171,9 @@ class Cart:
 
     def __len__(self) -> int:
         cart_count = 0
+        item: dict[str, Any]
         for item in self.cart.values():
-            cart_count += item["quantity"]
+            cart_count += item.get("quantity", 0)
         return cart_count
 
     def add(self, product: Product, quantity=1) -> dict[str, int]:
@@ -181,7 +182,7 @@ class Cart:
         if product_id not in self.cart:
             self.cart[product_id] = {"quantity": quantity}
         else:
-            if not self.cart[product_id]["quantity"] + quantity > product.stock:
+            if self.cart[product_id]["quantity"] + quantity < product.stock:
                 self.cart[product_id]["quantity"] += quantity
             else:
                 self.cart[product_id]["quantity"] = product.stock

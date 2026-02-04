@@ -262,8 +262,6 @@ def update_cart_item(request, action, pk):
     count = 0
     for cart_item in cart:
         count += 1
-        print(cart_item)
-        print(count)
     if action == "add":
         action_return = cart.add(product_obj)
     elif action == "remove":
