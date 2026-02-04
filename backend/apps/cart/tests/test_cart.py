@@ -4,68 +4,68 @@ from cart.models import Cart as DBCart
 from cart.models import CartItem
 from django.contrib.auth import get_user_model
 from model_bakery import baker
-from products.models import ProductVariant
+from products.models import Product
 
 User = get_user_model()
 
 
 @pytest.mark.django_db
-def test_cart_add_new_product(request_with_session, product_factory):
-    product = product_factory(initial_price=100000)
+def test_cart_add_new_product(request_with_session):
+    product = baker.make(Product, stock=10)
     cart = Cart(request_with_session)
 
     cart.add(product=product, quantity=2)
 
-    assert len(cart) == 1
+    assert len(cart) == 2
     assert cart.get_item_quantity(product=product) == 2
 
 
 @pytest.mark.django_db
-def test_cart_add_existing_product_increases_quantity(request_with_session, product_factory):
-    product = product_factory(initial_price=200000)
+def test_cart_add_existing_product_increases_quantity(request_with_session):
+    product = baker.make(Product, stock=10)
     cart = Cart(request_with_session)
 
     cart.add(product=product)
     cart.add(product=product, quantity=3)
 
-    assert len(cart) == 1
+    assert len(cart) == 4
     assert cart.get_item_quantity(product=product) == 4
 
 
 @pytest.mark.django_db
-def test_cart_remove_product(request_with_session, product_factory):
-    product = product_factory(initial_price=100000)
+def test_cart_remove_product(request_with_session):
+    product = baker.make(Product, stock=10)
     cart = Cart(request_with_session)
 
     cart.add(product, quantity=3)
-    assert len(cart) == 1
+    assert len(cart) == 3
 
     cart.remove(product)
     assert len(cart) == 0
 
 
 @pytest.mark.django_db
-def test_cart_total_price_calculation(request_with_session, product_factory):
-    p1 = product_factory(initial_price=100000)
-    p2 = product_factory(initial_price=200000)
-    p3 = product_factory(initial_price=150000)
+def test_cart_total_price_calculation(request_with_session):
+    p1 = baker.make(Product, initial_price=100000, stock=10)
+    p2 = baker.make(Product, initial_price=200000, stock=10)
+    p3 = baker.make(Product, initial_price=150000, stock=10)
 
     cart = Cart(request_with_session)
 
     cart.add(p1, quantity=2)
-    assert len(cart) == 1
+    assert len(cart) == 2
     assert cart.get_cart_total_price() == 200000
     cart.add(p2, quantity=1)
-    assert len(cart) == 2
+    assert len(cart) == 3
     assert cart.get_cart_total_price() == 400000
     cart.add(p3, quantity=3)
-    assert len(cart) == 3
+    assert len(cart) == 6
     assert cart.get_cart_total_price() == 850000
 
 
 @pytest.mark.django_db
-def test_cart_iterator_contains_product_info(request_with_session, product_factory):
-    product = product_factory(initial_price=1000)
+def test_cart_iterator_contains_product_info(request_with_session):
+    product = baker.make(Product, initial_price=1000, stock=10)
     cart = Cart(request_with_session)
     cart.add(product, quantity=3)
 
@@ -80,7 +80,7 @@ def test_cart_iterator_contains_product_info(request_with_session, product_facto
 @pytest.mark.django_db
 def test_db_cart_wrapper_add_limited_by_stock(client, rf):
     request = rf.get("/")
-    product = baker.make(ProductVariant, stock=5)
+    product = baker.make(Product, stock=5)
     user = baker.make(User)
     request.user = user
     client.force_login(user)
@@ -97,7 +97,7 @@ def test_db_cart_wrapper_add_limited_by_stock(client, rf):
 @pytest.mark.django_db
 def test_db_cart_wrapper_decrement_limited_by_stock(client, rf):
     request = rf.get("/")
-    product = baker.make(ProductVariant, stock=5)
+    product = baker.make(Product, stock=5)
     user = baker.make(User)
     request.user = user
     client.force_login(user)
@@ -110,7 +110,7 @@ def test_db_cart_wrapper_decrement_limited_by_stock(client, rf):
 
 @pytest.mark.django_db
 def test_cart_add_limited_by_stock_session(request_with_session):
-    product = baker.make(ProductVariant, stock=4)
+    product = baker.make(Product, stock=4)
     cart = Cart(request_with_session)
     cart.add(product, quantity=3)
     assert cart.get_item_quantity(product) == 3
@@ -120,7 +120,7 @@ def test_cart_add_limited_by_stock_session(request_with_session):
 
 @pytest.mark.django_db
 def test_cart_decrement_limited_by_stock_session(request_with_session):
-    product = baker.make(ProductVariant, stock=6)
+    product = baker.make(Product, stock=6)
     cart = Cart(request_with_session)
     cart.add(product=product, quantity=5)
     cart.decrement(product)
