@@ -79,8 +79,6 @@ def payment_verify_view(request: HttpRequest) -> HttpResponse:
 
                 for order_item in order_items:
                     product: Product = order_item.product
-                    cart = Cart.objects.filter(user=request.user).first()
-                    order_item = CartItem.objects.filter(cart=cart, product=product).first()
                     if product.stock < order_item.quantity:
                         transaction.set_rollback(True)
                         context["error"] = f"محصول {product} به اندازه کافی در انبار موجود نیست."
