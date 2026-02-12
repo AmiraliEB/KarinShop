@@ -1,16 +1,23 @@
 import pytest
 from django.conf import settings
 from django.urls import reverse
+from model_bakery import baker
 
 
 @pytest.mark.django_db
-def test_product_detail_view_loads(client, product_factory):
-    product = product_factory()
-    url = reverse("products:product_detail", kwargs={"pk": product.pk, "slug": "test-slug"})
+def test_product_detail_view_loads(client):
+    product_variant = baker.make("products.ProductVariant")
+    # this is for reverse relation to work in template and avoid N+1 query
+    baker.make("products.Product", product_variant=product_variant)
+
+    url = reverse("products:product_detail", kwargs={"pk": product_variant.pk, "slug": "test-slug"})
     response = client.get(url)
     assert response.status_code == 200
 
-    assert response.context["product"] == product
+    first_product = product_variant.products.first()
+    assert response.context["first_product"] == first_product
+    assert response.context["product_counts"] == product_variant.products.count()
+
     assert "products/product_details.html" in [t.name for t in response.templates]
 
 
@@ -19,9 +26,9 @@ def get_valid_comment_data():
 
 
 @pytest.mark.django_db
-def test_anonymous_user_cannot_comment(client, product_factory):
-    product = product_factory()
-    url = reverse("products:product_detail", kwargs={"pk": product.id, "slug": "test-slug"})
+def test_anonymous_user_cannot_comment(client):
+    product_variant = baker.make("products.ProductVariant")
+    url = reverse("products:product_detail", kwargs={"pk": product_variant.id, "slug": "test-slug"})
     data = get_valid_comment_data()
 
     response = client.post(url, data)
@@ -40,9 +47,11 @@ def test_anonymous_user_cannot_comment(client, product_factory):
         ({"rating": 6}, 200),
     ],
 )
-def test_add_comment(client, product_factory, user_factory, override_data, expected_status):
-    product = product_factory()
-    url = reverse("products:product_detail", kwargs={"pk": product.id, "slug": "test-slug"})
+def test_add_comment(client, user_factory, override_data, expected_status):
+    product_parent = baker.make("products.ProductParent")
+    product_variant = baker.make("products.ProductVariant", parent_product=product_parent)
+    baker.make("products.Product", product_variant=product_variant)
+    url = reverse("products:product_detail", kwargs={"pk": product_variant.id, "slug": "test-slug"})
     data = get_valid_comment_data()
     data.update(override_data)
 
@@ -54,7 +63,7 @@ def test_add_comment(client, product_factory, user_factory, override_data, expec
 
     from products.models import Comments
 
-    comment = Comments.objects.filter(parent_product=product.parent_product, user=user).first()
+    comment = Comments.objects.filter(parent_product=product_parent, user=user).first()
     if expected_status == 302:
         assert comment is not None
         assert comment.title == data["title"]
@@ -75,9 +84,10 @@ def test_add_comment(client, product_factory, user_factory, override_data, expec
         (-1, 200),
     ],
 )
-def test_add_cart(client, product_factory, quantity, expected_status):
-    product = product_factory()
-    url = reverse("products:product_detail", kwargs={"pk": product.id, "slug": "test-slug"})
+def test_add_cart(client, quantity, expected_status):
+    product_variant = baker.make("products.ProductVariant")
+    baker.make("products.Product", product_variant=product_variant)
+    url = reverse("products:product_detail", kwargs={"pk": product_variant.id, "slug": "test-slug"})
     data = {
         "cart_submit": "",
         "quantity": quantity,
@@ -88,7 +98,7 @@ def test_add_cart(client, product_factory, quantity, expected_status):
     if expected_status == 302:
         session = client.session
         cart = session.get("cart", {})
-        product_id = str(product.id)
+        product_id = str(product_variant.id)
 
         assert product_id in cart
         assert cart[product_id]["quantity"] == data["quantity"]
@@ -99,5 +109,5 @@ def test_add_cart(client, product_factory, quantity, expected_status):
 
         session = client.session
         cart = session.get("cart", {})
-        product_id = str(product.id)
+        product_id = str(product_variant.id)
         assert product_id not in cart
