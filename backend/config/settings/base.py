@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     # third party apps
     "jalali_date",
     "django_htmx",
+    "django_filters",
     # allauth
     "allauth",
     "allauth.account",
