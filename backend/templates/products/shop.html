@@ -1,5 +1,6 @@
 {% extends "_base.html" %}
 {% load static %}
+{% load humanize %}
 {% block page_title %}
     فروشگاه | {{ block.super }}
 {% endblock page_title %}
@@ -662,6 +663,7 @@
                 <!-- PRODUCTS -->
                 <div class="grid grid-cols-1 xxs:grid-cols-2 xs:grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-3 xs:gap-2 sm:gap-4">
                     <!-- PRODUCT ITEM -->
+                    {% for temps in temp %}<p>{{ temps.order_number }}</p>{% endfor %}
                     {% for product in products_by_page %}
                         <div class=" product-card group">
                             <!-- product header -->
@@ -726,11 +728,16 @@
                                     </div>
                                     <!-- Price -->
                                     <div class="product-card_price">
-                                        <del>70,000,000
-                                            <h6>تومان</h6>
-                                        </del>
-                                        <p>70,000,000</p>
-                                        <span>تومان</span>
+                                        {% if product.has_discount %}
+                                            <del>{{ product.initial_price|intcomma:False }}
+                                                <h6>تومان</h6>
+                                            </del>
+                                            <p>{{ product.final_price|intcomma:False }}</p>
+                                            <span>تومان</span>
+                                        {% else %}
+                                            <p>{{ product.final_price|intcomma:False }}</p>
+                                            <span>تومان</span>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
