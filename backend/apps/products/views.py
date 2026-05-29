@@ -8,8 +8,10 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.text import slugify
 from django.views.generic import DetailView, View
+from orders.models import Order
 from products.models import AttributeValue, Comments, Product, ProductParent, ProductVariant
 
+from .filters import ProductFilter
 from .forms import CommentForm
 
 
@@ -154,13 +156,20 @@ class ProductDetailView(DetailView):
 class ShopView(View):
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         context = {}
-        products = ProductVariant.objects.select_related("parent_product").all()
+
+        order = Order.objects.filter(is_paid=True)
+
+        products_qs = ProductVariant.objects.select_related("parent_product").all()
+        product_filter = ProductFilter(request.GET, queryset=products_qs)
+        products = product_filter.qs
         paginator = Paginator(products, 6)
         page_number = self.request.GET.get("page")
         products_filter_by_page_number = paginator.get_page(page_number)
         context["products_by_page"] = products_filter_by_page_number
         product_counter = ProductVariant.objects.aggregate(count_all_products=Count("id"))
         context["count_all_products"] = product_counter.get("count_all_products")
+
+        context["temp"] = order
         return render(request, template_name="products/shop.html", context=context)
 
 
