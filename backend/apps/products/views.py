@@ -3,7 +3,8 @@ from cart.forms import CartAddProductForm
 from django.conf import settings
 from django.contrib import messages
 from django.core.paginator import Paginator
-from django.db.models import Count, Prefetch
+from django.db.models import Count, Prefetch, Q, Sum
+from django.db.models.functions import Coalesce
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.text import slugify
@@ -160,6 +161,11 @@ class ShopView(View):
         order = Order.objects.filter(is_paid=True)
 
         products_qs = ProductVariant.objects.select_related("parent_product").all()
+        products_qs = products_qs.annotate(
+            paid_items_count=Coalesce(
+                Sum("products__order_items__quantity", filter=Q(products__order_items__order__is_paid=True)), 0
+            )
+        )
         product_filter = ProductFilter(request.GET, queryset=products_qs)
         products = product_filter.qs
         paginator = Paginator(products, 6)
@@ -168,6 +174,10 @@ class ShopView(View):
         context["products_by_page"] = products_filter_by_page_number
         product_counter = ProductVariant.objects.aggregate(count_all_products=Count("id"))
         context["count_all_products"] = product_counter.get("count_all_products")
+
+        # for product in products_filter_by_page_number:
+        #     order_item_qs = OrderItem.objects.filter(product=product)
+        #     paied_order_items = order_item_qs.filter(order__is_paid=True).select_related("Order")
 
         context["temp"] = order
         return render(request, template_name="products/shop.html", context=context)
