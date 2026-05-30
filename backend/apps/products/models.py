@@ -150,11 +150,25 @@ class ProductVariant(models.Model):
         verbose_name = _("product variant")
         verbose_name_plural = _("product variants")
 
+    def min_price_product(self):
+        available_products = [product for product in self.products.all() if product.is_available]
+        if not available_products:
+            return False
+        return min(available_products, key=lambda p: p.final_price)
+
     def has_discount(self):
-        return self.products.first().has_discount()
+        product = self.min_price_product()
+        if product:
+            return product.has_discount()
+        else:
+            return False
 
     def discount_percentage(self):
-        return self.products.first().discount_percentage()
+        product = self.min_price_product()
+        if product:
+            return product.discount_percentage()
+        else:
+            return 0
 
     @property
     def initial_price(self):

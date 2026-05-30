@@ -726,7 +726,9 @@
                                     </div>
                                 </div>
                                 <!-- badge offer -->
-                                <span class="product-card_badge">{{ product.discount_percentage }}% تخفیف‌</span>
+                                {% if product.has_discount %}
+                                    <span class="product-card_badge">{{ product.discount_percentage }}% تخفیف‌</span>
+                                {% endif %}
                             </div>
                             <!-- product img -->
                             <a href={{ product.get_absolute_url }}>

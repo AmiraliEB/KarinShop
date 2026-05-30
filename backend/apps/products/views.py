@@ -159,6 +159,7 @@ class ProductDetailView(DetailView):
 class ShopView(View):
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         context = {}
+        applied_ordering = []
         last_month = timezone.now() - timedelta(days=30)
         products_qs = (
             ProductVariant.objects.select_related("parent_product")
