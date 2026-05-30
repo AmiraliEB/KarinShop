@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from cart.cart import get_cart
 from cart.forms import CartAddProductForm
 from django.conf import settings
@@ -7,9 +9,9 @@ from django.db.models import Count, Prefetch, Q, Sum
 from django.db.models.functions import Coalesce
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
 from django.utils.text import slugify
 from django.views.generic import DetailView, View
-from orders.models import Order
 from products.models import AttributeValue, Comments, Product, ProductParent, ProductVariant
 
 from .filters import ProductFilter
@@ -157,29 +159,50 @@ class ProductDetailView(DetailView):
 class ShopView(View):
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         context = {}
-
-        order = Order.objects.filter(is_paid=True)
-
-        products_qs = ProductVariant.objects.select_related("parent_product").all()
+        last_month = timezone.now() - timedelta(days=30)
+        products_qs = (
+            ProductVariant.objects.select_related("parent_product")
+            .prefetch_related("products")
+            .with_display_price()
+            .all()
+        )
         products_qs = products_qs.annotate(
             paid_items_count=Coalesce(
-                Sum("products__order_items__quantity", filter=Q(products__order_items__order__is_paid=True)), 0
-            )
-        )
+                Sum(
+                    "products__order_items__quantity",
+                    filter=Q(
+                        products__order_items__order__is_paid=True,
+                    ),
+                ),
+                0,
+            ),
+            recent_sales=Coalesce(
+                Sum(
+                    "products__order_items__quantity",
+                    filter=Q(
+                        products__order_items__order__datetime_created__gte=last_month,
+                    ),
+                ),
+                0,
+            ),
+        ).order_by("-recent_sales")
         product_filter = ProductFilter(request.GET, queryset=products_qs)
         products = product_filter.qs
+
+        if product_filter.is_valid():
+            applied_ordering = product_filter.form.cleaned_data.get("ordering") or []
+
+        if not applied_ordering:
+            applied_ordering = ["popular"]
+
         paginator = Paginator(products, 6)
         page_number = self.request.GET.get("page")
         products_filter_by_page_number = paginator.get_page(page_number)
         context["products_by_page"] = products_filter_by_page_number
         product_counter = ProductVariant.objects.aggregate(count_all_products=Count("id"))
         context["count_all_products"] = product_counter.get("count_all_products")
+        context["applied_ordering"] = applied_ordering
 
-        # for product in products_filter_by_page_number:
-        #     order_item_qs = OrderItem.objects.filter(product=product)
-        #     paied_order_items = order_item_qs.filter(order__is_paid=True).select_related("Order")
-
-        context["temp"] = order
         return render(request, template_name="products/shop.html", context=context)
 
 

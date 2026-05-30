@@ -652,10 +652,42 @@
                             <h2 class="font-DanaDemiBold text-gray-400">مرتب سازی :</h2>
                         </div>
                         <ul class="flex items-center gap-x-1 lg:gap-x-4 child:transition-all child:cursor-pointer child:rounded-lg child:px-1 child:py-1 child:text-sm child:lg:text-base">
-                            <li class="text-blue-500">محبوب ترین</li>
-                            <li class="text-gray-400">پرفروش ترین</li>
-                            <li class="text-gray-400">ارزان ترین</li>
-                            <li class="text-gray-400">گران ترین</li>
+                            {% if 'popular' in applied_ordering %}
+                                <a href="?ordering=popular">
+                                    <li class="text-blue-500">محبوب ترین</li>
+                                </a>
+                            {% else %}
+                                <a href="?ordering=popular">
+                                    <li class="text-gray-400">محبوب ترین</li>
+                                </a>
+                            {% endif %}
+                            {% if 'best_seller' in applied_ordering %}
+                                <a href="?ordering=best_seller">
+                                    <li class="text-blue-500">پرفروش ترین</li>
+                                </a>
+                            {% else %}
+                                <a href="?ordering=best_seller">
+                                    <li class="text-gray-400">پرفروش ترین</li>
+                                </a>
+                            {% endif %}
+                            {% if 'price' in applied_ordering %}
+                                <a href="?ordering=price">
+                                    <li class="text-blue-500">ارزان ترین</li>
+                                </a>
+                            {% else %}
+                                <a href="?ordering=price">
+                                    <li class="text-gray-400">ارزان ترین</li>
+                                </a>
+                            {% endif %}
+                            {% if '-price' in applied_ordering %}
+                                <a href="?ordering=-price">
+                                    <li class="text-blue-500">گران ترین</li>
+                                </a>
+                            {% else %}
+                                <a href="?ordering=-price">
+                                    <li class="text-gray-400">گران ترین</li>
+                                </a>
+                            {% endif %}
                         </ul>
                     </div>
                     <span class="text-sm text-gray-400 end">{{ count_all_products }} کالا</span>
@@ -668,7 +700,6 @@
                             <!-- product header -->
                             <div class="product-card_header">
                                 <div class="flex items-center gap-x-2">
-                                    <p>{{ product.paid_items_count }}</p>
                                     <div class="tooltip">
                                         <button class="rounded-full p-1.5 app-border app-hover">
                                             <svg class="size-4">
