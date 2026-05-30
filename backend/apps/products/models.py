@@ -8,7 +8,7 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models import Avg, Count, Q, QuerySet
+from django.db.models import Avg, Count, Min, Q, QuerySet
 from django.db.models.signals import m2m_changed, post_delete, post_save
 from django.dispatch import receiver
 from django.urls import reverse
@@ -20,6 +20,11 @@ User = get_user_model()
 
 def product_image_upload_to(instance, filename):
     return f"products/{slugify(instance.parent_product.name)}/{filename}"
+
+
+class ProductVariantQuerySet(models.QuerySet):
+    def with_display_price(self):
+        return self.annotate(min_final_price=Min("products__final_price", filter=Q(products__is_available=True)))
 
 
 class ProductParent(models.Model):
@@ -139,6 +144,8 @@ class ProductVariant(models.Model):
     datetime_created = models.DateTimeField(auto_now_add=True, verbose_name=_("creation date"))
     datetime_modified = models.DateTimeField(auto_now=True, verbose_name=_("last modified date"))
 
+    objects = ProductVariantQuerySet.as_manager()
+
     class Meta:
         verbose_name = _("product variant")
         verbose_name_plural = _("product variants")
@@ -151,11 +158,17 @@ class ProductVariant(models.Model):
 
     @property
     def initial_price(self):
-        return self.products.first().initial_price
+        products = self.products.filter(is_available=True)
+        if products:
+            return min(product.initial_price for product in products)
+        return 0
 
     @property
     def final_price(self):
-        return self.products.first().final_price
+        products = self.products.filter(is_available=True)
+        if products:
+            return min(product.final_price for product in products)
+        return 0
 
     def __str__(self):
         return self._full_name if self._full_name else f"Product {self.id}"
