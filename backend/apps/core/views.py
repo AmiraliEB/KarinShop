@@ -1,3 +1,5 @@
+from django.db.models import Q, Sum
+from django.db.models.functions import Coalesce
 from django.shortcuts import render
 from django.views import View, generic
 from products.models import ProductVariant
@@ -9,6 +11,7 @@ class HomePageView(View):
 
     def get(self, request, *args, **kwargs):
         context = {}
+        product_variant = ProductVariant.objects.filter(is_available=True)
         amazing_product_variants = (
             ProductVariant.objects.select_related("parent_product")
             .prefetch_related("products", "parent_product__images", "parent_product__comments")
@@ -16,32 +19,14 @@ class HomePageView(View):
         )
         context["amazing_product_variants"] = amazing_product_variants
 
-        latest_product_variants = ProductVariant.objects.filter(is_available=True).order_by("datetime_modified")[:6]
+        latest_product_variants = product_variant.order_by("datetime_modified")[:6]
         context["latest_product_variants"] = latest_product_variants
-        context["best_selling_product_variants"] = None
-        # print(
-        #     ProductVariant.objects.select_related("parent_product")
-        #     .prefetch_related(
-        #         Prefetch(
-        #             "products",
-        #             queryset=Product.objects.prefetch_related(
-        #                 Prefetch("order_items", queryset=OrderItem.objects.filter(order__is_paid=True))
-        #             ).annotate(order_item_count=Count(("order_items"))),
-        #         )
-        #     )
-        #     .order_by("-products")
-        #     .distinct()[:6]
-        # )
-        # hot_products = (
-        #     ProductVariant.objects.prefetch_related()
-        #     .annotate(count_cart_items=Count("cart_items"))
-        #     .order_by("count_cart_items")[:15]
-        # )
-
-        # def hot_product():
-        #     for product in hot_products:
-        #         yield product
-
+        best_selling = product_variant.annotate(
+            paid_items_count=Coalesce(
+                Sum("products__order_items__quantity", filter=Q(products__order_items__order__is_paid=True)), 0
+            )
+        )
+        context["best_selling_product_variants"] = best_selling.order_by("paid_items_count")
         context["hot_product_variants"] = None
         context["hot_product_variants_column"] = range(4)
 

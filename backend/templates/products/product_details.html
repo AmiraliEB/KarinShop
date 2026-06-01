@@ -470,82 +470,79 @@
                     <div class="swiper-wrapper py-5">
                         {% for product_variant in related_products %}
                             <!-- PRODUCT ITEM -->
-                            <div class="swiper-slide product-card group">
-                                <!-- product header -->
-                                <div class="product-card_header">
-                                    <div class="flex items-center gap-x-2">
-                                        <div class="tooltip">
-                                            <button class="rounded-full p-1.5 app-border app-hover">
-                                                <svg class="size-4">
-                                                    <use href="#shopping-cart"></use>
-                                                </svg>
-                                            </button>
-                                            <div class="tooltiptext">سبد خرید</div>
-                                        </div>
-                                        <div class="tooltip">
-                                            <button class="rounded-full p-1.5 app-border app-hover">
-                                                <svg class="size-4">
-                                                    <use href="#heart"></use>
-                                                </svg>
-                                            </button>
-                                            <div class="tooltiptext">علاقه مندی</div>
-                                        </div>
-                                        <div class="tooltip">
-                                            <button class="rounded-full p-1.5 app-border app-hover">
-                                                <svg class="size-4">
-                                                    <use href="#arrows-up-down"></use>
-                                                </svg>
-                                            </button>
-                                            <div class="tooltiptext">مقایسه</div>
-                                        </div>
-                                    </div>
+                            <div class="swiper-slide">
+                                <div class="group relative flex flex-col bg-white dark:bg-gray-800 rounded-[18px] overflow-hidden border border-gray-100 dark:border-white/[0.07] shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 ease-out">
+                                    <!-- badge تخفیف -->
                                     {% if product_variant.discount_percentage > 0 %}
-                                        <!-- badge offer -->
-                                        <span class="product-card_badge">{{ product_variant.discount_percentage }}% تخفیف‌</span>
+                                        <span class="absolute top-3 right-3 z-10 bg-red-500 text-white text-[11px] font-DanaMedium px-2.5 py-0.5 rounded-full">
+                                            ٪{{ product_variant.discount_percentage }}
+                                        </span>
                                     {% endif %}
-                                </div>
-                                <!-- product img -->
-                                <a href="{{ product_variant.get_absolute_url }}"
-                                   class="block w-full aspect-square relative bg-gray-50 dark:bg-gray-700/40 rounded-xl border border-gray-100 dark:border-gray-600 overflow-hidden mb-3 flex items-center justify-center p-4">
-                                    <img class="product-card_img absolute inset-0 w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal p-4 rounded-xl transition-all duration-500 ease-in-out group-hover:scale-110 group-hover:opacity-0"
-                                         src="{{ product_variant.parent_product.get_main_image }}"
-                                         alt="{{ product_variant.full_name }}">
-                                    <img class="product-card_img absolute inset-0 w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal p-4 rounded-xl transition-all duration-500 ease-in-out opacity-0 group-hover:scale-110 group-hover:opacity-100"
-                                         src="{{ product_variant.parent_product.get_second_image }}"
-                                         alt="{{ product_variant.full_name }}">
-                                </a>
-                                <!--  product footer -->
-                                <div class="space-y-2">
-                                    <a href="product_details.html" class="product-card_link">{{ product_variant.full_name }}</a>
-                                    <!-- Rate and Price -->
-                                    <div class="produDct-card_price-wrapper">
-                                        <!-- RATE -->
-                                        <div class="product-card_rate">
-                                            <span class="flex items-center gap-x-0.5">
-                                                <svg class="size-4 text-blue-500 mb-0.5">
+                                    <div class="absolute top-3 left-3 z-10 flex flex-col gap-y-1.5 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 ease-out">
+                                        <button class="size-8 bg-white dark:bg-gray-700 rounded-[10px] flex items-center justify-center border border-gray-100 dark:border-white/10 text-gray-400 hover:bg-blue-600 hover:border-blue-600 hover:text-white dark:hover:bg-blue-600 dark:hover:border-blue-600 dark:hover:text-white shadow-sm transition-all duration-150">
+                                            <svg class="size-4">
+                                                <use href="#shopping-cart"></use>
+                                            </svg>
+                                        </button>
+                                        <button class="size-8 bg-white dark:bg-gray-700 rounded-[10px] flex items-center justify-center border border-gray-100 dark:border-white/10 text-gray-400 hover:bg-red-500 hover:border-red-500 hover:text-white dark:hover:bg-red-500 dark:hover:border-red-500 dark:hover:text-white shadow-sm transition-all duration-150">
+                                            <svg class="size-4">
+                                                <use href="#heart"></use>
+                                            </svg>
+                                        </button>
+                                        <button class="size-8 bg-white dark:bg-gray-700 rounded-[10px] flex items-center justify-center border border-gray-100 dark:border-white/10 text-gray-400 hover:bg-blue-600 hover:border-blue-600 hover:text-white dark:hover:bg-blue-600 dark:hover:border-blue-600 dark:hover:text-white shadow-sm transition-all duration-150">
+                                            <svg class="size-4">
+                                                <use href="#arrows-up-down"></use>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <!-- تصویر محصول -->
+                                    <a href="{{ product_variant.get_absolute_url }}"
+                                       class="relative block w-full aspect-square bg-gray-50 dark:bg-gray-900/50 overflow-hidden">
+                                        <img class="absolute inset-0 w-full h-full object-contain p-6 mix-blend-multiply dark:mix-blend-normal transition-[transform,opacity] duration-[600ms] ease-in-out group-hover:opacity-0 group-hover:scale-[1.04]"
+                                             src="{{ product_variant.parent_product.get_main_image }}"
+                                             alt="{{ product_variant.full_name }}">
+                                        <img class="absolute inset-0 w-full h-full object-contain p-6 mix-blend-multiply dark:mix-blend-normal transition-[transform,opacity] duration-[600ms] ease-in-out opacity-0 scale-[1.04] group-hover:opacity-100 group-hover:scale-100"
+                                             src="{{ product_variant.parent_product.get_second_image }}"
+                                             alt="{{ product_variant.full_name }}">
+                                    </a>
+                                    <!-- خط جدا کننده -->
+                                    <div class="h-px bg-gray-100 dark:bg-white/[0.06] mx-3.5"></div>
+                                    <!-- اطلاعات محصول -->
+                                    <div class="flex flex-col gap-y-2.5 p-3.5">
+                                        <a href="{{ product_variant.get_absolute_url }}"
+                                           class="text-[13px] font-DanaMedium leading-[1.7] text-gray-800 dark:text-gray-100 line-clamp-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200">
+                                            {{ product_variant.full_name }}
+                                        </a>
+                                        <!-- ارسال و امتیاز -->
+                                        <div class="flex items-center justify-between">
+                                            <span class="flex items-center gap-x-1 text-blue-500 text-xs font-DanaMedium">
+                                                <svg class="size-3.5 shrink-0">
                                                     <use href="#rocket"></use>
                                                 </svg>
-                                                <p class="text-xs">ارسال امروز</p>
+                                                ارسال امروز
                                             </span>
-                                            <span class="text-gray-400 flex items-center text-sm gap-x-0.5">
-                                                <p>5.0</p>
-                                                <svg class="size-4 mb-1">
+                                            <span class="flex items-center gap-x-0.5 text-xs text-gray-400">
+                                                5.0
+                                                <svg class="size-3.5 text-amber-400 mb-0.5">
                                                     <use href="#star"></use>
                                                 </svg>
                                             </span>
                                         </div>
-                                        <!-- Price -->
-                                        <div class="product-card_price">
+                                        <!-- قیمت -->
+                                        <div class="flex items-center justify-between pt-2.5 border-t border-gray-100 dark:border-white/[0.06]">
                                             {% if product_variant.has_discount %}
-                                                <del>{{ product.initial_price|intcomma:False }}
-                                                    <h6>تومان</h6>
+                                                <del class="text-xs text-gray-400 dark:text-gray-500 font-DanaMedium">
+                                                    {{ product_variant.initial_price|intcomma:False }}
                                                 </del>
-                                                <p>{{ product_variant.final_price|intcomma:False }}</p>
-                                                <span>تومان</span>
                                             {% else %}
-                                                <p>{{ product_variant.final_price|intcomma:False }}</p>
-                                                <span>تومان</span>
+                                                <span></span>
                                             {% endif %}
+                                            <div class="flex items-baseline gap-x-1">
+                                                <span class="text-sm font-DanaDemiBold text-gray-900 dark:text-gray-50">
+                                                    {{ product_variant.final_price|intcomma:False }}
+                                                </span>
+                                                <span class="text-xs text-gray-500 dark:text-gray-400">تومان</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

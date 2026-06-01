@@ -200,7 +200,7 @@ class ShopView(View):
         page_number = self.request.GET.get("page")
         products_filter_by_page_number = paginator.get_page(page_number)
         context["products_by_page"] = products_filter_by_page_number
-        product_counter = ProductVariant.objects.aggregate(count_all_products=Count("id"))
+        product_counter = products.aggregate(count_all_products=Count("id"))
         context["count_all_products"] = product_counter.get("count_all_products")
         context["applied_ordering"] = applied_ordering
 

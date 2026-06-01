@@ -322,7 +322,7 @@
                                     </div>
                                 </div>
                             {% endfor %}
-                            <a href="{% url "products:shop" %}"
+                            <a href="{% url "products:shop" %}?is_amazing=true"
                                class="swiper-slide amazing-card_last ">
                                 <svg class="size-10 ">
                                     <use href="#arrow-left-circle"></use>
@@ -355,10 +355,10 @@
                         </span>
                         <div class="space-y-1 md:space-y-1">
                             <h3 class="text-xl md:text-2xl font-MorabbaMedium text-gray-800 dark:text-gray-50">
-                                جدید ترین
+                                محبوب ترین
                                 <span class="text-blue-600 dark:text-blue-500">محصولات</span>
                             </h3>
-                            <p class="text-sm text-gray-500 dark:text-gray-300">جدیدترین و بروزترین محصولات</p>
+                            <p class="text-sm text-gray-500 dark:text-gray-300">جدیدترین و محبوب ترین محصولات</p>
                         </div>
                     </div>
                     <div class="w-full xs:w-auto flex justify-between xs:justify-end  items-center gap-x-2">
@@ -374,7 +374,7 @@
                                 </svg>
                             </button>
                         </div>
-                        <a href="{% url "products:shop" %}"
+                        <a href="{% url "products:shop" %}?ordering=popular"
                            class="group shadow-xl text-sm md:text-base flex gap-x-1.5 items-center px-2 h-10 md:px-3 text-white bg-blue-600 rounded-xl">
                             <p>مشاهده همه</p>
                             <span class="w-7 h-7 rounded-full bg-blue-500 flex-center md:group-hover:-translate-x-1 transition-transform duration-300">
@@ -517,7 +517,7 @@
                                 </svg>
                             </button>
                         </div>
-                        <a href="index.html"
+                        <a href="{% url "products:shop" %}?ordering=best_seller"
                            class="group shadow-xl text-sm md:text-base flex gap-x-1.5 items-center px-2 h-10 md:px-3 text-white bg-blue-600 rounded-xl">
                             <p>مشاهده همه</p>
                             <span class="w-7 h-7 rounded-full bg-blue-500 flex-center md:group-hover:-translate-x-1 transition-transform duration-300">
