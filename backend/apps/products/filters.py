@@ -4,6 +4,7 @@ from products.models import ProductVariant
 
 class ProductFilter(django_filters.FilterSet):
     amazing = django_filters.BooleanFilter(field_name="is_amazing", lookup_expr="exact")
+    available = django_filters.BooleanFilter(field_name="is_available", lookup_expr="exact")
     ordering = django_filters.OrderingFilter(
         fields=(
             ("-paid_items_count", "best_seller"),
@@ -14,7 +15,7 @@ class ProductFilter(django_filters.FilterSet):
 
     class Meta:
         model = ProductVariant
-        fields = ["is_amazing"]
+        fields = ["is_amazing", "is_available"]
 
     # def filter_queryset(self, queryset):
     #     data = self.request.GET.copy()
