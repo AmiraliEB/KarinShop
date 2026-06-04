@@ -9,7 +9,10 @@ class ProductFilter(django_filters.FilterSet):
         fields=(
             ("-paid_items_count", "best_seller"),
             ("-recent_sales", "popular"),
-            ("min_final_price", "price"),
+            (
+                "min_final_price",
+                "price",
+            ),  # min_final_price is a field in ProductVariant model that returns the minimum price of the variant's products
         ),
     )
 

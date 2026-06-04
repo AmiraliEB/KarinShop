@@ -5,7 +5,7 @@ from cart.forms import CartAddProductForm
 from django.conf import settings
 from django.contrib import messages
 from django.core.paginator import Paginator
-from django.db.models import Count, Prefetch, Q, Sum
+from django.db.models import Count, Prefetch, Q, Sum, Value
 from django.db.models.functions import Coalesce
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -175,7 +175,7 @@ class ShopView(View):
                         products__order_items__order__is_paid=True,
                     ),
                 ),
-                0,
+                Value(0),
             ),
             recent_sales=Coalesce(
                 Sum(
@@ -184,7 +184,7 @@ class ShopView(View):
                         products__order_items__order__datetime_created__gte=last_month,
                     ),
                 ),
-                0,
+                Value(0),
             ),
         ).order_by("-recent_sales")
         product_filter = ProductFilter(request.GET, queryset=products_qs)
