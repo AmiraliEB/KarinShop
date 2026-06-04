@@ -8,7 +8,8 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models import Avg, Count, Min, Q, QuerySet
+from django.db.models import Avg, Count, Min, Q, QuerySet, Value
+from django.db.models.functions import Coalesce
 from django.db.models.signals import m2m_changed, post_delete, post_save
 from django.dispatch import receiver
 from django.urls import reverse
@@ -24,7 +25,13 @@ def product_image_upload_to(instance, filename):
 
 class ProductVariantQuerySet(models.QuerySet):
     def with_display_price(self):
-        return self.annotate(min_final_price=Min("products__final_price", filter=Q(products__is_available=True)))
+        return self.annotate(
+            min_final_price=Coalesce(
+                Min("products__final_price", filter=Q(products__is_available=True)),
+                Value(0),
+                output_field=models.DecimalField(),
+            )
+        )
 
 
 class ProductParent(models.Model):
