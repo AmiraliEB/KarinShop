@@ -191,13 +191,15 @@
                         <span class="flex items-center gap-x-1">
                             <p class="font-DanaMedium text-gray-700 dark:text-gray-200 text-lg">فیلترها</p>
                         </span>
-                        <p class="text-blue-500 dark:text-blue-400 text-sm cursor-pointer">حذف فیلتر‌ها</p>
+                        <a href="{{ request.path }}"
+                           class="text-blue-500 dark:text-blue-400 text-sm cursor-pointer">حذف فیلتر‌ها</a>
                     </div>
                     <!-- FILTERS -->
                     <div class="w-full divide-y divide-slate-200 dark:divide-gray-700/20">
                         <!-- Accordion -->
                         <div class="">
-                            <button onclick="toggleAccordion(1)"
+                            <button type="button"
+                                    onclick="toggleAccordion(1)"
                                     class="w-full flex justify-between items-center px-2 xl:px-4 pt-4 mb-4 text-gray-800 dark:text-gray-100">
                                 <span>دسته بندی</span>
                                 <span id="icon-1" class="text-gray-800 dark:text-gray-100">
@@ -209,97 +211,139 @@
                             <div id="content-1"
                                  class="max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
                                 <div class="pb-3 text-gray-700 dark:text-gray-300 w-full flex flex-col gap-y-1.5">
-                                    <!-- item -->
                                     <div class="inline-flex items-center mr-2.5 mt-1">
                                         <label class="relative flex cursor-pointer items-center rounded-full p-3"
-                                               for="ripple-on"
+                                               for="category-all"
                                                data-ripple-dark="true">
-                                            <input id="ripple-on"
-                                                   type="checkbox"
-                                                   class="peer relative h-5 w-5 cursor-pointer appearance-none rounded border border-slate-300 shadow hover:shadow-md transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-slate-400 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-slate-400 hover:before:opacity-10 dark:bg-gray-600 dark:checked:bg-blue-500 darKchecked:bg-blue-500  " />
+                                            <input id="category-all"
+                                                   name="category"
+                                                   value=""
+                                                   type="radio"
+                                                   onchange="handleCheckboxSubmit(this, 'loader-all')"
+                                                   {% if not request.GET.category %}checked{% endif %}
+                                                   class="peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-slate-300 shadow hover:shadow-md transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-slate-400 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-slate-400 hover:before:opacity-10 dark:bg-gray-600 dark:checked:bg-blue-500 darKchecked:bg-blue-500" />
                                             <span class="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
                                                 <svg xmlns="http://www.w3.org/2000/svg"
-                                                     class="h-3.5 w-3.5"
-                                                     viewBox="0 0 20 20"
-                                                     fill="currentColor"
-                                                     stroke="currentColor"
-                                                     stroke-width="1">
-                                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd">
-                                                    </path>
+                                                     class="h-2.5 w-2.5"
+                                                     viewBox="0 0 16 16"
+                                                     fill="currentColor">
+                                                    <circle data-name="ellipse" cx="8" cy="8" r="8"></circle>
                                                 </svg>
                                             </span>
                                         </label>
-                                        <label class="cursor-pointer text-gray-800 dark:text-gray-400 mr-1"
-                                               for="ripple-on">همه کالاها</label>
+                                        <label class="cursor-pointer text-gray-800 dark:text-gray-400 mr-1 flex items-center gap-x-2"
+                                               for="category-all">
+                                            همه کالاها
+                                            <svg id="loader-all"
+                                                 class="hidden animate-spin size-4 text-blue-600"
+                                                 xmlns="http://www.w3.org/2000/svg"
+                                                 fill="none"
+                                                 viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                                </path>
+                                            </svg>
+                                        </label>
                                     </div>
-                                    <!-- item -->
                                     <div class="inline-flex items-center mr-2.5">
                                         <label class="relative flex cursor-pointer items-center rounded-full p-3"
-                                               for="ripple-2"
+                                               for="category-mobile"
                                                data-ripple-dark="true">
-                                            <input id="ripple-2"
-                                                   type="checkbox"
-                                                   class="peer relative h-5 w-5 cursor-pointer appearance-none rounded border border-slate-300 shadow hover:shadow-md transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-slate-400 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-slate-400 hover:before:opacity-10 dark:bg-gray-600 dark:checked:bg-blue-500 darKchecked:bg-blue-500  " />
+                                            <input id="category-mobile"
+                                                   name="category"
+                                                   value="smart phone"
+                                                   type="radio"
+                                                   onchange="handleCheckboxSubmit(this, 'loader-mobile')"
+                                                   {% if request.GET.category == 'smart phone' %}checked{% endif %}
+                                                   class="peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-slate-300 shadow hover:shadow-md transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-slate-400 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-slate-400 hover:before:opacity-10 dark:bg-gray-600 dark:checked:bg-blue-500 darKchecked:bg-blue-500" />
                                             <span class="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
                                                 <svg xmlns="http://www.w3.org/2000/svg"
-                                                     class="h-3.5 w-3.5"
-                                                     viewBox="0 0 20 20"
-                                                     fill="currentColor"
-                                                     stroke="currentColor"
-                                                     stroke-width="1">
-                                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd">
-                                                    </path>
+                                                     class="h-2.5 w-2.5"
+                                                     viewBox="0 0 16 16"
+                                                     fill="currentColor">
+                                                    <circle data-name="ellipse" cx="8" cy="8" r="8"></circle>
                                                 </svg>
                                             </span>
                                         </label>
-                                        <label class="cursor-pointer text-gray-800 dark:text-gray-400 mr-1"
-                                               for="ripple-2">موبایل</label>
+                                        <label class="cursor-pointer text-gray-800 dark:text-gray-400 mr-1 flex items-center gap-x-2"
+                                               for="category-mobile">
+                                            موبایل
+                                            <svg id="loader-mobile"
+                                                 class="hidden animate-spin size-4 text-blue-600"
+                                                 xmlns="http://www.w3.org/2000/svg"
+                                                 fill="none"
+                                                 viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                                </path>
+                                            </svg>
+                                        </label>
                                     </div>
-                                    <!-- item -->
                                     <div class="inline-flex items-center mr-2.5">
                                         <label class="relative flex cursor-pointer items-center rounded-full p-3"
-                                               for="ripple-3"
-                                               data-ripple-dark="true">
-                                            <input id="ripple-3"
+                                               for="category-laptop">
+                                            <input id="category-laptop"
+                                                   name="category"
+                                                   value="laptop"
                                                    type="checkbox"
-                                                   class="peer relative h-5 w-5 cursor-pointer appearance-none rounded border border-slate-300 shadow hover:shadow-md transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-slate-400 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-slate-400 hover:before:opacity-10 dark:bg-gray-600 dark:checked:bg-blue-500 darKchecked:bg-blue-500  " />
+                                                   onchange="handleCheckboxSubmit(this, 'loader-laptop')"
+                                                   {% if request.GET.category == 'laptop' %}checked{% endif %}
+                                                   class="peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-slate-300 shadow hover:shadow-md transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-slate-400 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-slate-400 hover:before:opacity-10 dark:bg-gray-600 dark:checked:bg-blue-500" />
                                             <span class="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
                                                 <svg xmlns="http://www.w3.org/2000/svg"
-                                                     class="h-3.5 w-3.5"
-                                                     viewBox="0 0 20 20"
-                                                     fill="currentColor"
-                                                     stroke="currentColor"
-                                                     stroke-width="1">
-                                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd">
-                                                    </path>
+                                                     class="h-2.5 w-2.5"
+                                                     viewBox="0 0 16 16"
+                                                     fill="currentColor">
+                                                    <circle cx="8" cy="8" r="8"></circle>
                                                 </svg>
                                             </span>
                                         </label>
-                                        <label class="cursor-pointer text-gray-800 dark:text-gray-400 mr-1"
-                                               for="ripple-3">لپ تاپ</label>
+                                        <label class="cursor-pointer text-gray-800 dark:text-gray-400 mr-1 flex items-center gap-x-2"
+                                               for="category-laptop">
+                                            لپ تاپ
+                                            <svg id="loader-laptop"
+                                                 class="hidden animate-spin size-4 text-blue-600"
+                                                 xmlns="http://www.w3.org/2000/svg"
+                                                 fill="none"
+                                                 viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                                </path>
+                                            </svg>
+                                        </label>
                                     </div>
-                                    <!-- item -->
                                     <div class="inline-flex items-center mr-2.5">
                                         <label class="relative flex cursor-pointer items-center rounded-full p-3"
-                                               for="ripple-4"
-                                               data-ripple-dark="true">
-                                            <input id="ripple-4"
+                                               for="category-headphone">
+                                            <input id="category-headphone"
+                                                   name="category"
+                                                   value="headphone"
                                                    type="checkbox"
-                                                   class="peer relative h-5 w-5 cursor-pointer appearance-none rounded border border-slate-300 shadow hover:shadow-md transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-slate-400 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-slate-400 hover:before:opacity-10 dark:bg-gray-600 dark:checked:bg-blue-500 darKchecked:bg-blue-500  " />
+                                                   onchange="handleCheckboxSubmit(this, 'loader-headphone')"
+                                                   {% if request.GET.category == 'headphone' %}checked{% endif %}
+                                                   class="peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-slate-300 shadow hover:shadow-md transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-slate-400 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-slate-400 hover:before:opacity-10 dark:bg-gray-600 dark:checked:bg-blue-500" />
                                             <span class="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
                                                 <svg xmlns="http://www.w3.org/2000/svg"
-                                                     class="h-3.5 w-3.5"
-                                                     viewBox="0 0 20 20"
-                                                     fill="currentColor"
-                                                     stroke="currentColor"
-                                                     stroke-width="1">
-                                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd">
-                                                    </path>
+                                                     class="h-2.5 w-2.5"
+                                                     viewBox="0 0 16 16"
+                                                     fill="currentColor">
+                                                    <circle cx="8" cy="8" r="8"></circle>
                                                 </svg>
                                             </span>
                                         </label>
-                                        <label class="cursor-pointer text-gray-800 dark:text-gray-400 mr-1"
-                                               for="ripple-4">هدفون، هدست</label>
+                                        <label class="cursor-pointer text-gray-800 dark:text-gray-400 mr-1 flex items-center gap-x-2"
+                                               for="category-headphone">
+                                            هدفون، هدست
+                                            <svg id="loader-headphone"
+                                                 class="hidden animate-spin size-4 text-blue-600"
+                                                 xmlns="http://www.w3.org/2000/svg"
+                                                 fill="none"
+                                                 viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                                </path>
+                                            </svg>
+                                        </label>
                                     </div>
                                 </div>
                             </div>
@@ -332,85 +376,82 @@
                             </label>
                             <label for="toggle-available" class="text-gray-800 dark:text-gray-100">فقط کالا های موجود</label>
                         </div>
-                        <!-- TOGGLE SWITCH -->
-                        <div class="w-full justify-between flex items-center gap-x-3 py-4 px-2 xl:px-4"
+                        <div class="w-full justify-between flex items-center gap-x-3 py-4 px-2 xl:px-4 border-t dark:border-white/10"
                              dir="ltr">
-                            <label for="hs-valid-toggle-switch2"
+                            <label for="toggle-amazing"
                                    class="relative inline-block w-11 h-6 cursor-pointer">
-                                <input type="checkbox" id="hs-valid-toggle-switch2" class="peer sr-only">
-                                <span class="absolute inset-0 bg-gray-200 rounded-full transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 dark:bg-neutral-700 dark:peer-checked:bg-blue-500 peer-disabled:opacity-50 peer-disabled:pointer-events-none"></span>
+                                <input type="checkbox"
+                                       id="toggle-amazing"
+                                       name="is_amazing"
+                                       value="true"
+                                       class="peer sr-only"
+                                       {% if request.GET.is_amazing == 'true' %}checked{% endif %}
+                                       onchange="handleToggleSubmit(this, 'loader-amazing')">
+                                <span class="absolute inset-0 bg-gray-200 rounded-full transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 dark:bg-neutral-700 dark:peer-checked:bg-blue-500"></span>
                                 <span class="absolute top-1/2 start-0.5 -translate-y-1/2 size-5 bg-white rounded-full shadow-xs transition-transform duration-200 ease-in-out peer-checked:translate-x-full dark:bg-neutral-400 dark:peer-checked:bg-white"></span>
-                            </label>
-                            <label for="hs-valid-toggle-switch2"
-                                   class="text-gray-800 dark:text-gray-100 flex items-center gap-x-2">
-                                <img class="size-5" src="{% static "./images/svg/time.png" %}" alt="">
-                                ارسال امروز
-                            </label>
-                        </div>
-                        <!-- Accordion -->
-                        <div class="">
-                            <button onclick="toggleAccordion(2)"
-                                    class="w-full flex justify-between items-center px-2 xl:px-4 py-4 text-gray-800 dark:text-gray-100">
-                                <span>محدوده قیمت</span>
-                                <span id="icon-1" class="text-gray-800 dark:text-gray-100">
-                                    <svg class="size-4 transition-transform duration-300">
-                                        <use href="#chevron-left"></use>
+                                <div id="loader-amazing"
+                                     class="hidden absolute inset-0 bg-white/60 dark:bg-gray-800/60 rounded-full flex items-center justify-center z-10">
+                                    <svg class="animate-spin size-4 text-blue-600"
+                                         xmlns="http://www.w3.org/2000/svg"
+                                         fill="none"
+                                         viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                        </path>
                                     </svg>
-                                </span>
-                            </button>
-                            <div id="content-2"
-                                 class="price-slider max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
-                                <div class="pb-3 text-gray-700 dark:text-gray-300 w-full px-4">
-                                    <div class="wrapper mt-5">
-                                        <div class="slider-bar">
-                                            <div class="progress"></div>
-                                        </div>
-                                        <div class="range-input">
-                                            <input type="range" min="0" max="100000" value="0" class="min-range" />
-                                            <input type="range" min="0" max="100000" value="35000" class="max-range" />
-                                        </div>
-                                        <div class="price-input mt-4 text-gray-800 dark:text-gray-500">
-                                            <div class="field justify-start">
-                                                <span class="text-sm font-DanaMedium mr-2">تومان</span>
-                                                <p class="min-input">0</p>
-                                            </div>
-                                            <div class="field justify-end">
-                                                <span class="text-sm font-DanaMedium mr-2">تومان</span>
-                                                <p class="max-input">350,000</p>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        <!-- TOGGLE SWITCH -->
-                        <div class="w-full justify-between flex items-center gap-x-3 px-2 xl:px-4 py-4"
-                             dir="ltr">
-                            <label for="hs-valid-toggle-switch3"
-                                   class="relative inline-block w-11 h-6 cursor-pointer">
-                                <input type="checkbox" id="hs-valid-toggle-switch3" class="peer sr-only">
-                                <span class="absolute inset-0 bg-gray-200 rounded-full transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 dark:bg-neutral-700 dark:peer-checked:bg-blue-500 peer-disabled:opacity-50 peer-disabled:pointer-events-none"></span>
-                                <span class="absolute top-1/2 start-0.5 -translate-y-1/2 size-5 bg-white rounded-full shadow-xs transition-transform duration-200 ease-in-out peer-checked:translate-x-full dark:bg-neutral-400 dark:peer-checked:bg-white"></span>
                             </label>
-                            <label for="hs-valid-toggle-switch3"
-                                   class="text-gray-800 dark:text-gray-100 flex items-center gap-x-2">
-                                <img class="size-5" src="{% static "./images/svg/Seller.svg" %}" alt="">
-                                ارسال فروشنده
+                            <label for="toggle-amazing"
+                                   class="text-gray-800 dark:text-gray-100 flex items-center gap-x-2 cursor-pointer font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     fill="none"
+                                     viewBox="0 0 24 24"
+                                     stroke-width="1.5"
+                                     stroke="currentColor"
+                                     class="size-5 text-red-500">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 0 0 .495-7.468 5.99 5.99 0 0 0-1.925 3.547 5.975 5.975 0 0 1-2.133-1.001A3.75 3.75 0 0 0 12 18Z" />
+                                </svg>
+                                شگفت‌انگیز
                             </label>
                         </div>
-                        <!-- TOGGLE SWITCH -->
-                        <div class="w-full justify-between flex items-center gap-x-3 px-2 xl:px-4 py-4"
+                        <div class="w-full justify-between flex items-center gap-x-3 py-4 px-2 xl:px-4 border-t dark:border-white/10"
                              dir="ltr">
-                            <label for="hs-valid-toggle-switch4"
+                            <label for="toggle-discount"
                                    class="relative inline-block w-11 h-6 cursor-pointer">
-                                <input type="checkbox" id="hs-valid-toggle-switch4" class="peer sr-only">
-                                <span class="absolute inset-0 bg-gray-200 rounded-full transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 dark:bg-neutral-700 dark:peer-checked:bg-blue-500 peer-disabled:opacity-50 peer-disabled:pointer-events-none"></span>
+                                <input type="checkbox"
+                                       id="toggle-discount"
+                                       name="has_discount"
+                                       value="true"
+                                       class="peer sr-only"
+                                       {% if request.GET.has_discount == 'true' %}checked{% endif %}
+                                       onchange="handleToggleSubmit(this, 'loader-discount')">
+                                <span class="absolute inset-0 bg-gray-200 rounded-full transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 dark:bg-neutral-700 dark:peer-checked:bg-blue-500"></span>
                                 <span class="absolute top-1/2 start-0.5 -translate-y-1/2 size-5 bg-white rounded-full shadow-xs transition-transform duration-200 ease-in-out peer-checked:translate-x-full dark:bg-neutral-400 dark:peer-checked:bg-white"></span>
+                                <div id="loader-discount"
+                                     class="hidden absolute inset-0 bg-white/60 dark:bg-gray-800/60 rounded-full flex items-center justify-center z-10">
+                                    <svg class="animate-spin size-4 text-blue-600"
+                                         xmlns="http://www.w3.org/2000/svg"
+                                         fill="none"
+                                         viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                        </path>
+                                    </svg>
+                                </div>
                             </label>
-                            <label for="hs-valid-toggle-switch4"
-                                   class="text-gray-800 dark:text-gray-100 flex items-center gap-x-1">
-                                <img class="size-5" src="{% static "./images/svg/shop.png" %}" alt="">
-                                خرید حضوری در تهران
+                            <label for="toggle-discount"
+                                   class="text-gray-800 dark:text-gray-100 flex items-center gap-x-2 cursor-pointer font-medium">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     fill="none"
+                                     viewBox="0 0 24 24"
+                                     stroke-width="1.5"
+                                     stroke="currentColor"
+                                     class="size-5 text-blue-500">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
+                                </svg>
+                                فقط کالاهای تخفیف‌دار
                             </label>
                         </div>
                     </div>
@@ -420,7 +461,8 @@
                     <!-- MOBILE FILTERS -->
                     <div class="flex lg:hidden items-center gap-x-2">
                         <!-- SORT BTN -->
-                        <button class="sort-modal-open text-sm mb-4 py-1.5 px-3 app-border rounded-full flex items-center gap-x-1">
+                        <button type="button"
+                                class="sort-modal-open text-sm mb-4 py-1.5 px-3 app-border rounded-full flex items-center gap-x-1">
                             <svg class="size-4 text-gray-400">
                                 <use href="#sort-list"></use>
                             </svg>
@@ -428,24 +470,66 @@
                         </button>
                         <!-- SORT MODAL -->
                         <div class="sort-modal">
-                            <div class="flex justify-between sort-modal-close">
-                                <p>مرتب سازی بر اساس</p>
-                                <svg class="size-5 text-gray-800 dark:text-gray-300">
+                            <div class="flex justify-between items-center sort-modal-close px-5 py-4 border-b border-gray-100 dark:border-white/5 mb-2">
+                                <p class="font-DanaMedium text-lg text-gray-800 dark:text-white">مرتب سازی بر اساس</p>
+                                <svg class="size-5 text-gray-500 dark:text-gray-400 cursor-pointer">
                                     <use href="#x-mark"></use>
                                 </svg>
                             </div>
-                            <ul class="flex w-full child:w-full child:text-center flex-col items-center justify-center divide-y divide-gray-300 dark:divide-gray-200/20 child:py-3">
-                                <li>مرتبط‌ترین</li>
-                                <li>پربازدیدترین</li>
-                                <li>جدیدترین</li>
-                                <li>گران‌ترین</li>
-                                <li>منتخب</li>
-                                <li>پیشنهاد خریداران</li>
-                                <li>سریع‌ترین ارسال</li>
+                            <ul class="flex flex-col gap-y-1.5 px-3 pb-4">
+                                <li onclick="submitOrdering('-popular')"
+                                    class="flex items-center justify-between p-3.5 rounded-xl cursor-pointer transition-colors duration-200 {% if '-popular' in applied_ordering %}bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 font-DanaMedium{% else %}text-gray-700 dark:text-gray-300 active:bg-gray-100 dark:active:bg-gray-800{% endif %}">
+                                    <span>محبوب ترین</span>
+                                    {% if '-popular' in applied_ordering %}
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             viewBox="0 0 20 20"
+                                             fill="currentColor"
+                                             class="size-5">
+                                            <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
+                                        </svg>
+                                    {% endif %}
+                                </li>
+                                <li onclick="submitOrdering('-best_seller')"
+                                    class="flex items-center justify-between p-3.5 rounded-xl cursor-pointer transition-colors duration-200 {% if '-best_seller' in applied_ordering %}bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 font-DanaMedium{% else %}text-gray-700 dark:text-gray-300 active:bg-gray-100 dark:active:bg-gray-800{% endif %}">
+                                    <span>پرفروش ترین</span>
+                                    {% if '-best_seller' in applied_ordering %}
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             viewBox="0 0 20 20"
+                                             fill="currentColor"
+                                             class="size-5">
+                                            <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
+                                        </svg>
+                                    {% endif %}
+                                </li>
+                                <li onclick="submitOrdering('price')"
+                                    class="flex items-center justify-between p-3.5 rounded-xl cursor-pointer transition-colors duration-200 {% if 'price' in applied_ordering %}bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 font-DanaMedium{% else %}text-gray-700 dark:text-gray-300 active:bg-gray-100 dark:active:bg-gray-800{% endif %}">
+                                    <span>ارزان ترین</span>
+                                    {% if 'price' in applied_ordering %}
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             viewBox="0 0 20 20"
+                                             fill="currentColor"
+                                             class="size-5">
+                                            <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
+                                        </svg>
+                                    {% endif %}
+                                </li>
+                                <li onclick="submitOrdering('-price')"
+                                    class="flex items-center justify-between p-3.5 rounded-xl cursor-pointer transition-colors duration-200 {% if '-price' in applied_ordering %}bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 font-DanaMedium{% else %}text-gray-700 dark:text-gray-300 active:bg-gray-100 dark:active:bg-gray-800{% endif %}">
+                                    <span>گران ترین</span>
+                                    {% if '-price' in applied_ordering %}
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             viewBox="0 0 20 20"
+                                             fill="currentColor"
+                                             class="size-5">
+                                            <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
+                                        </svg>
+                                    {% endif %}
+                                </li>
                             </ul>
                         </div>
                         <!-- FILTER BTN -->
-                        <button class="filter-modal-open text-sm mb-4 py-1.5 px-3 app-border rounded-full flex items-center gap-x-1">
+                        <button type="button"
+                                class="filter-modal-open text-sm mb-4 py-1.5 px-3 app-border rounded-full flex items-center gap-x-1">
                             <svg class="size-4 text-gray-400">
                                 <use href="#filter"></use>
                             </svg>
@@ -473,99 +557,138 @@
                                         </span>
                                     </button>
                                     <div id="content-3"
-                                         class="max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
                                         <div class="pb-3 text-gray-700 dark:text-gray-300 w-full flex flex-col gap-y-1.5">
-                                            <!-- item -->
                                             <div class="inline-flex items-center mr-2.5 mt-1">
                                                 <label class="relative flex cursor-pointer items-center rounded-full p-3"
-                                                       for="ripple-5"
-                                                       data-ripple-dark="true">
-                                                    <input id="ripple-5"
+                                                       for="category-all-mobile">
+                                                    <input id="category-all-mobile"
+                                                           name="category"
+                                                           value=""
                                                            type="checkbox"
-                                                           class="peer relative h-5 w-5 cursor-pointer appearance-none rounded border border-slate-300 shadow hover:shadow-md transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-slate-400 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-slate-400 hover:before:opacity-10 dark:bg-gray-600 dark:checked:bg-blue-500 darKchecked:bg-blue-500  " />
+                                                           onchange="handleCheckboxSubmit(this, 'loader-all-mobile')"
+                                                           {% if not request.GET.category %}checked{% endif %}
+                                                           class="peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-slate-300 shadow hover:shadow-md transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-slate-400 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-slate-400 hover:before:opacity-10 dark:bg-gray-600 dark:checked:bg-blue-500" />
                                                     <span class="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
                                                         <svg xmlns="http://www.w3.org/2000/svg"
-                                                             class="h-3.5 w-3.5"
-                                                             viewBox="0 0 20 20"
-                                                             fill="currentColor"
-                                                             stroke="currentColor"
-                                                             stroke-width="1">
-                                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd">
-                                                            </path>
+                                                             class="h-2.5 w-2.5"
+                                                             viewBox="0 0 16 16"
+                                                             fill="currentColor">
+                                                            <circle cx="8" cy="8" r="8"></circle>
                                                         </svg>
                                                     </span>
                                                 </label>
-                                                <label class="cursor-pointer text-gray-800 dark:text-gray-400 mr-1"
-                                                       for="ripple-5">همه کالاها</label>
+                                                <label class="cursor-pointer text-gray-800 dark:text-gray-400 mr-1 flex items-center gap-x-2"
+                                                       for="category-all-mobile">
+                                                    همه کالاها
+                                                    <svg id="loader-all-mobile"
+                                                         class="hidden animate-spin size-4 text-blue-600"
+                                                         xmlns="http://www.w3.org/2000/svg"
+                                                         fill="none"
+                                                         viewBox="0 0 24 24">
+                                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                                        </path>
+                                                    </svg>
+                                                </label>
                                             </div>
-                                            <!-- item -->
                                             <div class="inline-flex items-center mr-2.5">
                                                 <label class="relative flex cursor-pointer items-center rounded-full p-3"
-                                                       for="ripple-6"
-                                                       data-ripple-dark="true">
-                                                    <input id="ripple-6"
+                                                       for="category-mobile-mobile">
+                                                    <input id="category-mobile-mobile"
+                                                           name="category"
+                                                           value="smart phone"
                                                            type="checkbox"
-                                                           class="peer relative h-5 w-5 cursor-pointer appearance-none rounded border border-slate-300 shadow hover:shadow-md transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-slate-400 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-slate-400 hover:before:opacity-10 dark:bg-gray-600 dark:checked:bg-blue-500 darKchecked:bg-blue-500  " />
+                                                           onchange="handleCheckboxSubmit(this, 'loader-mobile-mobile')"
+                                                           {% if request.GET.category == 'smart phone' %}checked{% endif %}
+                                                           class="peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-slate-300 shadow hover:shadow-md transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-slate-400 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-slate-400 hover:before:opacity-10 dark:bg-gray-600 dark:checked:bg-blue-500" />
                                                     <span class="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
                                                         <svg xmlns="http://www.w3.org/2000/svg"
-                                                             class="h-3.5 w-3.5"
-                                                             viewBox="0 0 20 20"
-                                                             fill="currentColor"
-                                                             stroke="currentColor"
-                                                             stroke-width="1">
-                                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd">
-                                                            </path>
+                                                             class="h-2.5 w-2.5"
+                                                             viewBox="0 0 16 16"
+                                                             fill="currentColor">
+                                                            <circle cx="8" cy="8" r="8"></circle>
                                                         </svg>
                                                     </span>
                                                 </label>
-                                                <label class="cursor-pointer text-gray-800 dark:text-gray-400 mr-1"
-                                                       for="ripple-6">موبایل</label>
+                                                <label class="cursor-pointer text-gray-800 dark:text-gray-400 mr-1 flex items-center gap-x-2"
+                                                       for="category-mobile-mobile">
+                                                    موبایل
+                                                    <svg id="loader-mobile-mobile"
+                                                         class="hidden animate-spin size-4 text-blue-600"
+                                                         xmlns="http://www.w3.org/2000/svg"
+                                                         fill="none"
+                                                         viewBox="0 0 24 24">
+                                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                                        </path>
+                                                    </svg>
+                                                </label>
                                             </div>
-                                            <!-- item -->
                                             <div class="inline-flex items-center mr-2.5">
                                                 <label class="relative flex cursor-pointer items-center rounded-full p-3"
-                                                       for="ripple-7"
-                                                       data-ripple-dark="true">
-                                                    <input id="ripple-7"
+                                                       for="category-laptop-mobile">
+                                                    <input id="category-laptop-mobile"
+                                                           name="category"
+                                                           value="laptop"
                                                            type="checkbox"
-                                                           class="peer relative h-5 w-5 cursor-pointer appearance-none rounded border border-slate-300 shadow hover:shadow-md transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-slate-400 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-slate-400 hover:before:opacity-10 dark:bg-gray-600 dark:checked:bg-blue-500 darKchecked:bg-blue-500  " />
+                                                           onchange="handleCheckboxSubmit(this, 'loader-laptop-mobile')"
+                                                           {% if request.GET.category == 'laptop' %}checked{% endif %}
+                                                           class="peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-slate-300 shadow hover:shadow-md transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-slate-400 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-slate-400 hover:before:opacity-10 dark:bg-gray-600 dark:checked:bg-blue-500" />
                                                     <span class="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
                                                         <svg xmlns="http://www.w3.org/2000/svg"
-                                                             class="h-3.5 w-3.5"
-                                                             viewBox="0 0 20 20"
-                                                             fill="currentColor"
-                                                             stroke="currentColor"
-                                                             stroke-width="1">
-                                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd">
-                                                            </path>
+                                                             class="h-2.5 w-2.5"
+                                                             viewBox="0 0 16 16"
+                                                             fill="currentColor">
+                                                            <circle cx="8" cy="8" r="8"></circle>
                                                         </svg>
                                                     </span>
                                                 </label>
-                                                <label class="cursor-pointer text-gray-800 dark:text-gray-400 mr-1"
-                                                       for="ripple-7">لپ تاپ</label>
+                                                <label class="cursor-pointer text-gray-800 dark:text-gray-400 mr-1 flex items-center gap-x-2"
+                                                       for="category-laptop-mobile">
+                                                    لپ تاپ
+                                                    <svg id="loader-laptop-mobile"
+                                                         class="hidden animate-spin size-4 text-blue-600"
+                                                         xmlns="http://www.w3.org/2000/svg"
+                                                         fill="none"
+                                                         viewBox="0 0 24 24">
+                                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                                        </path>
+                                                    </svg>
+                                                </label>
                                             </div>
-                                            <!-- item -->
                                             <div class="inline-flex items-center mr-2.5">
                                                 <label class="relative flex cursor-pointer items-center rounded-full p-3"
-                                                       for="ripple-8"
-                                                       data-ripple-dark="true">
-                                                    <input id="ripple-8"
+                                                       for="category-headphone-mobile">
+                                                    <input id="category-headphone-mobile"
+                                                           name="category"
+                                                           value="headphone"
                                                            type="checkbox"
-                                                           class="peer relative h-5 w-5 cursor-pointer appearance-none rounded border border-slate-300 shadow hover:shadow-md transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-slate-400 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-slate-400 hover:before:opacity-10 dark:bg-gray-600 dark:checked:bg-blue-500 darKchecked:bg-blue-500  " />
+                                                           onchange="handleCheckboxSubmit(this, 'loader-headphone-mobile')"
+                                                           {% if request.GET.category == 'headphone' %}checked{% endif %}
+                                                           class="peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-slate-300 shadow hover:shadow-md transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-slate-400 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-slate-400 hover:before:opacity-10 dark:bg-gray-600 dark:checked:bg-blue-500" />
                                                     <span class="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
                                                         <svg xmlns="http://www.w3.org/2000/svg"
-                                                             class="h-3.5 w-3.5"
-                                                             viewBox="0 0 20 20"
-                                                             fill="currentColor"
-                                                             stroke="currentColor"
-                                                             stroke-width="1">
-                                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd">
-                                                            </path>
+                                                             class="h-2.5 w-2.5"
+                                                             viewBox="0 0 16 16"
+                                                             fill="currentColor">
+                                                            <circle cx="8" cy="8" r="8"></circle>
                                                         </svg>
                                                     </span>
                                                 </label>
-                                                <label class="cursor-pointer text-gray-800 dark:text-gray-400 mr-1"
-                                                       for="ripple-8">هدفون، هدست</label>
+                                                <label class="cursor-pointer text-gray-800 dark:text-gray-400 mr-1 flex items-center gap-x-2"
+                                                       for="category-headphone-mobile">
+                                                    هدفون، هدست
+                                                    <svg id="loader-headphone-mobile"
+                                                         class="hidden animate-spin size-4 text-blue-600"
+                                                         xmlns="http://www.w3.org/2000/svg"
+                                                         fill="none"
+                                                         viewBox="0 0 24 24">
+                                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                                        </path>
+                                                    </svg>
+                                                </label>
                                             </div>
                                         </div>
                                     </div>
@@ -573,94 +696,110 @@
                                 <!-- TOGGLE SWITCH -->
                                 <div class="w-full justify-between flex items-center gap-x-3 px-2 xl:px-4 py-4"
                                      dir="ltr">
-                                    <label for="hs-valid-toggle-switch5"
+                                    <label for="toggle-available-mobile"
                                            class="relative inline-block w-11 h-6 cursor-pointer">
-                                        <input type="checkbox" id="hs-valid-toggle-switch5" class="peer sr-only">
-                                        <span class="absolute inset-0 bg-gray-200 rounded-full transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 dark:bg-neutral-700 dark:peer-checked:bg-blue-500 peer-disabled:opacity-50 peer-disabled:pointer-events-none"></span>
+                                        <input type="checkbox"
+                                               id="toggle-available-mobile"
+                                               name="is_available"
+                                               value="true"
+                                               class="peer sr-only"
+                                               {% if request.GET.is_available == 'true' %}checked{% endif %}
+                                               onchange="handleToggleSubmit(this, 'loader-available-mobile')">
+                                        <span class="absolute inset-0 bg-gray-200 rounded-full transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 dark:bg-neutral-700 dark:peer-checked:bg-blue-500"></span>
                                         <span class="absolute top-1/2 start-0.5 -translate-y-1/2 size-5 bg-white rounded-full shadow-xs transition-transform duration-200 ease-in-out peer-checked:translate-x-full dark:bg-neutral-400 dark:peer-checked:bg-white"></span>
-                                    </label>
-                                    <label for="hs-valid-toggle-switch5"
-                                           class="text-gray-800 dark:text-gray-100">فقط کالا های موجود</label>
-                                </div>
-                                <!-- TOGGLE SWITCH -->
-                                <div class="w-full justify-between flex items-center gap-x-3 py-4 px-2 xl:px-4"
-                                     dir="ltr">
-                                    <label for="hs-valid-toggle-switch6"
-                                           class="relative inline-block w-11 h-6 cursor-pointer">
-                                        <input type="checkbox" id="hs-valid-toggle-switch6" class="peer sr-only">
-                                        <span class="absolute inset-0 bg-gray-200 rounded-full transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 dark:bg-neutral-700 dark:peer-checked:bg-blue-500 peer-disabled:opacity-50 peer-disabled:pointer-events-none"></span>
-                                        <span class="absolute top-1/2 start-0.5 -translate-y-1/2 size-5 bg-white rounded-full shadow-xs transition-transform duration-200 ease-in-out peer-checked:translate-x-full dark:bg-neutral-400 dark:peer-checked:bg-white"></span>
-                                    </label>
-                                    <label for="hs-valid-toggle-switch6"
-                                           class="text-gray-800 dark:text-gray-100 flex items-center gap-x-2">
-                                        <img class="size-5" src="{% static "./images/svg/time.png" %}" alt="">
-                                        ارسال امروز
-                                    </label>
-                                </div>
-                                <!-- Accordion -->
-                                <div class="">
-                                    <button onclick="toggleAccordion(4)"
-                                            class="w-full flex justify-between items-center px-2 xl:px-4 py-4 text-gray-800 dark:text-gray-100">
-                                        <span>محدوده قیمت</span>
-                                        <span id="icon-1" class="text-gray-800 dark:text-gray-100">
-                                            <svg class="size-4 transition-transform duration-300">
-                                                <use href="#chevron-left"></use>
+                                        <div id="loader-available-mobile"
+                                             class="hidden absolute inset-0 bg-white/60 dark:bg-gray-800/60 rounded-full flex items-center justify-center z-10">
+                                            <svg class="animate-spin size-4 text-blue-600"
+                                                 xmlns="http://www.w3.org/2000/svg"
+                                                 fill="none"
+                                                 viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                                </path>
                                             </svg>
-                                        </span>
-                                    </button>
-                                    <div id="content-4"
-                                         class="price-slider max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
-                                        <div class="pb-3 text-gray-700 dark:text-gray-300 w-full px-4">
-                                            <div class="wrapper mt-5">
-                                                <div class="slider-bar">
-                                                    <div class="progress"></div>
-                                                </div>
-                                                <div class="range-input">
-                                                    <input type="range" min="0" max="100000" value="0" class="min-range" />
-                                                    <input type="range" min="0" max="100000" value="35000" class="max-range" />
-                                                </div>
-                                                <div class="price-input mt-4 text-gray-800 dark:text-gray-500">
-                                                    <div class="field justify-start">
-                                                        <span class="text-sm font-DanaMedium mr-2">تومان</span>
-                                                        <p class="min-input">0</p>
-                                                    </div>
-                                                    <div class="field justify-end">
-                                                        <span class="text-sm font-DanaMedium mr-2">تومان</span>
-                                                        <p class="max-input">350,000</p>
-                                                    </div>
-                                                </div>
-                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <!-- TOGGLE SWITCH -->
-                                <div class="w-full justify-between flex items-center gap-x-3 px-2 xl:px-4 py-4"
-                                     dir="ltr">
-                                    <label for="hs-valid-toggle-switch7"
-                                           class="relative inline-block w-11 h-6 cursor-pointer">
-                                        <input type="checkbox" id="hs-valid-toggle-switch7" class="peer sr-only">
-                                        <span class="absolute inset-0 bg-gray-200 rounded-full transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 dark:bg-neutral-700 dark:peer-checked:bg-blue-500 peer-disabled:opacity-50 peer-disabled:pointer-events-none"></span>
-                                        <span class="absolute top-1/2 start-0.5 -translate-y-1/2 size-5 bg-white rounded-full shadow-xs transition-transform duration-200 ease-in-out peer-checked:translate-x-full dark:bg-neutral-400 dark:peer-checked:bg-white"></span>
                                     </label>
-                                    <label for="hs-valid-toggle-switch7"
-                                           class="text-gray-800 dark:text-gray-100 flex items-center gap-x-2">
-                                        <img class="size-5" src="{% static "./images/svg/Seller.svg" %}" alt="">
-                                        ارسال فروشنده
+                                    <label for="toggle-available-mobile"
+                                           class="text-gray-800 dark:text-gray-100 font-medium">
+                                        فقط کالا های موجود
                                     </label>
                                 </div>
-                                <!-- TOGGLE SWITCH -->
-                                <div class="w-full justify-between flex items-center gap-x-3 px-2 xl:px-4 py-4"
+                                <div class="w-full justify-between flex items-center gap-x-3 py-4 px-2 xl:px-4 border-t dark:border-white/10"
                                      dir="ltr">
-                                    <label for="hs-valid-toggle-switch8"
+                                    <label for="toggle-amazing-mobile"
                                            class="relative inline-block w-11 h-6 cursor-pointer">
-                                        <input type="checkbox" id="hs-valid-toggle-switch8" class="peer sr-only">
-                                        <span class="absolute inset-0 bg-gray-200 rounded-full transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 dark:bg-neutral-700 dark:peer-checked:bg-blue-500 peer-disabled:opacity-50 peer-disabled:pointer-events-none"></span>
+                                        <input type="checkbox"
+                                               id="toggle-amazing-mobile"
+                                               name="is_amazing"
+                                               value="true"
+                                               class="peer sr-only"
+                                               {% if request.GET.is_amazing == 'true' %}checked{% endif %}
+                                               onchange="handleToggleSubmit(this, 'loader-amazing-mobile')">
+                                        <span class="absolute inset-0 bg-gray-200 rounded-full transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 dark:bg-neutral-700 dark:peer-checked:bg-blue-500"></span>
                                         <span class="absolute top-1/2 start-0.5 -translate-y-1/2 size-5 bg-white rounded-full shadow-xs transition-transform duration-200 ease-in-out peer-checked:translate-x-full dark:bg-neutral-400 dark:peer-checked:bg-white"></span>
+                                        <div id="loader-amazing-mobile"
+                                             class="hidden absolute inset-0 bg-white/60 dark:bg-gray-800/60 rounded-full flex items-center justify-center z-10">
+                                            <svg class="animate-spin size-4 text-blue-600"
+                                                 xmlns="http://www.w3.org/2000/svg"
+                                                 fill="none"
+                                                 viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                                </path>
+                                            </svg>
+                                        </div>
                                     </label>
-                                    <label for="hs-valid-toggle-switch8"
-                                           class="text-gray-800 dark:text-gray-100 flex items-center gap-x-1">
-                                        <img class="size-5" src="{% static "./images/svg/shop.png" %}" alt="">
-                                        خرید حضوری در تهران
+                                    <label for="toggle-amazing-mobile"
+                                           class="text-gray-800 dark:text-gray-100 flex items-center gap-x-2 cursor-pointer font-medium">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             fill="none"
+                                             viewBox="0 0 24 24"
+                                             stroke-width="1.5"
+                                             stroke="currentColor"
+                                             class="size-5 text-red-500">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 0 0 .495-7.468 5.99 5.99 0 0 0-1.925 3.547 5.975 5.975 0 0 1-2.133-1.001A3.75 3.75 0 0 0 12 18Z" />
+                                        </svg>
+                                        شگفت‌انگیز
+                                    </label>
+                                </div>
+                                <div class="w-full justify-between flex items-center gap-x-3 py-4 px-2 xl:px-4 border-t dark:border-white/10"
+                                     dir="ltr">
+                                    <label for="toggle-discount-mobile"
+                                           class="relative inline-block w-11 h-6 cursor-pointer">
+                                        <input type="checkbox"
+                                               id="toggle-discount-mobile"
+                                               name="has_discount"
+                                               value="true"
+                                               class="peer sr-only"
+                                               {% if request.GET.has_discount == 'true' %}checked{% endif %}
+                                               onchange="handleToggleSubmit(this, 'loader-discount-mobile')">
+                                        <span class="absolute inset-0 bg-gray-200 rounded-full transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 dark:bg-neutral-700 dark:peer-checked:bg-blue-500"></span>
+                                        <span class="absolute top-1/2 start-0.5 -translate-y-1/2 size-5 bg-white rounded-full shadow-xs transition-transform duration-200 ease-in-out peer-checked:translate-x-full dark:bg-neutral-400 dark:peer-checked:bg-white"></span>
+                                        <div id="loader-discount-mobile"
+                                             class="hidden absolute inset-0 bg-white/60 dark:bg-gray-800/60 rounded-full flex items-center justify-center z-10">
+                                            <svg class="animate-spin size-4 text-blue-600"
+                                                 xmlns="http://www.w3.org/2000/svg"
+                                                 fill="none"
+                                                 viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                                </path>
+                                            </svg>
+                                        </div>
+                                    </label>
+                                    <label for="toggle-discount-mobile"
+                                           class="text-gray-800 dark:text-gray-100 flex items-center gap-x-2 cursor-pointer font-medium">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             fill="none"
+                                             viewBox="0 0 24 24"
+                                             stroke-width="1.5"
+                                             stroke="currentColor"
+                                             class="size-5 text-blue-500">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
+                                        </svg>
+                                        فقط کالاهای تخفیف‌دار
                                     </label>
                                 </div>
                             </div>
@@ -678,13 +817,13 @@
                             </div>
                             <ul class="flex items-center gap-x-1 lg:gap-x-4 child:transition-all child:cursor-pointer child:rounded-lg child:px-1 child:py-1 child:text-sm child:lg:text-base">
                                 <button type="button"
-                                        onclick="submitOrdering('popular')"
-                                        class="{% if 'popular' in applied_ordering %}text-blue-500{% else %}text-gray-400 hover:text-gray-600{% endif %}">
+                                        onclick="submitOrdering('-popular')"
+                                        class="{% if '-popular' in applied_ordering %}text-blue-500{% else %}text-gray-400 hover:text-gray-600{% endif %}">
                                     محبوب ترین
                                 </button>
                                 <button type="button"
-                                        onclick="submitOrdering('best_seller')"
-                                        class="{% if 'best_seller' in applied_ordering %}text-blue-500{% else %}text-gray-400 hover:text-gray-600{% endif %}">
+                                        onclick="submitOrdering('-best_seller')"
+                                        class="{% if '-best_seller' in applied_ordering %}text-blue-500{% else %}text-gray-400 hover:text-gray-600{% endif %}">
                                     پرفروش ترین
                                 </button>
                                 <button type="button"
@@ -854,21 +993,54 @@
         <div class="overlay"></div>
         <div class="search-overlay"></div>
         <script>
-            function submitOrdering(orderValue) {
-                
-                document.getElementById('hidden-ordering-input').value = orderValue;
-                
-                document.getElementById('shop-filters-form').submit();
+            function cleanAndSubmitForm() {
+                const form = document.getElementById('shop-filters-form');
+
+                form.querySelectorAll('input').forEach(input => {
+                    if (input.name && input.value === "") {
+                        input.disabled = true; 
+                    }
+                });
+
+                const seenNames = new Set();
+                form.querySelectorAll('input:checked').forEach(input => {
+                    if (seenNames.has(input.name)) {
+                        input.disabled = true;
+                    } else {
+                        seenNames.add(input.name);
+                    }
+                });
+
+                form.submit();
             }
 
-            
+
+            function submitOrdering(orderValue) {
+                document.getElementById('hidden-ordering-input').value = orderValue;
+                cleanAndSubmitForm();
+            }
+
             function handleToggleSubmit(checkboxElem, loaderId) {
-                
                 document.getElementById(loaderId).classList.remove('hidden');
-                
                 checkboxElem.parentElement.classList.add('pointer-events-none');
-                
-                document.getElementById('shop-filters-form').submit();
+                document.querySelectorAll(`input[name="${checkboxElem.name}"]`).forEach(el => {
+                    el.checked = checkboxElem.checked;
+                });                
+                cleanAndSubmitForm(); 
+            }
+
+            function handleCheckboxSubmit(checkboxElem, loaderId) {
+                document.getElementById(loaderId).classList.remove('hidden');
+
+                if (checkboxElem.name === 'category' && checkboxElem.checked) {
+                    document.querySelectorAll('input[name="category"]').forEach(el => {
+                        if (el.value !== checkboxElem.value) {
+                            el.checked = false;
+                        }
+                    });
+                }
+
+                cleanAndSubmitForm();
             }
         </script>
     {% endblock content %}
