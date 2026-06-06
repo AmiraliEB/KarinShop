@@ -1,34 +1,34 @@
 services:
-  web:
-    build: .
-    command: pytest
-    restart: "no"
-    environment:
-      - DEBUG=False
-      - SECRET_KEY=ci-secret-key
-      - POSTGRES_DB=test_db
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_HOST=db
-      - POSTGRES_PORT=5432
-      - DATABASE_URL=postgres://postgres:postgres@db:5432/test_db
-    depends_on:
+      web:
+            build: .
+            command: pytest
+            restart: "no"
+            environment:
+                  - DEBUG=False
+                  - SECRET_KEY=ci-secret-key
+                  - POSTGRES_DB=test_db
+                  - POSTGRES_USER=postgres
+                  - POSTGRES_PASSWORD=postgres
+                  - POSTGRES_HOST=db
+                  - POSTGRES_PORT=5432
+                  - DATABASE_URL=postgres://postgres:postgres@db:5432/test_db
+            depends_on:
+                  db:
+                        condition: service_healthy
+
       db:
-        condition: service_healthy
+            restart: "no"
+            environment:
+                  POSTGRES_DB: test_db
+                  POSTGRES_USER: postgres
+                  POSTGRES_PASSWORD: postgres
+            healthcheck:
+                  test: [ "CMD-SHELL", "pg_isready -U test_user" ]
+                  interval: 5s
+                  timeout: 5s
+                  retries: 5
 
-  db:
-    restart: "no"
-    environment:
-      POSTGRES_DB: test_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-
-  nginx:
-    entrypoint: [ "echo", "Nginx disabled for tests" ]
-    restart: "no"
-    profiles: [ "donotstart" ]
+      nginx:
+            entrypoint: [ "echo", "Nginx disabled for tests" ]
+            restart: "no"
+            profiles: [ "donotstart" ]
