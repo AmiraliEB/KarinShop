@@ -185,6 +185,10 @@
                        name="ordering"
                        id="hidden-ordering-input"
                        value="{{ request.GET.ordering|default:'-popular' }}">
+                <input type="hidden"
+                       name="page"
+                       id="hidden-page-input"
+                       value="{{ request.GET.page|default:'1' }}">
                 <div class="lg:sticky top-1 h-fit lg:w-1/4 hidden lg:flex flex-col gap-y-4 items-center shadow rounded-lg py-4 dark:bg-gray-800 bg-white">
                     <!-- TITLE -->
                     <div class="flex items-center justify-between w-full px-2 xl:px-4">
@@ -932,12 +936,13 @@
                             <ul class="flex items-center gap-x-3 child:flex child:items-center child:justify-center child:w-8 child:h-8 child:cursor-pointer child:shadow child:rounded-lg child:transition-all child:duration-300">
                                 {% if products_by_page.has_previous %}
                                     <li class="bg-white dark:bg-gray-800 hover:bg-blue-500 dark:hover:bg-blue-500 hover:text-white">
-                                        <a href="?page={{ products_by_page.previous_page_number }}"
-                                           class="flex items-center justify-center w-full h-full">
+                                        <button type="button"
+                                                onclick="goToPage({{ products_by_page.previous_page_number }})"
+                                                class="flex items-center justify-center w-full h-full">
                                             <svg class="size-5 rotate-180">
                                                 <use href="#chevron-left"></use>
                                             </svg>
-                                        </a>
+                                        </button>
                                     </li>
                                 {% else %}
                                     <li class="bg-gray-100 dark:bg-gray-700 text-gray-400">
@@ -955,8 +960,11 @@
                                         </li>
                                     {% elif page_num > products_by_page.number|add:'-3' and page_num < products_by_page.number|add:'3' %}
                                         <li class="bg-white dark:bg-gray-800 hover:bg-blue-500 dark:hover:bg-blue-500 hover:text-white">
-                                            <a href="?page={{ page_num }}"
-                                               class="flex items-center justify-center w-full h-full">{{ page_num }}</a>
+                                            <button type="button"
+                                                    onclick="goToPage({{ page_num }})"
+                                                    class="flex items-center justify-center w-full h-full">
+                                                {{ page_num }}
+                                            </button>
                                         </li>
                                     {% elif page_num == products_by_page.number|add:'-3' or page_num == products_by_page.number|add:'3' %}
                                         <li class="bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 cursor-default">
@@ -966,16 +974,17 @@
                                 {% endfor %}
                                 {% if products_by_page.has_next %}
                                     <li class="bg-white dark:bg-gray-800 hover:bg-blue-500 dark:hover:bg-blue-500 hover:text-white">
-                                        <a href="?page={{ products_by_page.next_page_number }}"
-                                           class="flex items-center justify-center w-full h-full">
+                                        <button type="button"
+                                                onclick="goToPage({{ products_by_page.next_page_number }})"
+                                                class="flex items-center justify-center w-full h-full">
                                             <svg class="size-5">
                                                 <use href="#chevron-left"></use>
                                             </svg>
-                                        </a>
+                                        </button>
                                     </li>
                                 {% else %}
                                     <li class="bg-gray-100 dark:bg-gray-700 text-gray-400 cursor-not-allowed">
-                                        <span class="flex items-center justify-center w-full h-full">
+                                        <span class="flex items-center justify-center w-full h-full cursor-not-allowed">
                                             <svg class="size-5">
                                                 <use href="#chevron-left"></use>
                                             </svg>
@@ -1041,6 +1050,10 @@
                     });
                 }
 
+                cleanAndSubmitForm();
+            }
+            function goToPage(pageNumber) {
+                document.getElementById('hidden-page-input').value = pageNumber;
                 cleanAndSubmitForm();
             }
         </script>
