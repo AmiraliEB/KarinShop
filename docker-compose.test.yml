@@ -7,6 +7,8 @@ services:
       - DEBUG=False
       - SECRET_KEY=ci-secret-key
       - POSTGRES_DB=test_db
+      - POSTGRES_USER=test_user
+      - POSTGRES_PASSWORD=test_password
     depends_on:
       db:
         condition: service_healthy
@@ -15,8 +17,10 @@ services:
     restart: "no"
     environment:
       POSTGRES_DB: test_db
+      POSTGRES_USER: test_user
+      POSTGRES_PASSWORD: test_password
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      test: [ "CMD-SHELL", "pg_isready -U test_user" ]
       interval: 5s
       timeout: 5s
       retries: 5
