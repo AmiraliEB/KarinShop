@@ -12,7 +12,7 @@ class ProductFilter(django_filters.FilterSet):
             (
                 "min_final_price",
                 "price",
-            ),  # min_final_price is a field in ProductVariant model that returns the minimum price of the variant's products
+            ),  # min_final_price is a field in ProductVariant model that returns the minimum price
         ),
     )
     category = django_filters.CharFilter(field_name="parent_product__category__code", lookup_expr="exact")
