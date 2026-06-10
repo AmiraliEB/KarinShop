@@ -126,7 +126,7 @@
             <div class="mobile-menu z-50 flex flex-col">
                 <!--  MENU MOBILE header -->
                 <div class="flex w-full items-center justify-between border-b-normal pb-4">
-                    <a href="index.html" class="text-xl font-MorabbaMedium">
+                    <a href="{% url "homepage" %}" class="text-xl font-MorabbaMedium">
                         <span class="text-blue-500">کارین</span> شاپ
                     </a>
                     <button class="close-menu-mobile">
@@ -432,7 +432,7 @@
                 </ul>
             </div>
             <!-- Logo -->
-            <a href="index.html" class="flex flex-col text-center">
+            <a href="{% url "homepage" %}mepage" %}" class="flex flex-col text-center">
                 <span class="font-MorabbaMedium text-3xl flex items-center">
                     <span class="text-blue-500">کارین</span> شاپ
                 </span>
@@ -472,80 +472,144 @@
             </div>
             <div class="w-full space-y-4">
                 <!-- Result -->
-                <div ">
-                    <span class=" flex items-center text-sm gap-x-1 text-gray-600 dark:text-gray-200">
-                        <p>
-                            نتیجه جستجو : <span class="font-DanaMedium text-blue-400">iphone</span>
-                        </p>
-                    </span>
-                    <ul class="pt-4 text-gray-500 dark:text-gray-300 flex flex-col gap-y-4 child:flex-between child:cursor-pointer">
-                        <li>
-                            <a href="#" class="flex items-center gap-x-2">
-                                <svg class="size-5">
-                                    <use href="#search" />
-                                </svg>
-                                آیفون 14
-                            </a>
-                            <svg class="size-4">
-                                <use href="#arrow-up-right" />
-                            </svg>
-                        </li>
-                        <li>
-                            <a href="#" class="flex items-center gap-x-2">
-                                <svg class="size-5">
-                                    <use href="#search" />
-                                </svg>
-                                قاب آیفون
-                            </a>
-                            <svg class="size-4">
-                                <use href="#arrow-up-right" />
-                            </svg>
-                        </li>
-                        <li>
-                            <a href="#" class="flex items-center gap-x-2">
-                                <svg class="size-5">
-                                    <use href="#search" />
-                                </svg>
-                                کاور ایفون 16
-                            </a>
-                            <svg class="size-4">
-                                <use href="#arrow-up-right" />
-                            </svg>
-                        </li>
-                    </ul>
-                </div>
-                <!-- Trend -->
-                <div class="pt-4">
-                    <span class="flex items-center gap-x-1 text-sm text-gray-500 dark:text-gray-200">
-                        <svg class="size-4">
-                            <use href="#fire" />
-                        </svg>
-                        <p>جستجو های پرطرفدار :</p>
-                    </span>
-                    <ul class="w-full flex items-center gap-1.5 mt-3 child:search-modal-list-item">
-                        <li>
-                            <a href="#">#آیفون</a>
-                        </li>
-                        <li>
-                            <a href="#">#لپ تاپ</a>
-                        </li>
-                        <li>
-                            <a href="#">#هدفون</a>
-                        </li>
-                        <li>
-                            <a href="#">#هلدر</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <!-- bottom Navbar-->
-        <ul class="bottom-navbar">
-            <li class="dark:text-sky-400 text-blue-500 font-DanaMedium">
-                <svg class="size-5">
-                    <use href="#home" />
-                </svg>
-                <a href="index.html">خانه</a>
+                <div "
+                     span
+                     class=" flex items-center text-sm gap-x-1 text-gray-600 dark:text-gray-200"
+                     p
+                     نتیجه
+                     جستجو
+                     :
+                     span
+                     class="font-DanaMedium text-blue-400"
+                     iphone
+                     /span
+                     /p
+                     /span
+                     ul
+                     class="pt-4 text-gray-500 dark:text-gray-300 flex flex-col gap-y-4 child:flex-between child:cursor-pointer"
+                     li
+                     a
+                     href="#"
+                     class="flex items-center gap-x-2"
+                     svg
+                     class="size-5"
+                     use
+                     href="#search"
+                     /svg
+                     آیفون
+                     14
+                     /a
+                     svg
+                     class="size-4"
+                     use
+                     href="#arrow-up-right"
+                     /svg
+                     /li
+                     li
+                     a
+                     href="#"
+                     class="flex items-center gap-x-2"
+                     svg
+                     class="size-5"
+                     use
+                     href="#search"
+                     /svg
+                     قاب
+                     آیفون
+                     /a
+                     svg
+                     class="size-4"
+                     use
+                     href="#arrow-up-right"
+                     /svg
+                     /li
+                     li
+                     a
+                     href="#"
+                     class="flex items-center gap-x-2"
+                     svg
+                     class="size-5"
+                     use
+                     href="#search"
+                     /svg
+                     کاور
+                     ایفون
+                     16
+                     /a
+                     svg
+                     class="size-4"
+                     use
+                     href="#arrow-up-right"
+                     /svg
+                     /li
+                     /ul
+                     /div
+                     --
+                     Trend
+                     --
+                     div
+                     class="pt-4"
+                     span
+                     class="flex items-center gap-x-1 text-sm text-gray-500 dark:text-gray-200"
+                     svg
+                     class="size-4"
+                     use
+                     href="#fire"
+                     /svg
+                     p
+                     جستجو
+                     های
+                     پرطرفدار
+                     :
+                     /p
+                     /span
+                     ul
+                     class="w-full flex items-center gap-1.5 mt-3 child:search-modal-list-item"
+                     li
+                     a
+                     href="#"
+                     آیفون
+                     /a
+                     /li
+                     li
+                     a
+                     href="#"
+                     لپ
+                     تاپ
+                     /a
+                     /li
+                     li
+                     a
+                     href="#"
+                     هدفون
+                     /a
+                     /li
+                     li
+                     a
+                     href="#"
+                     هلدر
+                     /a
+                     /li
+                     /ul
+                     /div
+                     /div
+                     /div
+                     --
+                     bottom
+                     Navbar--
+                     ul
+                     class="bottom-navbar"
+                     li
+                     class="dark:text-sky-400 text-blue-500 font-DanaMedium"
+                     svg
+                     class="size-5"
+                     use
+                     href="#home"
+                     /svg
+                     a
+                     href="{% url "homepage" %}mepage"
+                     ">
+                خانه</a>
             </li>
             <li>
                 <svg class="size-5">
@@ -572,7 +636,7 @@
         <nav class="flex mt-8" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
                 <li class="inline-flex items-center">
-                    <a href="index.html"
+                    <a href="{% url "homepage" %}"
                        class="inline-flex items-center text-sm gap-x-1  text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
                         <svg class="w-4 h-4 mb-0.5">
                             <use href="#home" />
@@ -637,7 +701,7 @@
                     </li>
                 </ul>
                 <div class="w-full mt-4 flex items-center justify-center gap-x-2">
-                    <a href="index.html"
+                    <a href="{% url "homepage" %}"
                        class="w-1/3 py-2 flex items-center justify-center rounded-lg bg-blue-500 text-gray-50 hover:bg-blue-600 transition-all">
                         بازگشت
                     </a>
