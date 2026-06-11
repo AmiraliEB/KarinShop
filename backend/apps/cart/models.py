@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import F, Sum
 from django.utils.translation import gettext_lazy as _
-from products.models import Product, ProductVariant
+from products.models import Product
 
 User = get_user_model()
 
