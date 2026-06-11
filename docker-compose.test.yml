@@ -15,6 +15,8 @@ services:
             restart: "no"
             environment:
                   POSTGRES_DB: test_db
+                  POSTGRES_USER: postgres
+                  POSTGRES_PASSWORD: postgres
             healthcheck:
                   test: [ "CMD-SHELL", "pg_isready -U postgres" ]
                   interval: 5s
@@ -22,6 +24,6 @@ services:
                   retries: 5
 
       nginx:
-            profiles: [ "donotstart" ]
-            volumes: []
+            entrypoint: [ "echo", "Nginx disabled for tests" ]
             restart: "no"
+            profiles: [ "donotstart" ]
