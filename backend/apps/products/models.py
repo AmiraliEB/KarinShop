@@ -191,34 +191,6 @@ class ProductVariant(models.Model):
             return min(product.final_price for product in products)
         return 0
 
-    def has_discount(self):
-        return self.products.first().has_discount()
-
-    def discount_percentage(self):
-        return self.products.first().discount_percentage()
-
-    @property
-    def initial_price(self):
-        return self.products.first().initial_price
-
-    @property
-    def final_price(self):
-        return self.products.first().final_price
-
-    def has_discount(self):
-        return self.products.first().has_discount()
-
-    def discount_percentage(self):
-        return self.products.first().discount_percentage()
-
-    @property
-    def initial_price(self):
-        return self.products.first().initial_price
-
-    @property
-    def final_price(self):
-        return self.products.first().final_price
-
     def __str__(self):
         return self._full_name if self._full_name else f"Product {self.id}"
 

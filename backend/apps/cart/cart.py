@@ -2,7 +2,7 @@ from typing import Any, Iterator
 
 from django.db.models import F, QuerySet, Sum
 from django.http import HttpRequest
-from products.models import Product, ProductVariant
+from products.models import Product
 
 from .models import Cart as DBCart
 from .models import CartItem

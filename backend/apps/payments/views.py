@@ -3,7 +3,6 @@ from datetime import datetime
 from typing import Any
 
 from cart.cart import get_cart
-from cart.models import Cart, CartItem
 from django.core.exceptions import BadRequest
 from django.db import transaction
 from django.db.models import BooleanField, Case, F, QuerySet, Value, When
