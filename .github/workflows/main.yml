@@ -29,21 +29,9 @@ jobs:
         run: |
           flake8 .
 
-      - name: Create .env file for testing
-        run: |
-          cat > .env << 'EOF'
-          DEBUG=False
-          SECRET_KEY=test-key
-          POSTGRES_DB=${{ secrets.POSTGRES_DB }}
-          POSTGRES_USER=${{ secrets.POSTGRES_USER }}
-          POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_HOST=db-test
-          POSTGRES_PORT=5432
-          DATABASE_URL=postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@db:5432/${{ secrets.POSTGRES_DB }}
-          DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
-          EOF
-      
       - name: Build and Run Tests
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         run: |
           docker compose -f docker-compose.prod.yml -f docker-compose.test.yml up --build --exit-code-from web
       
@@ -75,22 +63,3 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/django-backend:v1, ${{ secrets.DOCKERHUB_USERNAME }}/django-backend:${{ github.sha }}
-  
-  # deploy:
-  #   name: Deploy to VPS
-  #   needs: build-and-push
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Deploy to VPS
-  #       uses: appleboy/ssh-action@master
-  #       with:
-  #         host: ${{ secrets.SERVER_IP }}
-  #         username: ${{ secrets.SERVER_USER }}
-  #         key: ${{ secrets.SSH_PRIVATE_KEY }}
-  #         script: |
-  #           cd /var/www/KarinShop
-  #           docker-compose pull
-  #           docker-compose up -d
-  #           docker-compose exec -T web python manage.py migrate
-  #           docker-compose exec -T web python manage.py collectstatic --noinput
-  #           docker image prune -f
