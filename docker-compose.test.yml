@@ -7,6 +7,8 @@ services:
                   - DEBUG=False
                   - SECRET_KEY=ci-secret-key
                   - POSTGRES_DB=test_db
+                  - POSTGRES_USER=postgres
+                  - POSTGRES_PASSWORD=postgres
             depends_on:
                   db:
                         condition: service_healthy
