@@ -36,3 +36,8 @@ class HomePageView(View):
 class DashboardView(generic.View):
     def get(self, request, *args, **kwargs):
         return render(request=request, template_name="core/dashboard.html")
+
+
+class AboutPageView(generic.View):
+    def get(self, request, *args, **kwargs):
+        return render(request=request, template_name="core/about.html")
