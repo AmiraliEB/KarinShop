@@ -236,7 +236,7 @@
                         </div>
                         <div class="w-full grid grid-cols-12 gap-2 mt-2">
                             {% for image_obj in album_images %}
-                                {% if forloop.first or forloop.last %}
+                                {% if forloop.last %}
                                     <div class="col-span-3 relative overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 open-sliderModal aspect-square cursor-pointer flex justify-center items-center">
                                         <svg class="absolute size-8 text-white z-10 drop-shadow-md">
                                             <use href="#ellipsis"></use>
