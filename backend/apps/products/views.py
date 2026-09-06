@@ -186,7 +186,7 @@ class ShopView(View):
                 ),
                 Value(0),
             ),
-        ).order_by("-recent_sales")
+        )
         product_filter = ProductFilter(request.GET, queryset=products_qs)
         products = product_filter.qs
 
@@ -196,7 +196,7 @@ class ShopView(View):
         if not applied_ordering:
             applied_ordering = ["popular"]
 
-        paginator = Paginator(products, 6)
+        paginator = Paginator(products, 3)
         page_number = self.request.GET.get("page")
         products_filter_by_page_number = paginator.get_page(page_number)
         context["products_by_page"] = products_filter_by_page_number
