@@ -160,6 +160,7 @@ class ShopView(View):
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         context = {}
         applied_ordering = []
+        ordering_param = request.GET.get("ordering", "-popular")
         last_month = timezone.now() - timedelta(days=30)
         products_qs = (
             ProductVariant.objects.select_related("parent_product")
@@ -167,26 +168,28 @@ class ShopView(View):
             .with_display_price()
             .all()
         )
-        products_qs = products_qs.annotate(
-            paid_items_count=Coalesce(
-                Sum(
-                    "products__order_items__quantity",
-                    filter=Q(
-                        products__order_items__order__is_paid=True,
+        if any([key in ordering_param for key in ["is_amazing", "best_seller", "popular"]]):
+
+            products_qs = products_qs.annotate(
+                paid_items_count=Coalesce(
+                    Sum(
+                        "products__order_items__quantity",
+                        filter=Q(
+                            products__order_items__order__is_paid=True,
+                        ),
                     ),
+                    Value(0),
                 ),
-                Value(0),
-            ),
-            recent_sales=Coalesce(
-                Sum(
-                    "products__order_items__quantity",
-                    filter=Q(
-                        products__order_items__order__datetime_created__gte=last_month,
+                recent_sales=Coalesce(
+                    Sum(
+                        "products__order_items__quantity",
+                        filter=Q(
+                            products__order_items__order__datetime_created__gte=last_month,
+                        ),
                     ),
+                    Value(0),
                 ),
-                Value(0),
-            ),
-        )
+            )
         product_filter = ProductFilter(request.GET, queryset=products_qs)
         products = product_filter.qs
 
