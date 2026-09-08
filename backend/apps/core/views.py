@@ -41,3 +41,13 @@ class DashboardView(generic.View):
 class AboutPageView(generic.View):
     def get(self, request, *args, **kwargs):
         return render(request=request, template_name="core/about.html")
+
+
+class ContactPageView(generic.View):
+    def get(self, request, *args, **kwargs):
+        return render(request=request, template_name="core/contact-us.html")
+
+
+class QuestionPageView(generic.View):
+    def get(self, request, *args, **kwargs):
+        return render(request=request, template_name="core/questions.html")
