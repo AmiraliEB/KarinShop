@@ -176,716 +176,675 @@
                 </li>
             </ol>
         </nav>
+        <!-- SIDE FILTER BOX -->
         <div class="flex flex-col lg:flex-row gap-4 mt-5">
-            <!-- SIDE FILTER BOX -->
             <form method="get"
                   action=""
-                  id="shop-filters-form"
-                  class="flex flex-col lg:flex-row gap-4 mt-5">
+                  class="lg:sticky top-1 h-fit lg:w-1/4 hidden lg:flex flex-col gap-y-4 items-center shadow rounded-lg py-4 dark:bg-gray-800 bg-white">
                 <input type="hidden"
                        name="ordering"
-                       id="hidden-ordering-input"
                        value="{{ request.GET.ordering|default:'-popular' }}">
-                <div class="lg:sticky top-1 h-fit lg:w-1/4 hidden lg:flex flex-col gap-y-4 items-center shadow rounded-lg py-4 dark:bg-gray-800 bg-white">
-                    <!-- TITLE -->
-                    <div class="flex items-center justify-between w-full px-2 xl:px-4">
-                        <span class="flex items-center gap-x-1">
-                            <p class="font-DanaMedium text-gray-700 dark:text-gray-200 text-lg">فیلترها</p>
-                        </span>
-                        <a href="{{ request.path }}"
-                           class="text-blue-500 dark:text-blue-400 text-sm cursor-pointer">حذف فیلتر‌ها</a>
-                    </div>
-                    <!-- FILTERS -->
-                    <div class="w-full divide-y divide-slate-200 dark:divide-gray-700/20">
-                        <!-- Accordion -->
-                        <div class="">
-                            <button type="button"
-                                    onclick="toggleAccordion(1)"
-                                    class="w-full flex justify-between items-center px-2 xl:px-4 pt-4 mb-4 text-gray-800 dark:text-gray-100">
-                                <span>دسته بندی</span>
-                                <span id="icon-1" class="text-gray-800 dark:text-gray-100">
-                                    <svg class="size-4 transition-transform duration-300">
-                                        <use href="#chevron-left"></use>
-                                    </svg>
-                                </span>
-                            </button>
-                            <div id="content-1"
-                                 class="max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
-                                <div class="pb-3 text-gray-700 dark:text-gray-300 w-full flex flex-col gap-y-1.5">
-                                    <div class="inline-flex items-center mr-2.5 mt-1">
-                                        <label class="relative flex cursor-pointer items-center rounded-full p-3"
-                                               for="category-all"
-                                               data-ripple-dark="true">
-                                            <input id="category-all"
-                                                   name="category"
-                                                   value=""
-                                                   type="radio"
-                                                   {% if not request.GET.category %}checked{% endif %}
-                                                   class="peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-slate-300 shadow hover:shadow-md transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-slate-400 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-slate-400 hover:before:opacity-10 dark:bg-gray-600 dark:checked:bg-blue-500 darKchecked:bg-blue-500" />
-                                            <span class="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
-                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                     class="h-2.5 w-2.5"
-                                                     viewBox="0 0 16 16"
-                                                     fill="currentColor">
-                                                    <circle data-name="ellipse" cx="8" cy="8" r="8"></circle>
-                                                </svg>
-                                            </span>
-                                        </label>
-                                        <label class="cursor-pointer text-gray-800 dark:text-gray-400 mr-1 flex items-center gap-x-2"
-                                               for="category-all">همه کالاها</label>
-                                    </div>
-                                    <div class="inline-flex items-center mr-2.5">
-                                        <label class="relative flex cursor-pointer items-center rounded-full p-3"
-                                               for="category-mobile"
-                                               data-ripple-dark="true">
-                                            <input id="category-mobile"
-                                                   name="category"
-                                                   value="smart phone"
-                                                   type="radio"
-                                                   {% if request.GET.category == 'smart phone' %}checked{% endif %}
-                                                   class="peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-slate-300 shadow hover:shadow-md transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-slate-400 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-slate-400 hover:before:opacity-10 dark:bg-gray-600 dark:checked:bg-blue-500 darKchecked:bg-blue-500" />
-                                            <span class="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
-                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                     class="h-2.5 w-2.5"
-                                                     viewBox="0 0 16 16"
-                                                     fill="currentColor">
-                                                    <circle data-name="ellipse" cx="8" cy="8" r="8"></circle>
-                                                </svg>
-                                            </span>
-                                        </label>
-                                        <label class="cursor-pointer text-gray-800 dark:text-gray-400 mr-1 flex items-center gap-x-2"
-                                               for="category-mobile">موبایل</label>
-                                    </div>
-                                    <div class="inline-flex items-center mr-2.5">
-                                        <label class="relative flex cursor-pointer items-center rounded-full p-3"
-                                               for="category-laptop">
-                                            <input id="category-laptop"
-                                                   name="category"
-                                                   value="laptop"
-                                                   type="radio"
-                                                   {% if request.GET.category == 'laptop' %}checked{% endif %}
-                                                   class="peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-slate-300 shadow hover:shadow-md transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-slate-400 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-slate-400 hover:before:opacity-10 dark:bg-gray-600 dark:checked:bg-blue-500" />
-                                            <span class="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
-                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                     class="h-2.5 w-2.5"
-                                                     viewBox="0 0 16 16"
-                                                     fill="currentColor">
-                                                    <circle cx="8" cy="8" r="8"></circle>
-                                                </svg>
-                                            </span>
-                                        </label>
-                                        <label class="cursor-pointer text-gray-800 dark:text-gray-400 mr-1 flex items-center gap-x-2"
-                                               for="category-laptop">لپ تاپ</label>
-                                    </div>
-                                    <div class="inline-flex items-center mr-2.5">
-                                        <label class="relative flex cursor-pointer items-center rounded-full p-3"
-                                               for="category-headphone">
-                                            <input id="category-headphone"
-                                                   name="category"
-                                                   value="headphone"
-                                                   type="radio"
-                                                   {% if request.GET.category == 'headphone' %}checked{% endif %}
-                                                   class="peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-slate-300 shadow hover:shadow-md transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-slate-400 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-slate-400 hover:before:opacity-10 dark:bg-gray-600 dark:checked:bg-blue-500" />
-                                            <span class="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
-                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                     class="h-2.5 w-2.5"
-                                                     viewBox="0 0 16 16"
-                                                     fill="currentColor">
-                                                    <circle cx="8" cy="8" r="8"></circle>
-                                                </svg>
-                                            </span>
-                                        </label>
-                                        <label class="cursor-pointer text-gray-800 dark:text-gray-400 mr-1 flex items-center gap-x-2"
-                                               for="category-headphone">هدفون، هدست</label>
-                                    </div>
+                <!-- TITLE -->
+                <div class="flex items-center justify-between w-full px-2 xl:px-4">
+                    <span class="flex items-center gap-x-1">
+                        <p class="font-DanaMedium text-gray-700 dark:text-gray-200 text-lg">فیلترها</p>
+                    </span>
+                    <a href="{{ request.path }}"
+                       class="text-blue-500 dark:text-blue-400 text-sm cursor-pointer">حذف فیلتر‌ها</a>
+                </div>
+                <!-- FILTERS -->
+                <div class="w-full divide-y divide-slate-200 dark:divide-gray-700/20">
+                    <!-- Accordion -->
+                    <div class="">
+                        <button type="button"
+                                onclick="toggleAccordion(1)"
+                                class="w-full flex justify-between items-center px-2 xl:px-4 pt-4 mb-4 text-gray-800 dark:text-gray-100">
+                            <span>دسته بندی</span>
+                            <span id="icon-1" class="text-gray-800 dark:text-gray-100">
+                                <svg class="size-4 transition-transform duration-300">
+                                    <use href="#chevron-left"></use>
+                                </svg>
+                            </span>
+                        </button>
+                        <div id="content-1"
+                             class="max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+                            <div class="pb-3 text-gray-700 dark:text-gray-300 w-full flex flex-col gap-y-1.5">
+                                <div class="inline-flex items-center mr-2.5 mt-1">
+                                    <label class="relative flex cursor-pointer items-center rounded-full p-3"
+                                           for="category-all"
+                                           data-ripple-dark="true">
+                                        <input id="category-all"
+                                               name="category"
+                                               value=""
+                                               type="radio"
+                                               {% if not request.GET.category %}checked{% endif %}
+                                               class="peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-slate-300 shadow hover:shadow-md transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-slate-400 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-slate-400 hover:before:opacity-10 dark:bg-gray-600 dark:checked:bg-blue-500 darKchecked:bg-blue-500" />
+                                        <span class="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                 class="h-2.5 w-2.5"
+                                                 viewBox="0 0 16 16"
+                                                 fill="currentColor">
+                                                <circle data-name="ellipse" cx="8" cy="8" r="8"></circle>
+                                            </svg>
+                                        </span>
+                                    </label>
+                                    <label class="cursor-pointer text-gray-800 dark:text-gray-400 mr-1 flex items-center gap-x-2"
+                                           for="category-all">همه کالاها</label>
+                                </div>
+                                <div class="inline-flex items-center mr-2.5">
+                                    <label class="relative flex cursor-pointer items-center rounded-full p-3"
+                                           for="category-mobile"
+                                           data-ripple-dark="true">
+                                        <input id="category-mobile"
+                                               name="category"
+                                               value="smart phone"
+                                               type="radio"
+                                               {% if request.GET.category == 'smart phone' %}checked{% endif %}
+                                               class="peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-slate-300 shadow hover:shadow-md transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-slate-400 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-slate-400 hover:before:opacity-10 dark:bg-gray-600 dark:checked:bg-blue-500 darKchecked:bg-blue-500" />
+                                        <span class="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                 class="h-2.5 w-2.5"
+                                                 viewBox="0 0 16 16"
+                                                 fill="currentColor">
+                                                <circle data-name="ellipse" cx="8" cy="8" r="8"></circle>
+                                            </svg>
+                                        </span>
+                                    </label>
+                                    <label class="cursor-pointer text-gray-800 dark:text-gray-400 mr-1 flex items-center gap-x-2"
+                                           for="category-mobile">موبایل</label>
+                                </div>
+                                <div class="inline-flex items-center mr-2.5">
+                                    <label class="relative flex cursor-pointer items-center rounded-full p-3"
+                                           for="category-laptop">
+                                        <input id="category-laptop"
+                                               name="category"
+                                               value="laptop"
+                                               type="radio"
+                                               {% if request.GET.category == 'laptop' %}checked{% endif %}
+                                               class="peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-slate-300 shadow hover:shadow-md transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-slate-400 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-slate-400 hover:before:opacity-10 dark:bg-gray-600 dark:checked:bg-blue-500" />
+                                        <span class="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                 class="h-2.5 w-2.5"
+                                                 viewBox="0 0 16 16"
+                                                 fill="currentColor">
+                                                <circle cx="8" cy="8" r="8"></circle>
+                                            </svg>
+                                        </span>
+                                    </label>
+                                    <label class="cursor-pointer text-gray-800 dark:text-gray-400 mr-1 flex items-center gap-x-2"
+                                           for="category-laptop">لپ تاپ</label>
+                                </div>
+                                <div class="inline-flex items-center mr-2.5">
+                                    <label class="relative flex cursor-pointer items-center rounded-full p-3"
+                                           for="category-headphone">
+                                        <input id="category-headphone"
+                                               name="category"
+                                               value="headphone"
+                                               type="radio"
+                                               {% if request.GET.category == 'headphone' %}checked{% endif %}
+                                               class="peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-slate-300 shadow hover:shadow-md transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-slate-400 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-slate-400 hover:before:opacity-10 dark:bg-gray-600 dark:checked:bg-blue-500" />
+                                        <span class="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                 class="h-2.5 w-2.5"
+                                                 viewBox="0 0 16 16"
+                                                 fill="currentColor">
+                                                <circle cx="8" cy="8" r="8"></circle>
+                                            </svg>
+                                        </span>
+                                    </label>
+                                    <label class="cursor-pointer text-gray-800 dark:text-gray-400 mr-1 flex items-center gap-x-2"
+                                           for="category-headphone">هدفون، هدست</label>
                                 </div>
                             </div>
                         </div>
-                        <!-- TOGGLE SWITCH -->
-                        <div class="w-full justify-between flex items-center gap-x-3 px-2 xl:px-4 py-4"
-                             dir="ltr">
-                            <label for="toggle-available"
-                                   class="relative inline-block w-11 h-6 cursor-pointer">
-                                <input type="checkbox"
-                                       id="toggle-available"
-                                       name="is_available"
-                                       value="true"
-                                       class="peer sr-only"
-                                       {% if request.GET.is_available == 'true' %}checked{% endif %}>
-                                <span class="absolute inset-0 bg-gray-200 rounded-full transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 dark:bg-neutral-700 dark:peer-checked:bg-blue-500"></span>
-                                <span class="absolute top-1/2 start-0.5 -translate-y-1/2 size-5 bg-white rounded-full shadow-xs transition-transform duration-200 ease-in-out peer-checked:translate-x-full dark:bg-neutral-400 dark:peer-checked:bg-white"></span>
-                            </label>
-                            <label for="toggle-available" class="text-gray-800 dark:text-gray-100">فقط کالا های موجود</label>
-                        </div>
-                        <div class="w-full justify-between flex items-center gap-x-3 py-4 px-2 xl:px-4 border-t dark:border-white/10"
-                             dir="ltr">
-                            <label for="toggle-amazing"
-                                   class="relative inline-block w-11 h-6 cursor-pointer">
-                                <input type="checkbox"
-                                       id="toggle-amazing"
-                                       name="is_amazing"
-                                       value="true"
-                                       class="peer sr-only"
-                                       {% if request.GET.is_amazing == 'true' %}checked{% endif %}>
-                                <span class="absolute inset-0 bg-gray-200 rounded-full transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 dark:bg-neutral-700 dark:peer-checked:bg-blue-500"></span>
-                                <span class="absolute top-1/2 start-0.5 -translate-y-1/2 size-5 bg-white rounded-full shadow-xs transition-transform duration-200 ease-in-out peer-checked:translate-x-full dark:bg-neutral-400 dark:peer-checked:bg-white"></span>
-                            </label>
-                            <label for="toggle-amazing"
-                                   class="text-gray-800 dark:text-gray-100 flex items-center gap-x-2 cursor-pointer font-medium">
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                     fill="none"
-                                     viewBox="0 0 24 24"
-                                     stroke-width="1.5"
-                                     stroke="currentColor"
-                                     class="size-5 text-red-500">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 0 0 .495-7.468 5.99 5.99 0 0 0-1.925 3.547 5.975 5.975 0 0 1-2.133-1.001A3.75 3.75 0 0 0 12 18Z" />
-                                </svg>
-                                شگفت‌انگیز
-                            </label>
-                        </div>
-                        <div class="w-full justify-between flex items-center gap-x-3 py-4 px-2 xl:px-4 border-t dark:border-white/10"
-                             dir="ltr">
-                            <label for="toggle-discount"
-                                   class="relative inline-block w-11 h-6 cursor-pointer">
-                                <input type="checkbox"
-                                       id="toggle-discount"
-                                       name="has_discount"
-                                       value="true"
-                                       class="peer sr-only"
-                                       {% if request.GET.has_discount == 'true' %}checked{% endif %}>
-                                <span class="absolute inset-0 bg-gray-200 rounded-full transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 dark:bg-neutral-700 dark:peer-checked:bg-blue-500"></span>
-                                <span class="absolute top-1/2 start-0.5 -translate-y-1/2 size-5 bg-white rounded-full shadow-xs transition-transform duration-200 ease-in-out peer-checked:translate-x-full dark:bg-neutral-400 dark:peer-checked:bg-white"></span>
-                            </label>
-                            <label for="toggle-discount"
-                                   class="text-gray-800 dark:text-gray-100 flex items-center gap-x-2 cursor-pointer font-medium">
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                     fill="none"
-                                     viewBox="0 0 24 24"
-                                     stroke-width="1.5"
-                                     stroke="currentColor"
-                                     class="size-5 text-blue-500">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
-                                </svg>
-                                فقط کالاهای تخفیف‌دار
-                            </label>
-                        </div>
                     </div>
-                    <div class="w-full px-4 pt-2">
-                        <button type="submit"
-                                class="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-xl transition duration-200 shadow-sm flex items-center justify-center">
-                            اعمال فیلترها
-                        </button>
+                    <!-- TOGGLE SWITCH -->
+                    <div class="w-full justify-between flex items-center gap-x-3 px-2 xl:px-4 py-4"
+                         dir="ltr">
+                        <label for="toggle-available"
+                               class="relative inline-block w-11 h-6 cursor-pointer">
+                            <input type="checkbox"
+                                   id="toggle-available"
+                                   name="is_available"
+                                   value="true"
+                                   class="peer sr-only"
+                                   {% if request.GET.is_available == 'true' %}checked{% endif %}>
+                            <span class="absolute inset-0 bg-gray-200 rounded-full transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 dark:bg-neutral-700 dark:peer-checked:bg-blue-500"></span>
+                            <span class="absolute top-1/2 start-0.5 -translate-y-1/2 size-5 bg-white rounded-full shadow-xs transition-transform duration-200 ease-in-out peer-checked:translate-x-full dark:bg-neutral-400 dark:peer-checked:bg-white"></span>
+                        </label>
+                        <label for="toggle-available" class="text-gray-800 dark:text-gray-100">فقط کالا های موجود</label>
+                    </div>
+                    <div class="w-full justify-between flex items-center gap-x-3 py-4 px-2 xl:px-4 border-t dark:border-white/10"
+                         dir="ltr">
+                        <label for="toggle-amazing"
+                               class="relative inline-block w-11 h-6 cursor-pointer">
+                            <input type="checkbox"
+                                   id="toggle-amazing"
+                                   name="is_amazing"
+                                   value="true"
+                                   class="peer sr-only"
+                                   {% if request.GET.is_amazing == 'true' %}checked{% endif %}>
+                            <span class="absolute inset-0 bg-gray-200 rounded-full transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 dark:bg-neutral-700 dark:peer-checked:bg-blue-500"></span>
+                            <span class="absolute top-1/2 start-0.5 -translate-y-1/2 size-5 bg-white rounded-full shadow-xs transition-transform duration-200 ease-in-out peer-checked:translate-x-full dark:bg-neutral-400 dark:peer-checked:bg-white"></span>
+                        </label>
+                        <label for="toggle-amazing"
+                               class="text-gray-800 dark:text-gray-100 flex items-center gap-x-2 cursor-pointer font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 stroke-width="1.5"
+                                 stroke="currentColor"
+                                 class="size-5 text-red-500">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 0 0 .495-7.468 5.99 5.99 0 0 0-1.925 3.547 5.975 5.975 0 0 1-2.133-1.001A3.75 3.75 0 0 0 12 18Z" />
+                            </svg>
+                            شگفت‌انگیز
+                        </label>
+                    </div>
+                    <div class="w-full justify-between flex items-center gap-x-3 py-4 px-2 xl:px-4 border-t dark:border-white/10"
+                         dir="ltr">
+                        <label for="toggle-discount"
+                               class="relative inline-block w-11 h-6 cursor-pointer">
+                            <input type="checkbox"
+                                   id="toggle-discount"
+                                   name="has_discount"
+                                   value="true"
+                                   class="peer sr-only"
+                                   {% if request.GET.has_discount == 'true' %}checked{% endif %}>
+                            <span class="absolute inset-0 bg-gray-200 rounded-full transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 dark:bg-neutral-700 dark:peer-checked:bg-blue-500"></span>
+                            <span class="absolute top-1/2 start-0.5 -translate-y-1/2 size-5 bg-white rounded-full shadow-xs transition-transform duration-200 ease-in-out peer-checked:translate-x-full dark:bg-neutral-400 dark:peer-checked:bg-white"></span>
+                        </label>
+                        <label for="toggle-discount"
+                               class="text-gray-800 dark:text-gray-100 flex items-center gap-x-2 cursor-pointer font-medium">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 stroke-width="1.5"
+                                 stroke="currentColor"
+                                 class="size-5 text-blue-500">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
+                            </svg>
+                            فقط کالاهای تخفیف‌دار
+                        </label>
                     </div>
                 </div>
-                <!-- TOP FILTER BOX & PRODUCT & PAGINATION -->
-                <div class="lg:w-3/4">
-                    <!-- MOBILE FILTERS -->
-                    <div class="flex lg:hidden items-center gap-x-2">
-                        <!-- SORT BTN -->
-                        <button type="button"
-                                class="sort-modal-open text-sm mb-4 py-1.5 px-3 app-border rounded-full flex items-center gap-x-1">
-                            <svg class="size-4 text-gray-400">
-                                <use href="#sort-list"></use>
-                            </svg>
-                            <p>مرتبط ترین</p>
-                        </button>
-                        <!-- SORT MODAL -->
-                        <div class="sort-modal">
-                            <div class="flex justify-between items-center sort-modal-close px-5 py-4 border-b border-gray-100 dark:border-white/5 mb-2">
-                                <p class="font-DanaMedium text-lg text-gray-800 dark:text-white">مرتب سازی بر اساس</p>
-                                <svg class="size-5 text-gray-500 dark:text-gray-400 cursor-pointer">
-                                    <use href="#x-mark"></use>
-                                </svg>
-                            </div>
-                            <ul class="flex flex-col gap-y-1.5 px-3 pb-4">
-                                <!-- محبوب ترین -->
-                                <li>
-                                    <a href="?{% url_replace ordering='-popular' page=None %}"
-                                       class="flex items-center justify-between p-3.5 rounded-xl cursor-pointer transition-colors duration-200 {% if '-popular' in applied_ordering or 'popular' in applied_ordering or not request.GET.ordering %}bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 font-DanaMedium{% else %}text-gray-700 dark:text-gray-300 active:bg-gray-100 dark:active:bg-gray-800{% endif %}">
-                                        <span>محبوب ترین</span>
-                                        {% if '-popular' in applied_ordering or 'popular' in applied_ordering or not request.GET.ordering %}
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                 viewBox="0 0 20 20"
-                                                 fill="currentColor"
-                                                 class="size-5">
-                                                <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
-                                            </svg>
-                                        {% endif %}
-                                    </a>
-                                </li>
-                                <!-- پرفروش ترین -->
-                                <li>
-                                    <a href="?{% url_replace ordering='-best_seller' page=None %}"
-                                       class="flex items-center justify-between p-3.5 rounded-xl cursor-pointer transition-colors duration-200 {% if '-best_seller' in applied_ordering or 'best_seller' in applied_ordering %}bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 font-DanaMedium{% else %}text-gray-700 dark:text-gray-300 active:bg-gray-100 dark:active:bg-gray-800{% endif %}">
-                                        <span>پرفروش ترین</span>
-                                        {% if '-best_seller' in applied_ordering or 'best_seller' in applied_ordering %}
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                 viewBox="0 0 20 20"
-                                                 fill="currentColor"
-                                                 class="size-5">
-                                                <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
-                                            </svg>
-                                        {% endif %}
-                                    </a>
-                                </li>
-                                <!-- ارزان ترین -->
-                                <li>
-                                    <a href="?{% url_replace ordering='price' page=None %}"
-                                       class="flex items-center justify-between p-3.5 rounded-xl cursor-pointer transition-colors duration-200 {% if 'price' in applied_ordering and '-price' not in applied_ordering %}bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 font-DanaMedium{% else %}text-gray-700 dark:text-gray-300 active:bg-gray-100 dark:active:bg-gray-800{% endif %}">
-                                        <span>ارزان ترین</span>
-                                        {% if 'price' in applied_ordering and '-price' not in applied_ordering %}
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                 viewBox="0 0 20 20"
-                                                 fill="currentColor"
-                                                 class="size-5">
-                                                <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
-                                            </svg>
-                                        {% endif %}
-                                    </a>
-                                </li>
-                                <!-- گران ترین -->
-                                <li>
-                                    <a href="?{% url_replace ordering='-price' page=None %}"
-                                       class="flex items-center justify-between p-3.5 rounded-xl cursor-pointer transition-colors duration-200 {% if '-price' in applied_ordering %}bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 font-DanaMedium{% else %}text-gray-700 dark:text-gray-300 active:bg-gray-100 dark:active:bg-gray-800{% endif %}">
-                                        <span>گران ترین</span>
-                                        {% if '-price' in applied_ordering %}
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                 viewBox="0 0 20 20"
-                                                 fill="currentColor"
-                                                 class="size-5">
-                                                <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
-                                            </svg>
-                                        {% endif %}
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <!-- FILTER BTN -->
-                        <button type="button"
-                                class="filter-modal-open text-sm mb-4 py-1.5 px-3 app-border rounded-full flex items-center gap-x-1">
-                            <svg class="size-4 text-gray-400">
-                                <use href="#filter"></use>
-                            </svg>
-                            <p>فیلتر</p>
-                        </button>
-                        <!-- Filter MODAL -->
-                        <div class="filter-modal">
-                            <div class="flex justify-between filter-modal-close">
-                                <p>فیلتر</p>
-                                <svg class="size-5 text-gray-800 dark:text-gray-300">
-                                    <use href="#x-mark"></use>
-                                </svg>
-                            </div>
-                            <!-- FILTERS -->
-                            <div class="w-full divide-y divide-slate-200 dark:divide-gray-700/20">
-                                <!-- Accordion -->
-                                <div class="">
-                                    <button onclick="toggleAccordion(3)"
-                                            class="w-full flex justify-between items-center px-2 xl:px-4 pt-4 mb-4 text-gray-800 dark:text-gray-100">
-                                        <span>دسته بندی</span>
-                                        <span id="icon-1" class="text-gray-800 dark:text-gray-100">
-                                            <svg class="size-4 transition-transform duration-300">
-                                                <use href="#chevron-left"></use>
-                                            </svg>
-                                        </span>
-                                    </button>
-                                    <div id="content-3"
-                                         class="max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
-                                        <div class="pb-3 text-gray-700 dark:text-gray-300 w-full flex flex-col gap-y-1.5">
-                                            <div class="inline-flex items-center mr-2.5 mt-1">
-                                                <label class="relative flex cursor-pointer items-center rounded-full p-3"
-                                                       for="category-all-mobile">
-                                                    <input id="category-all-mobile"
-                                                           name="category"
-                                                           value=""
-                                                           type="radio"
-                                                           {% if not request.GET.category %}checked{% endif %}
-                                                           class="peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-slate-300 shadow hover:shadow-md transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-slate-400 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-slate-400 hover:before:opacity-10 dark:bg-gray-600 dark:checked:bg-blue-500" />
-                                                    <span class="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
-                                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                                             class="h-2.5 w-2.5"
-                                                             viewBox="0 0 16 16"
-                                                             fill="currentColor">
-                                                            <circle cx="8" cy="8" r="8"></circle>
-                                                        </svg>
-                                                    </span>
-                                                </label>
-                                                <label class="cursor-pointer text-gray-800 dark:text-gray-400 mr-1 flex items-center gap-x-2"
-                                                       for="category-all-mobile">همه کالاها</label>
-                                            </div>
-                                            <div class="inline-flex items-center mr-2.5">
-                                                <label class="relative flex cursor-pointer items-center rounded-full p-3"
-                                                       for="category-mobile-mobile">
-                                                    <input id="category-mobile-mobile"
-                                                           name="category"
-                                                           value="smart phone"
-                                                           type="radio"
-                                                           {% if request.GET.category == 'smart phone' %}checked{% endif %}
-                                                           class="peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-slate-300 shadow hover:shadow-md transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-slate-400 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-slate-400 hover:before:opacity-10 dark:bg-gray-600 dark:checked:bg-blue-500" />
-                                                    <span class="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
-                                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                                             class="h-2.5 w-2.5"
-                                                             viewBox="0 0 16 16"
-                                                             fill="currentColor">
-                                                            <circle cx="8" cy="8" r="8"></circle>
-                                                        </svg>
-                                                    </span>
-                                                </label>
-                                                <label class="cursor-pointer text-gray-800 dark:text-gray-400 mr-1 flex items-center gap-x-2"
-                                                       for="category-mobile-mobile">موبایل</label>
-                                            </div>
-                                            <div class="inline-flex items-center mr-2.5">
-                                                <label class="relative flex cursor-pointer items-center rounded-full p-3"
-                                                       for="category-laptop-mobile">
-                                                    <input id="category-laptop-mobile"
-                                                           name="category"
-                                                           value="laptop"
-                                                           type="radio"
-                                                           {% if request.GET.category == 'laptop' %}checked{% endif %}
-                                                           class="peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-slate-300 shadow hover:shadow-md transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-slate-400 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-slate-400 hover:before:opacity-10 dark:bg-gray-600 dark:checked:bg-blue-500" />
-                                                    <span class="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
-                                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                                             class="h-2.5 w-2.5"
-                                                             viewBox="0 0 16 16"
-                                                             fill="currentColor">
-                                                            <circle cx="8" cy="8" r="8"></circle>
-                                                        </svg>
-                                                    </span>
-                                                </label>
-                                                <label class="cursor-pointer text-gray-800 dark:text-gray-400 mr-1 flex items-center gap-x-2"
-                                                       for="category-laptop-mobile">لپ تاپ</label>
-                                            </div>
-                                            <div class="inline-flex items-center mr-2.5">
-                                                <label class="relative flex cursor-pointer items-center rounded-full p-3"
-                                                       for="category-headphone-mobile">
-                                                    <input id="category-headphone-mobile"
-                                                           name="category"
-                                                           value="headphone"
-                                                           type="radio"
-                                                           {% if request.GET.category == 'headphone' %}checked{% endif %}
-                                                           class="peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-slate-300 shadow hover:shadow-md transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-slate-400 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-slate-400 hover:before:opacity-10 dark:bg-gray-600 dark:checked:bg-blue-500" />
-                                                    <span class="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
-                                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                                             class="h-2.5 w-2.5"
-                                                             viewBox="0 0 16 16"
-                                                             fill="currentColor">
-                                                            <circle cx="8" cy="8" r="8"></circle>
-                                                        </svg>
-                                                    </span>
-                                                </label>
-                                                <label class="cursor-pointer text-gray-800 dark:text-gray-400 mr-1 flex items-center gap-x-2"
-                                                       for="category-headphone-mobile">هدفون، هدست</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- TOGGLE SWITCH -->
-                                <div class="w-full justify-between flex items-center gap-x-3 px-2 xl:px-4 py-4"
-                                     dir="ltr">
-                                    <label for="toggle-available-mobile"
-                                           class="relative inline-block w-11 h-6 cursor-pointer">
-                                        <input type="checkbox"
-                                               id="toggle-available-mobile"
-                                               name="is_available"
-                                               value="true"
-                                               class="peer sr-only"
-                                               {% if request.GET.is_available == 'true' %}checked{% endif %}>
-                                        <span class="absolute inset-0 bg-gray-200 rounded-full transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 dark:bg-neutral-700 dark:peer-checked:bg-blue-500"></span>
-                                        <span class="absolute top-1/2 start-0.5 -translate-y-1/2 size-5 bg-white rounded-full shadow-xs transition-transform duration-200 ease-in-out peer-checked:translate-x-full dark:bg-neutral-400 dark:peer-checked:bg-white"></span>
-                                    </label>
-                                    <label for="toggle-available-mobile"
-                                           class="text-gray-800 dark:text-gray-100 font-medium">
-                                        فقط کالا های موجود
-                                    </label>
-                                </div>
-                                <div class="w-full justify-between flex items-center gap-x-3 py-4 px-2 xl:px-4 border-t dark:border-white/10"
-                                     dir="ltr">
-                                    <label for="toggle-amazing-mobile"
-                                           class="relative inline-block w-11 h-6 cursor-pointer">
-                                        <input type="checkbox"
-                                               id="toggle-amazing-mobile"
-                                               name="is_amazing"
-                                               value="true"
-                                               class="peer sr-only"
-                                               {% if request.GET.is_amazing == 'true' %}checked{% endif %}>
-                                        <span class="absolute inset-0 bg-gray-200 rounded-full transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 dark:bg-neutral-700 dark:peer-checked:bg-blue-500"></span>
-                                        <span class="absolute top-1/2 start-0.5 -translate-y-1/2 size-5 bg-white rounded-full shadow-xs transition-transform duration-200 ease-in-out peer-checked:translate-x-full dark:bg-neutral-400 dark:peer-checked:bg-white"></span>
-                                    </label>
-                                    <label for="toggle-amazing-mobile"
-                                           class="text-gray-800 dark:text-gray-100 flex items-center gap-x-2 cursor-pointer font-medium">
-                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                             fill="none"
-                                             viewBox="0 0 24 24"
-                                             stroke-width="1.5"
-                                             stroke="currentColor"
-                                             class="size-5 text-red-500">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" />
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 0 0 .495-7.468 5.99 5.99 0 0 0-1.925 3.547 5.975 5.975 0 0 1-2.133-1.001A3.75 3.75 0 0 0 12 18Z" />
-                                        </svg>
-                                        شگفت‌انگیز
-                                    </label>
-                                </div>
-                                <div class="w-full justify-between flex items-center gap-x-3 py-4 px-2 xl:px-4 border-t dark:border-white/10"
-                                     dir="ltr">
-                                    <label for="toggle-discount-mobile"
-                                           class="relative inline-block w-11 h-6 cursor-pointer">
-                                        <input type="checkbox"
-                                               id="toggle-discount-mobile"
-                                               name="has_discount"
-                                               value="true"
-                                               class="peer sr-only"
-                                               {% if request.GET.has_discount == 'true' %}checked{% endif %}>
-                                        <span class="absolute inset-0 bg-gray-200 rounded-full transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 dark:bg-neutral-700 dark:peer-checked:bg-blue-500"></span>
-                                        <span class="absolute top-1/2 start-0.5 -translate-y-1/2 size-5 bg-white rounded-full shadow-xs transition-transform duration-200 ease-in-out peer-checked:translate-x-full dark:bg-neutral-400 dark:peer-checked:bg-white"></span>
-                                    </label>
-                                    <label for="toggle-discount-mobile"
-                                           class="text-gray-800 dark:text-gray-100 flex items-center gap-x-2 cursor-pointer font-medium">
-                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                             fill="none"
-                                             viewBox="0 0 24 24"
-                                             stroke-width="1.5"
-                                             stroke="currentColor"
-                                             class="size-5 text-blue-500">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
-                                        </svg>
-                                        فقط کالاهای تخفیف‌دار
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="w-full px-4 py-4 mt-auto">
-                                <button type="submit"
-                                        class="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-xl transition duration-200 shadow-md flex items-center justify-center gap-x-2">
-                                    مشاهده نتایج
-                                </button>
-                            </div>
-                        </div>
-                        <span class="text-sm text-gray-400 ms-auto py-1.5 px-4">{{ count_all_products }} کالا</span>
-                    </div>
-                    <!-- TOP FILTER BOX -->
-                    <div class="hidden lg:flex items-center justify-between mb-6">
-                        <div class="flex items-center gap-x-5">
-                            <div class="flex items-center gap-x-2">
-                                <svg class="size-6 text-gray-400">
-                                    <use href="#sort-list"></use>
-                                </svg>
-                                <h2 class="font-DanaDemiBold text-gray-400">مرتب سازی :</h2>
-                            </div>
-                            <ul class="flex items-center gap-x-1 lg:gap-x-4 child:transition-all child:cursor-pointer child:rounded-lg child:px-1 child:py-1 child:text-sm child:lg:text-base">
-                                <button type="button"
-                                        onclick="submitOrdering('-popular')"
-                                        class="{% if '-popular' in applied_ordering or 'popular' in applied_ordering or not request.GET.ordering %}text-blue-500 font-DanaMedium{% else %}text-gray-400 hover:text-gray-600{% endif %}">
-                                    محبوب ترین
-                                </button>
-                                <button type="button"
-                                        onclick="submitOrdering('-best_seller')"
-                                        class="{% if '-best_seller' in applied_ordering or 'best_seller' in applied_ordering %}text-blue-500 font-DanaMedium{% else %}text-gray-400 hover:text-gray-600{% endif %}">
-                                    پرفروش ترین
-                                </button>
-                                <button type="button"
-                                        onclick="submitOrdering('price')"
-                                        class="{% if 'price' in applied_ordering and '-price' not in applied_ordering %}text-blue-500 font-DanaMedium{% else %}text-gray-400 hover:text-gray-600{% endif %}">
-                                    ارزان ترین
-                                </button>
-                                <button type="button"
-                                        onclick="submitOrdering('-price')"
-                                        class="{% if '-price' in applied_ordering %}text-blue-500 font-DanaMedium{% else %}text-gray-400 hover:text-gray-600{% endif %}">
-                                    گران ترین
-                                </button>
-                            </ul>
-                        </div>
-                        <span class="text-sm text-gray-400 end">{{ count_all_products }} کالا</span>
-                    </div>
-                    <!-- PRODUCTS -->
-                    <div class="grid grid-cols-1 xxs:grid-cols-2 xs:grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-3 xs:gap-2 sm:gap-4">
-                        <!-- PRODUCT ITEM -->
-                        {% for product in products_by_page %}
-                            <div class=" product-card group">
-                                <!-- product header -->
-                                <div class="product-card_header">
-                                    <div class="flex items-center gap-x-2">
-                                        <div class="tooltip">
-                                            <button class="rounded-full p-1.5 app-border app-hover">
-                                                <svg class="size-4">
-                                                    <use href="#shopping-cart"></use>
-                                                </svg>
-                                            </button>
-                                            <div class="tooltiptext">سبد خرید</div>
-                                        </div>
-                                        <div class="tooltip">
-                                            <button class="rounded-full p-1.5 app-border app-hover">
-                                                <svg class="size-4">
-                                                    <use href="#heart"></use>
-                                                </svg>
-                                            </button>
-                                            <div class="tooltiptext">علاقه مندی</div>
-                                        </div>
-                                        <div class="tooltip">
-                                            <button class="rounded-full p-1.5 app-border app-hover">
-                                                <svg class="size-4">
-                                                    <use href="#arrows-up-down"></use>
-                                                </svg>
-                                            </button>
-                                            <div class="tooltiptext">مقایسه</div>
-                                        </div>
-                                    </div>
-                                    <!-- badge offer -->
-                                    {% if product.has_discount %}
-                                        <span class="product-card_badge">{{ product.discount_percentage }}% تخفیف‌</span>
-                                    {% endif %}
-                                </div>
-                                <!-- product img -->
-                                <a href={{ product.get_absolute_url }}>
-                                    <img class="product-card_img group-hover:opacity-0 absolute"
-                                         src="{% static "./images/products/1.png" %}"
-                                         alt="">
-                                    <img class="product-card_img opacity-0 group-hover:opacity-100"
-                                         src="{% static "./images/products/2.png" %}"
-                                         alt="">
-                                </a>
-                                <!--  product footer -->
-                                <div class="space-y-2">
-                                    <a href={{ product.get_absolute_url }} class="product-card_link">{{ product.full_name }}</a>
-                                    <!-- Rate and Price -->
-                                    <div class="product-card_price-wrapper">
-                                        <!-- RATE -->
-                                        <div class="product-card_rate">
-                                            <span class="flex items-center gap-x-0.5">
-                                                <svg class="size-4 text-blue-500 mb-0.5">
-                                                    <use href="#rocket"></use>
-                                                </svg>
-                                                <p class="text-xs">ارسال امروز</p>
-                                            </span>
-                                            <span class="text-gray-400 flex items-center text-sm gap-x-0.5">
-                                                <p>5.0</p>
-                                                <svg class="size-4 mb-1">
-                                                    <use href="#star"></use>
-                                                </svg>
-                                            </span>
-                                        </div>
-                                        <!-- Price -->
-                                        <div class="product-card_price">
-                                            {% if product.has_discount %}
-                                                <del>{{ product.initial_price|intcomma:False }}
-                                                    <h6>تومان</h6>
-                                                </del>
-                                                <p>{{ product.final_price|intcomma:False }}</p>
-                                                <span>تومان</span>
-                                            {% else %}
-                                                <p>{{ product.final_price|intcomma:False }}</p>
-                                                <span>تومان</span>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                    <!-- PAGINATION -->
-                    {% if products_by_page.paginator.num_pages > 1 %}
-                        <div class="mt-10 w-full flex items-center justify-center">
-                            <ul class="flex items-center gap-x-3 child:flex child:items-center child:justify-center child:w-8 child:h-8 child:cursor-pointer child:shadow child:rounded-lg child:transition-all child:duration-300">
-                                <!-- صفحه قبل -->
-                                {% if products_by_page.has_previous %}
-                                    <li class="bg-white dark:bg-gray-800 hover:bg-blue-500 dark:hover:bg-blue-500 hover:text-white">
-                                        <a href="?{% url_replace page=products_by_page.previous_page_number %}"
-                                           class="flex items-center justify-center w-full h-full">
-                                            <svg class="size-5 rotate-180">
-                                                <use href="#chevron-left"></use>
-                                            </svg>
-                                        </a>
-                                    </li>
-                                {% else %}
-                                    <li class="bg-gray-100 dark:bg-gray-700 text-gray-400 cursor-not-allowed">
-                                        <span class="flex items-center justify-center w-full h-full">
-                                            <svg class="size-5 rotate-180">
-                                                <use href="#chevron-left"></use>
-                                            </svg>
-                                        </span>
-                                    </li>
-                                {% endif %}
-                                <!-- شماره صفحات -->
-                                {% for page_num in products_by_page.paginator.page_range %}
-                                    {% if products_by_page.number == page_num %}
-                                        <li class="text-white bg-blue-500">
-                                            <span class="flex items-center justify-center w-full h-full">{{ page_num }}</span>
-                                        </li>
-                                    {% elif page_num > products_by_page.number|add:'-3' and page_num < products_by_page.number|add:'3' %}
-                                        <li class="bg-white dark:bg-gray-800 hover:bg-blue-500 dark:hover:bg-blue-500 hover:text-white">
-                                            <a href="?{% url_replace page=page_num %}"
-                                               class="flex items-center justify-center w-full h-full">
-                                                {{ page_num }}
-                                            </a>
-                                        </li>
-                                    {% elif page_num == products_by_page.number|add:'-3' or page_num == products_by_page.number|add:'3' %}
-                                        <li class="bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 cursor-default">
-                                            <span class="flex items-center justify-center w-full h-full">...</span>
-                                        </li>
-                                    {% endif %}
-                                {% endfor %}
-                                <!-- صفحه بعد -->
-                                {% if products_by_page.has_next %}
-                                    <li class="bg-white dark:bg-gray-800 hover:bg-blue-500 dark:hover:bg-blue-500 hover:text-white">
-                                        <a href="?{% url_replace page=products_by_page.next_page_number %}"
-                                           class="flex items-center justify-center w-full h-full">
-                                            <svg class="size-5">
-                                                <use href="#chevron-left"></use>
-                                            </svg>
-                                        </a>
-                                    </li>
-                                {% else %}
-                                    <li class="bg-gray-100 dark:bg-gray-700 text-gray-400 cursor-not-allowed">
-                                        <span class="flex items-center justify-center w-full h-full">
-                                            <svg class="size-5">
-                                                <use href="#chevron-left"></use>
-                                            </svg>
-                                        </span>
-                                    </li>
-                                {% endif %}
-                            </ul>
-                        </div>
-                    {% endif %}
+                <div class="w-full px-4 pt-2">
+                    <button type="submit"
+                            class="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-xl transition duration-200 shadow-sm flex items-center justify-center">
+                        اعمال فیلترها
+                    </button>
                 </div>
             </form>
-        </main>
-        <!-- Footer -->
-        {% include "partials/footer.html" %}
-        <!-- Overlay -->
-        <div class="overlay"></div>
-        <div class="search-overlay"></div>
-        <script>
-            function cleanAndSubmitForm() {
-                const form = document.getElementById('shop-filters-form');
-
-                form.querySelectorAll('input').forEach(input => {
-                    if (input.name && input.value === "") {
-                        input.disabled = true; 
-                    }
-                });
-
-                const seenNames = new Set();
-                form.querySelectorAll('input:checked').forEach(input => {
-                    if (seenNames.has(input.name)) {
-                        input.disabled = true;
-                    } else {
-                        seenNames.add(input.name);
-                    }
-                });
-
-                form.submit();
-            }
-
-
-            function submitOrdering(orderValue) {
-                document.getElementById('hidden-ordering-input').value = orderValue;
-                cleanAndSubmitForm();
-            }
-
-            function goToPage(pageNumber) {
-                document.getElementById('hidden-page-input').value = pageNumber;
-                cleanAndSubmitForm();
-            }
-        </script>
-    {% endblock content %}
+            <!-- TOP FILTER BOX & PRODUCT & PAGINATION -->
+            <div class="lg:w-3/4">
+                <!-- MOBILE FILTERS -->
+                <div class="flex lg:hidden items-center gap-x-2">
+                    <!-- SORT BTN -->
+                    <button type="button"
+                            class="sort-modal-open text-sm mb-4 py-1.5 px-3 app-border rounded-full flex items-center gap-x-1">
+                        <svg class="size-4 text-gray-400">
+                            <use href="#sort-list"></use>
+                        </svg>
+                        <p>مرتبط ترین</p>
+                    </button>
+                    <!-- SORT MODAL -->
+                    <div class="sort-modal">
+                        <div class="flex justify-between items-center sort-modal-close px-5 py-4 border-b border-gray-100 dark:border-white/5 mb-2">
+                            <p class="font-DanaMedium text-lg text-gray-800 dark:text-white">مرتب سازی بر اساس</p>
+                            <svg class="size-5 text-gray-500 dark:text-gray-400 cursor-pointer">
+                                <use href="#x-mark"></use>
+                            </svg>
+                        </div>
+                        <ul class="flex flex-col gap-y-1.5 px-3 pb-4">
+                            <!-- محبوب ترین -->
+                            <li>
+                                <a href="?{% url_replace ordering='-popular' page=None %}"
+                                   class="flex items-center justify-between p-3.5 rounded-xl cursor-pointer transition-colors duration-200 {% if '-popular' in applied_ordering or 'popular' in applied_ordering or not request.GET.ordering %}bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 font-DanaMedium{% else %}text-gray-700 dark:text-gray-300 active:bg-gray-100 dark:active:bg-gray-800{% endif %}">
+                                    <span>محبوب ترین</span>
+                                    {% if '-popular' in applied_ordering or 'popular' in applied_ordering or not request.GET.ordering %}
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             viewBox="0 0 20 20"
+                                             fill="currentColor"
+                                             class="size-5">
+                                            <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
+                                        </svg>
+                                    {% endif %}
+                                </a>
+                            </li>
+                            <!-- پرفروش ترین -->
+                            <li>
+                                <a href="?{% url_replace ordering='-best_seller' page=None %}"
+                                   class="flex items-center justify-between p-3.5 rounded-xl cursor-pointer transition-colors duration-200 {% if '-best_seller' in applied_ordering or 'best_seller' in applied_ordering %}bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 font-DanaMedium{% else %}text-gray-700 dark:text-gray-300 active:bg-gray-100 dark:active:bg-gray-800{% endif %}">
+                                    <span>پرفروش ترین</span>
+                                    {% if '-best_seller' in applied_ordering or 'best_seller' in applied_ordering %}
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             viewBox="0 0 20 20"
+                                             fill="currentColor"
+                                             class="size-5">
+                                            <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
+                                        </svg>
+                                    {% endif %}
+                                </a>
+                            </li>
+                            <!-- ارزان ترین -->
+                            <li>
+                                <a href="?{% url_replace ordering='price' page=None %}"
+                                   class="flex items-center justify-between p-3.5 rounded-xl cursor-pointer transition-colors duration-200 {% if 'price' in applied_ordering and '-price' not in applied_ordering %}bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 font-DanaMedium{% else %}text-gray-700 dark:text-gray-300 active:bg-gray-100 dark:active:bg-gray-800{% endif %}">
+                                    <span>ارزان ترین</span>
+                                    {% if 'price' in applied_ordering and '-price' not in applied_ordering %}
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             viewBox="0 0 20 20"
+                                             fill="currentColor"
+                                             class="size-5">
+                                            <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
+                                        </svg>
+                                    {% endif %}
+                                </a>
+                            </li>
+                            <!-- گران ترین -->
+                            <li>
+                                <a href="?{% url_replace ordering='-price' page=None %}"
+                                   class="flex items-center justify-between p-3.5 rounded-xl cursor-pointer transition-colors duration-200 {% if '-price' in applied_ordering %}bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 font-DanaMedium{% else %}text-gray-700 dark:text-gray-300 active:bg-gray-100 dark:active:bg-gray-800{% endif %}">
+                                    <span>گران ترین</span>
+                                    {% if '-price' in applied_ordering %}
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             viewBox="0 0 20 20"
+                                             fill="currentColor"
+                                             class="size-5">
+                                            <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
+                                        </svg>
+                                    {% endif %}
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- FILTER BTN -->
+                    <button type="button"
+                            class="filter-modal-open text-sm mb-4 py-1.5 px-3 app-border rounded-full flex items-center gap-x-1">
+                        <svg class="size-4 text-gray-400">
+                            <use href="#filter"></use>
+                        </svg>
+                        <p>فیلتر</p>
+                    </button>
+                    <!-- Filter MODAL -->
+                    <form method="get" action="" class="filter-modal">
+                        <input type="hidden"
+                               name="ordering"
+                               value="{{ request.GET.ordering|default:'-popular' }}">
+                        <div class="flex justify-between filter-modal-close">
+                            <p>فیلتر</p>
+                            <svg class="size-5 text-gray-800 dark:text-gray-300">
+                                <use href="#x-mark"></use>
+                            </svg>
+                        </div>
+                        <!-- FILTERS -->
+                        <div class="w-full divide-y divide-slate-200 dark:divide-gray-700/20">
+                            <!-- Accordion -->
+                            <div class="">
+                                <button onclick="toggleAccordion(3)"
+                                        class="w-full flex justify-between items-center px-2 xl:px-4 pt-4 mb-4 text-gray-800 dark:text-gray-100">
+                                    <span>دسته بندی</span>
+                                    <span id="icon-1" class="text-gray-800 dark:text-gray-100">
+                                        <svg class="size-4 transition-transform duration-300">
+                                            <use href="#chevron-left"></use>
+                                        </svg>
+                                    </span>
+                                </button>
+                                <div id="content-3"
+                                     class="max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+                                    <div class="pb-3 text-gray-700 dark:text-gray-300 w-full flex flex-col gap-y-1.5">
+                                        <div class="inline-flex items-center mr-2.5 mt-1">
+                                            <label class="relative flex cursor-pointer items-center rounded-full p-3"
+                                                   for="category-all-mobile">
+                                                <input id="category-all-mobile"
+                                                       name="category"
+                                                       value=""
+                                                       type="radio"
+                                                       {% if not request.GET.category %}checked{% endif %}
+                                                       class="peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-slate-300 shadow hover:shadow-md transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-slate-400 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-slate-400 hover:before:opacity-10 dark:bg-gray-600 dark:checked:bg-blue-500" />
+                                                <span class="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                         class="h-2.5 w-2.5"
+                                                         viewBox="0 0 16 16"
+                                                         fill="currentColor">
+                                                        <circle cx="8" cy="8" r="8"></circle>
+                                                    </svg>
+                                                </span>
+                                            </label>
+                                            <label class="cursor-pointer text-gray-800 dark:text-gray-400 mr-1 flex items-center gap-x-2"
+                                                   for="category-all-mobile">همه کالاها</label>
+                                        </div>
+                                        <div class="inline-flex items-center mr-2.5">
+                                            <label class="relative flex cursor-pointer items-center rounded-full p-3"
+                                                   for="category-mobile-mobile">
+                                                <input id="category-mobile-mobile"
+                                                       name="category"
+                                                       value="smart phone"
+                                                       type="radio"
+                                                       {% if request.GET.category == 'smart phone' %}checked{% endif %}
+                                                       class="peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-slate-300 shadow hover:shadow-md transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-slate-400 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-slate-400 hover:before:opacity-10 dark:bg-gray-600 dark:checked:bg-blue-500" />
+                                                <span class="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                         class="h-2.5 w-2.5"
+                                                         viewBox="0 0 16 16"
+                                                         fill="currentColor">
+                                                        <circle cx="8" cy="8" r="8"></circle>
+                                                    </svg>
+                                                </span>
+                                            </label>
+                                            <label class="cursor-pointer text-gray-800 dark:text-gray-400 mr-1 flex items-center gap-x-2"
+                                                   for="category-mobile-mobile">موبایل</label>
+                                        </div>
+                                        <div class="inline-flex items-center mr-2.5">
+                                            <label class="relative flex cursor-pointer items-center rounded-full p-3"
+                                                   for="category-laptop-mobile">
+                                                <input id="category-laptop-mobile"
+                                                       name="category"
+                                                       value="laptop"
+                                                       type="radio"
+                                                       {% if request.GET.category == 'laptop' %}checked{% endif %}
+                                                       class="peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-slate-300 shadow hover:shadow-md transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-slate-400 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-slate-400 hover:before:opacity-10 dark:bg-gray-600 dark:checked:bg-blue-500" />
+                                                <span class="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                         class="h-2.5 w-2.5"
+                                                         viewBox="0 0 16 16"
+                                                         fill="currentColor">
+                                                        <circle cx="8" cy="8" r="8"></circle>
+                                                    </svg>
+                                                </span>
+                                            </label>
+                                            <label class="cursor-pointer text-gray-800 dark:text-gray-400 mr-1 flex items-center gap-x-2"
+                                                   for="category-laptop-mobile">لپ تاپ</label>
+                                        </div>
+                                        <div class="inline-flex items-center mr-2.5">
+                                            <label class="relative flex cursor-pointer items-center rounded-full p-3"
+                                                   for="category-headphone-mobile">
+                                                <input id="category-headphone-mobile"
+                                                       name="category"
+                                                       value="headphone"
+                                                       type="radio"
+                                                       {% if request.GET.category == 'headphone' %}checked{% endif %}
+                                                       class="peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-slate-300 shadow hover:shadow-md transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-slate-400 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-slate-400 hover:before:opacity-10 dark:bg-gray-600 dark:checked:bg-blue-500" />
+                                                <span class="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                         class="h-2.5 w-2.5"
+                                                         viewBox="0 0 16 16"
+                                                         fill="currentColor">
+                                                        <circle cx="8" cy="8" r="8"></circle>
+                                                    </svg>
+                                                </span>
+                                            </label>
+                                            <label class="cursor-pointer text-gray-800 dark:text-gray-400 mr-1 flex items-center gap-x-2"
+                                                   for="category-headphone-mobile">هدفون، هدست</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- TOGGLE SWITCH -->
+                            <div class="w-full justify-between flex items-center gap-x-3 px-2 xl:px-4 py-4"
+                                 dir="ltr">
+                                <label for="toggle-available-mobile"
+                                       class="relative inline-block w-11 h-6 cursor-pointer">
+                                    <input type="checkbox"
+                                           id="toggle-available-mobile"
+                                           name="is_available"
+                                           value="true"
+                                           class="peer sr-only"
+                                           {% if request.GET.is_available == 'true' %}checked{% endif %}>
+                                    <span class="absolute inset-0 bg-gray-200 rounded-full transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 dark:bg-neutral-700 dark:peer-checked:bg-blue-500"></span>
+                                    <span class="absolute top-1/2 start-0.5 -translate-y-1/2 size-5 bg-white rounded-full shadow-xs transition-transform duration-200 ease-in-out peer-checked:translate-x-full dark:bg-neutral-400 dark:peer-checked:bg-white"></span>
+                                </label>
+                                <label for="toggle-available-mobile"
+                                       class="text-gray-800 dark:text-gray-100 font-medium">فقط کالا های موجود</label>
+                            </div>
+                            <div class="w-full justify-between flex items-center gap-x-3 py-4 px-2 xl:px-4 border-t dark:border-white/10"
+                                 dir="ltr">
+                                <label for="toggle-amazing-mobile"
+                                       class="relative inline-block w-11 h-6 cursor-pointer">
+                                    <input type="checkbox"
+                                           id="toggle-amazing-mobile"
+                                           name="is_amazing"
+                                           value="true"
+                                           class="peer sr-only"
+                                           {% if request.GET.is_amazing == 'true' %}checked{% endif %}>
+                                    <span class="absolute inset-0 bg-gray-200 rounded-full transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 dark:bg-neutral-700 dark:peer-checked:bg-blue-500"></span>
+                                    <span class="absolute top-1/2 start-0.5 -translate-y-1/2 size-5 bg-white rounded-full shadow-xs transition-transform duration-200 ease-in-out peer-checked:translate-x-full dark:bg-neutral-400 dark:peer-checked:bg-white"></span>
+                                </label>
+                                <label for="toggle-amazing-mobile"
+                                       class="text-gray-800 dark:text-gray-100 flex items-center gap-x-2 cursor-pointer font-medium">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         fill="none"
+                                         viewBox="0 0 24 24"
+                                         stroke-width="1.5"
+                                         stroke="currentColor"
+                                         class="size-5 text-red-500">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 0 0 .495-7.468 5.99 5.99 0 0 0-1.925 3.547 5.975 5.975 0 0 1-2.133-1.001A3.75 3.75 0 0 0 12 18Z" />
+                                    </svg>
+                                    شگفت‌انگیز
+                                </label>
+                            </div>
+                            <div class="w-full justify-between flex items-center gap-x-3 py-4 px-2 xl:px-4 border-t dark:border-white/10"
+                                 dir="ltr">
+                                <label for="toggle-discount-mobile"
+                                       class="relative inline-block w-11 h-6 cursor-pointer">
+                                    <input type="checkbox"
+                                           id="toggle-discount-mobile"
+                                           name="has_discount"
+                                           value="true"
+                                           class="peer sr-only"
+                                           {% if request.GET.has_discount == 'true' %}checked{% endif %}>
+                                    <span class="absolute inset-0 bg-gray-200 rounded-full transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 dark:bg-neutral-700 dark:peer-checked:bg-blue-500"></span>
+                                    <span class="absolute top-1/2 start-0.5 -translate-y-1/2 size-5 bg-white rounded-full shadow-xs transition-transform duration-200 ease-in-out peer-checked:translate-x-full dark:bg-neutral-400 dark:peer-checked:bg-white"></span>
+                                </label>
+                                <label for="toggle-discount-mobile"
+                                       class="text-gray-800 dark:text-gray-100 flex items-center gap-x-2 cursor-pointer font-medium">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         fill="none"
+                                         viewBox="0 0 24 24"
+                                         stroke-width="1.5"
+                                         stroke="currentColor"
+                                         class="size-5 text-blue-500">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
+                                    </svg>
+                                    فقط کالاهای تخفیف‌دار
+                                </label>
+                            </div>
+                        </div>
+                        <div class="w-full px-4 py-4 mt-auto">
+                            <button type="submit"
+                                    class="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-xl transition duration-200 shadow-md flex items-center justify-center gap-x-2">
+                                مشاهده نتایج
+                            </button>
+                        </div>
+                    </form>
+                    <span class="text-sm text-gray-400 ms-auto py-1.5 px-4">{{ count_all_products }} کالا</span>
+                </div>
+                <!-- TOP FILTER BOX -->
+                <div class="hidden lg:flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-x-5">
+                        <div class="flex items-center gap-x-2">
+                            <svg class="size-6 text-gray-400">
+                                <use href="#sort-list"></use>
+                            </svg>
+                            <h2 class="font-DanaDemiBold text-gray-400">مرتب سازی :</h2>
+                        </div>
+                        <ul class="flex items-center gap-x-1 lg:gap-x-4 child:transition-all child:cursor-pointer child:rounded-lg child:px-1 child:py-1 child:text-sm child:lg:text-base">
+                            <a href="?{% url_replace ordering='-popular' page=None %}"
+                               class="{% if '-popular' in applied_ordering or 'popular' in applied_ordering or not request.GET.ordering %}text-blue-500 font-DanaMedium{% else %}text-gray-400 hover:text-gray-600{% endif %}">
+                                محبوب ترین
+                            </a>
+                            <a href="?{% url_replace ordering='-best_seller' page=None %}"
+                               class="{% if '-best_seller' in applied_ordering or 'best_seller' in applied_ordering %}text-blue-500 font-DanaMedium{% else %}text-gray-400 hover:text-gray-600{% endif %}">
+                                پرفروش ترین
+                            </a>
+                            <a href="?{% url_replace ordering='price' page=None %}"
+                               class="{% if 'price' in applied_ordering and '-price' not in applied_ordering %}text-blue-500 font-DanaMedium{% else %}text-gray-400 hover:text-gray-600{% endif %}">
+                                ارزان ترین
+                            </a>
+                            <a href="?{% url_replace ordering='-price' page=None %}"
+                               class="{% if '-price' in applied_ordering %}text-blue-500 font-DanaMedium{% else %}text-gray-400 hover:text-gray-600{% endif %}">
+                                گران ترین
+                            </a>
+                        </ul>
+                    </div>
+                    <span class="text-sm text-gray-400 end">{{ count_all_products }} کالا</span>
+                </div>
+                <!-- PRODUCTS -->
+                <div class="grid grid-cols-1 xxs:grid-cols-2 xs:grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-3 xs:gap-2 sm:gap-4">
+                    <!-- PRODUCT ITEM -->
+                    {% for product in products_by_page %}
+                        <div class=" product-card group">
+                            <!-- product header -->
+                            <div class="product-card_header">
+                                <div class="flex items-center gap-x-2">
+                                    <div class="tooltip">
+                                        <button class="rounded-full p-1.5 app-border app-hover">
+                                            <svg class="size-4">
+                                                <use href="#shopping-cart"></use>
+                                            </svg>
+                                        </button>
+                                        <div class="tooltiptext">سبد خرید</div>
+                                    </div>
+                                    <div class="tooltip">
+                                        <button class="rounded-full p-1.5 app-border app-hover">
+                                            <svg class="size-4">
+                                                <use href="#heart"></use>
+                                            </svg>
+                                        </button>
+                                        <div class="tooltiptext">علاقه مندی</div>
+                                    </div>
+                                    <div class="tooltip">
+                                        <button class="rounded-full p-1.5 app-border app-hover">
+                                            <svg class="size-4">
+                                                <use href="#arrows-up-down"></use>
+                                            </svg>
+                                        </button>
+                                        <div class="tooltiptext">مقایسه</div>
+                                    </div>
+                                </div>
+                                <!-- badge offer -->
+                                {% if product.has_discount %}
+                                    <span class="product-card_badge">{{ product.discount_percentage }}% تخفیف‌</span>
+                                {% endif %}
+                            </div>
+                            <!-- product img -->
+                            <a href={{ product.get_absolute_url }}>
+                                <img class="product-card_img group-hover:opacity-0 absolute"
+                                     src="{% static "./images/products/1.png" %}"
+                                     alt="">
+                                <img class="product-card_img opacity-0 group-hover:opacity-100"
+                                     src="{% static "./images/products/2.png" %}"
+                                     alt="">
+                            </a>
+                            <!--  product footer -->
+                            <div class="space-y-2">
+                                <a href={{ product.get_absolute_url }} class="product-card_link">{{ product.full_name }}</a>
+                                <!-- Rate and Price -->
+                                <div class="product-card_price-wrapper">
+                                    <!-- RATE -->
+                                    <div class="product-card_rate">
+                                        <span class="flex items-center gap-x-0.5">
+                                            <svg class="size-4 text-blue-500 mb-0.5">
+                                                <use href="#rocket"></use>
+                                            </svg>
+                                            <p class="text-xs">ارسال امروز</p>
+                                        </span>
+                                        <span class="text-gray-400 flex items-center text-sm gap-x-0.5">
+                                            <p>5.0</p>
+                                            <svg class="size-4 mb-1">
+                                                <use href="#star"></use>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                    <!-- Price -->
+                                    <div class="product-card_price">
+                                        {% if product.has_discount %}
+                                            <del>{{ product.initial_price|intcomma:False }}
+                                                <h6>تومان</h6>
+                                            </del>
+                                            <p>{{ product.final_price|intcomma:False }}</p>
+                                            <span>تومان</span>
+                                        {% else %}
+                                            <p>{{ product.final_price|intcomma:False }}</p>
+                                            <span>تومان</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <!-- PAGINATION -->
+                {% if products_by_page.paginator.num_pages > 1 %}
+                    <div class="mt-10 w-full flex items-center justify-center">
+                        <ul class="flex items-center gap-x-3 child:flex child:items-center child:justify-center child:w-8 child:h-8 child:cursor-pointer child:shadow child:rounded-lg child:transition-all child:duration-300">
+                            <!-- صفحه قبل -->
+                            {% if products_by_page.has_previous %}
+                                <li class="bg-white dark:bg-gray-800 hover:bg-blue-500 dark:hover:bg-blue-500 hover:text-white">
+                                    <a href="?{% url_replace page=products_by_page.previous_page_number %}"
+                                       class="flex items-center justify-center w-full h-full">
+                                        <svg class="size-5 rotate-180">
+                                            <use href="#chevron-left"></use>
+                                        </svg>
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="bg-gray-100 dark:bg-gray-700 text-gray-400 cursor-not-allowed">
+                                    <span class="flex items-center justify-center w-full h-full">
+                                        <svg class="size-5 rotate-180">
+                                            <use href="#chevron-left"></use>
+                                        </svg>
+                                    </span>
+                                </li>
+                            {% endif %}
+                            <!-- شماره صفحات -->
+                            {% for page_num in products_by_page.paginator.page_range %}
+                                {% if products_by_page.number == page_num %}
+                                    <li class="text-white bg-blue-500">
+                                        <span class="flex items-center justify-center w-full h-full">{{ page_num }}</span>
+                                    </li>
+                                {% elif page_num > products_by_page.number|add:'-3' and page_num < products_by_page.number|add:'3' %}
+                                    <li class="bg-white dark:bg-gray-800 hover:bg-blue-500 dark:hover:bg-blue-500 hover:text-white">
+                                        <a href="?{% url_replace page=page_num %}"
+                                           class="flex items-center justify-center w-full h-full">{{ page_num }}</a>
+                                    </li>
+                                {% elif page_num == products_by_page.number|add:'-3' or page_num == products_by_page.number|add:'3' %}
+                                    <li class="bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 cursor-default">
+                                        <span class="flex items-center justify-center w-full h-full">...</span>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                            <!-- صفحه بعد -->
+                            {% if products_by_page.has_next %}
+                                <li class="bg-white dark:bg-gray-800 hover:bg-blue-500 dark:hover:bg-blue-500 hover:text-white">
+                                    <a href="?{% url_replace page=products_by_page.next_page_number %}"
+                                       class="flex items-center justify-center w-full h-full">
+                                        <svg class="size-5">
+                                            <use href="#chevron-left"></use>
+                                        </svg>
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="bg-gray-100 dark:bg-gray-700 text-gray-400 cursor-not-allowed">
+                                    <span class="flex items-center justify-center w-full h-full">
+                                        <svg class="size-5">
+                                            <use href="#chevron-left"></use>
+                                        </svg>
+                                    </span>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+    <!-- Footer -->
+    {% include "partials/footer.html" %}
+    <!-- Overlay -->
+    <div class="overlay"></div>
+    <div class="search-overlay"></div>
+{% endblock content %}

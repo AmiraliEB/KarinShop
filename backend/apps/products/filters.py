@@ -3,8 +3,8 @@ from products.models import ProductVariant
 
 
 class ProductFilter(django_filters.FilterSet):
-    amazing = django_filters.BooleanFilter(field_name="is_amazing", lookup_expr="exact")
-    available = django_filters.BooleanFilter(field_name="is_available", lookup_expr="exact")
+    is_amazing = django_filters.BooleanFilter(field_name="is_amazing", lookup_expr="exact")
+    is_available = django_filters.BooleanFilter(field_name="is_available", lookup_expr="exact")
     ordering = django_filters.OrderingFilter(
         fields=(
             ("paid_items_count", "best_seller"),
