@@ -1,7 +1,10 @@
-from django.db.models import Q, Sum
+from accounts.models import Address, Profile
+from django.db.models import OuterRef, Prefetch, Q, Subquery, Sum
 from django.db.models.functions import Coalesce
-from django.shortcuts import render
+from django.shortcuts import redirect, render
+from django.urls import reverse
 from django.views import View, generic
+from orders.models import Order, OrderItem
 from products.models import ProductVariant
 
 
@@ -35,7 +38,24 @@ class HomePageView(View):
 
 class DashboardView(generic.View):
     def get(self, request, *args, **kwargs):
-        return render(request=request, template_name="core/dashboard.html")
+        user = request.user
+        try:
+            profile = user.profile
+        except (AttributeError, Profile.DoesNotExist):
+            return redirect(reverse("account_login"))
+        user_orders = user.orders.order_by("-datetime_created").prefetch_related(
+            Prefetch("items", queryset=OrderItem.objects.select_related("product__product_variant"))
+        )
+        user_addresses_count = user.addresses.count()
+
+        context = {
+            "user_profile": profile,
+            "user_obj": user,
+            "user_orders": user_orders[:3],
+            "user_orders_count": user_orders.count(),
+            "user_addresses_count": user_addresses_count,
+        }
+        return render(request=request, template_name="core/dashboard.html", context=context)
 
 
 class AboutPageView(generic.View):
