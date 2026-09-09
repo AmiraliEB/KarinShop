@@ -12,6 +12,7 @@ class DBCartWrapper:
     def __init__(self, request: HttpRequest):
         self.request = request
         self.user = request.user
+        self._total_quantity: int | None = None
         if not self.user.is_authenticated:
             # Type Narrowing: Ensure user is a concrete 'CustomUser' model
             return None
@@ -42,13 +43,13 @@ class DBCartWrapper:
     def __len__(self) -> int:
         if self.db_cart is None:
             return 0
+
+        if self._total_quantity is not None:
+            return self._total_quantity
+
         total_quantity_query: dict[str, int] = self.db_cart.items.aggregate(total_quantity=Sum(F("quantity")))
-        total_quantity = total_quantity_query.get("total_quantity")
-        # type narrowing
-        if total_quantity is not None:
-            return total_quantity
-        else:
-            return 0
+        self._total_quantity = total_quantity_query.get("total_quantity") or 0
+        return self._total_quantity
 
     def add(self, product: Product, quantity=1) -> dict[str, int]:
         cart_obj, created = DBCart.objects.get_or_create(user=self.request.user)

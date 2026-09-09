@@ -25,7 +25,7 @@ class Order(models.Model):
         ("tipax", _("Tipax")),
     )
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="orders")
 
     order_number = models.CharField(max_length=20, unique=True)
 
@@ -84,6 +84,22 @@ class Order(models.Model):
                     quantity=cart_item.quantity,
                     price=product.final_price,
                 )
+
+    @property
+    def status_color(self):
+        colors = {
+            "c": "text-green-500",
+            "p": "text-yellow-500",
+            "s": "text-green-500",
+            "f": "text-green-500",
+            "failed": "text-red-500",
+        }
+        return colors.get(self.status, "text-gray-500")
+
+    @property
+    def first_item(self):
+        items = self.items.all()
+        return items[0] if items else None
 
 
 class OrderItem(models.Model):

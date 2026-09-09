@@ -104,7 +104,7 @@
                 {% else %}
                     <!-- Account Btn -->
                     <button class="group relative flex-center py-2 px-4 app-border rounded-full app-hover delay-75">
-                        <a href="dashboard.html"  class="flex items-center gap-x-1">
+                        <a href="{% url "dashboard" %}"  class="flex items-center gap-x-1">
                             <svg class="size-5">
                                 <use href="#user" />
                             </svg>
@@ -471,7 +471,7 @@
                                     <a href="product_details.html">جزئیات محصول</a>
                                 </li>
                                 <li>
-                                    <a href="dashboard.html">پنل کاربری</a>
+                                    <a href="{% url "dashboard" %}">پنل کاربری</a>
                                 </li>
                                 <li>
                                     <a href="shopping-cart.html">سبد خرید</a>
@@ -1034,7 +1034,7 @@
                 <svg class="size-5">
                     <use href="#user" />
                 </svg>
-                <a href="dashboard.html">حساب من</a>
+                <a href="{% url "dashboard" %}">حساب من</a>
             </li>
         </ul>
     </div>
