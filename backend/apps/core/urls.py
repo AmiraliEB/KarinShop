@@ -4,8 +4,9 @@ from . import views
 
 urlpatterns = [
     path("", views.HomePageView.as_view(), name="homepage"),
-    path("dashboard", views.DashboardView.as_view(), name="dashboard"),
-    path("about", views.AboutPageView.as_view(), name="about"),
-    path("contact", views.ContactPageView.as_view(), name="contact"),
-    path("questions", views.QuestionPageView.as_view(), name="questions"),
+    path("dashboard/", views.DashboardView.as_view(), name="dashboard"),
+    path("dashboard/address/", views.DashboardAddressView.as_view(), name="dashboard-address"),
+    path("about/", views.AboutPageView.as_view(), name="about"),
+    path("contact/", views.ContactPageView.as_view(), name="contact"),
+    path("questions/", views.QuestionPageView.as_view(), name="questions"),
 ]
