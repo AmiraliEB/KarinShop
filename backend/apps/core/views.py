@@ -1,4 +1,5 @@
 from accounts.models import Address, Profile
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import OuterRef, Prefetch, Q, Subquery, Sum
 from django.db.models.functions import Coalesce
 from django.shortcuts import redirect, render
@@ -36,7 +37,7 @@ class HomePageView(View):
         return render(request, "core/index.html", context=context)
 
 
-class DashboardView(generic.View):
+class DashboardView(LoginRequiredMixin, generic.View):
     def get(self, request, *args, **kwargs):
         user = request.user
         try:
@@ -56,6 +57,18 @@ class DashboardView(generic.View):
             "user_addresses_count": user_addresses_count,
         }
         return render(request=request, template_name="core/dashboard.html", context=context)
+
+
+class DashboardAddressView(LoginRequiredMixin, generic.View):
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        address = Address.objects.filter(user=user).first()
+
+        context = {
+            "user_obj": user,
+            "user_addresses_obj": address,
+        }
+        return render(request=request, template_name="core/dashboard-address.html", context=context)
 
 
 class AboutPageView(generic.View):
