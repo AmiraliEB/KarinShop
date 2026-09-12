@@ -2,6 +2,7 @@
 {% load static %}
 {% load humanize %}
 {% block page_title %}
+    {% load jalali_tags %}
     {{ block.super }} | داشبورد
 {% endblock page_title %}
 {% block content %}
@@ -190,7 +191,7 @@
                         <svg class="w-6 h-6 ">
                             <use href="#shopping-bag"></use>
                         </svg>
-                        <a href="dashboard-orders.html">سفارش ها</a>
+                        <a href="{% url "dashboard" %}">سفارش ها</a>
                     </li> {% endcomment %}
                     {% comment %} <li class="hover:text-blue-500">
                         <svg class="w-6 h-6 ">
@@ -208,19 +209,13 @@
                         <svg class="w-6 h-6 ">
                             <use href="#bell"></use>
                         </svg>
-                        <a href="dashboard-messages.html">پیام ها</a>
-                    </li>
-                    <li class="hover:text-blue-500">
-                        <svg class="w-6 h-6 ">
-                            <use href="#cog"></use>
-                        </svg>
-                        <a href="dashboard-account.html">اطلاعات حساب</a>
+                        <a href="{% url "dashboard-messages" %}">پیام ها</a>
                     </li>
                     <li class="text-red-400">
                         <svg class="w-6 h-6 ">
                             <use href="#arrow-left-end"></use>
                         </svg>
-                        <a href="{% url "homepage" %}">خروج</a>
+                        <a href="{% url "account_logout" %}">خروج</a>
                     </li>
                 </ul>
             </div>
@@ -246,8 +241,8 @@
                                      class="size-10 ring-2 ring-gray-400/20 rounded-full"
                                      alt="AVATAR">
                                 <span class="felx flex-col gap-y-2">
-                                    <p class="font-DanaMedium text-lg">پارسا وصالی</p>
-                                    <p class="text-gray-400">09100000001</p>
+                                    <p class="font-DanaMedium text-lg">{{ user_profile.first_name }} {{ user_profile.last_name }}</p>
+                                    <p class="text-gray-400">{{ user.email }}</p>
                                 </span>
                             </div>
                             <span>
@@ -265,18 +260,6 @@
                             </li>
                             <li class="hover:text-blue-500">
                                 <svg class="w-6 h-6 ">
-                                    <use href="#shopping-bag"></use>
-                                </svg>
-                                <a href="dashboard-orders.html">سفارش ها</a>
-                            </li>
-                            <li class="hover:text-blue-500">
-                                <svg class="w-6 h-6 ">
-                                    <use href="#heart"></use>
-                                </svg>
-                                <a href="dashboard-favorite.html">علاقه‌مندی ها</a>
-                            </li>
-                            <li class="hover:text-blue-500">
-                                <svg class="w-6 h-6 ">
                                     <use href="#map"></use>
                                 </svg>
                                 <a href="{% url "dashboard-address" %}">آدرس ها</a>
@@ -285,19 +268,13 @@
                                 <svg class="w-6 h-6 ">
                                     <use href="#bell"></use>
                                 </svg>
-                                <a href="dashboard-messages.html">پیام ها</a>
-                            </li>
-                            <li class="hover:text-blue-500">
-                                <svg class="w-6 h-6 ">
-                                    <use href="#cog"></use>
-                                </svg>
-                                <a href="dashboard-account.html">اطلاعات حساب</a>
+                                <a href="{% url "dashboard-messages" %}">پیام ها</a>
                             </li>
                             <li class="text-red-400">
                                 <svg class="w-6 h-6 ">
                                     <use href="#arrow-left-end"></use>
                                 </svg>
-                                <a href="{% url "homepage" %}">خروج</a>
+                                <a href="{% url "account_logout" %}">خروج</a>
                             </li>
                         </ul>
                     </div>
@@ -388,7 +365,7 @@
                                                      alt="">
                                                 {{ order.first_item.product.product_variant.full_name }}
                                             </th>
-                                            <td class="px-6 py-5">{{ order.datetime_created|date:"Y/m/d" }}</td>
+                                            <td class="px-6 py-5">{{ order.datetime_created|to_jalali:"%Y/%m/%d" }}</td>
                                             <td class="px-6 py-5">{{ order.first_item.price|intcomma:False }} تومان</td>
                                             <td class="px-6 py-5 {{ order.status_color }} font-DanaDemiBold">{{ order.get_status_display }}</td>
                                         </tr>
@@ -431,7 +408,7 @@
             </div>
         </div>
     </main>
-    {% block extra_js %}
-        <script src="{% static 'core/js/dashboard.js' %}"></script>
-    {% endblock extra_js %}
 {% endblock content %}
+{% block extra_js %}
+    <script src="{% static 'core/js/dashboard.js' %}"></script>
+{% endblock extra_js %}

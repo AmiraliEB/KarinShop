@@ -15,6 +15,10 @@ class Profile(models.Model):
     datetime_created = models.DateTimeField(auto_now_add=True, verbose_name=_("creation date"))
     datetime_modified = models.DateTimeField(auto_now=True, verbose_name=_("last modified date"))
 
+    @property
+    def get_full_name(self):
+        return f"{self.first_name} {self.last_name}"
+
 
 class Address(models.Model):
     user = models.ForeignKey(CustomUser, verbose_name=_("user"), on_delete=models.CASCADE, related_name="addresses")
