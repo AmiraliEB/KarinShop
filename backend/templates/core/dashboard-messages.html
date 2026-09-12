@@ -1,12 +1,15 @@
 {% extends "_base.html" %}
 {% load static %}
-{% load humanize %}
+{% load jalali_tags %}
 {% block page_title %}
     {{ block.super }} | داشبورد
 {% endblock page_title %}
 {% block content %}
     <!-- ALL ICONS  -->
     <svg class="hidden">
+        <symbol id="calendar" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
+        </symbol>
         <symbol id="trash" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
         <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
         </symbol>
@@ -192,13 +195,13 @@
                         </svg>
                         <a href="{% url "dashboard" %}">داشبورد</a>
                     </li>
-                    <li class="bg-blue-500/10 text-blue-500">
+                    <li class="hover:text-blue-500">
                         <svg class="w-6 h-6 ">
                             <use href="#map"></use>
                         </svg>
                         <a href="{% url "dashboard-address" %}">آدرس ها</a>
                     </li>
-                    <li class="hover:text-blue-500">
+                    <li class=" bg-blue-500/10 text-blue-500">
                         <svg class="w-6 h-6 ">
                             <use href="#bell"></use>
                         </svg>
@@ -251,13 +254,13 @@
                                 </svg>
                                 <a href="{% url "dashboard" %}">داشبورد</a>
                             </li>
-                            <li class="bg-blue-500/10 text-blue-500">
+                            <li class="hover:text-blue-500">
                                 <svg class="w-6 h-6 ">
                                     <use href="#map"></use>
                                 </svg>
                                 <a href="{% url "dashboard-address" %}">آدرس ها</a>
                             </li>
-                            <li class="hover:text-blue-500">
+                            <li class=" bg-blue-500/10 text-blue-500">
                                 <svg class="w-6 h-6 ">
                                     <use href="#bell"></use>
                                 </svg>
@@ -272,70 +275,36 @@
                         </ul>
                     </div>
                 </div>
-                {% if user_addresses_obj is None %}
-                    <div class="flex flex-col shadow rounded-2xl p-6 dark:bg-gray-800 bg-white mt-5 lg:mt-0">
-                        <div class="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-gray-700/60">
-                            <span class="flex items-center gap-x-2.5">
-                                <img src="{% static "./images/svg/map.png" %}"
-                                     class="w-8 h-8 object-contain"
-                                     alt="آدرس تحویل">
-                                <h2 class="font-DanaMedium text-lg text-gray-800 dark:text-white">آدرس تحویل</h2>
-                            </span>
-                        </div>
-                        <div class="mt-6 flex flex-col items-center justify-center text-center py-14 px-6 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-xl bg-gray-50/50 dark:bg-gray-800/40">
-                            <div class="size-16 flex items-center justify-center bg-blue-50 dark:bg-blue-900/30 text-blue-500 dark:text-blue-400 rounded-full mb-4 ring-8 ring-blue-50/50 dark:ring-blue-900/10">
-                                <svg class="size-8">
-                                    <use href="#map"></use>
-                                </svg>
-                            </div>
-                            <h3 class="font-DanaMedium text-gray-800 dark:text-gray-100 text-base mb-2">هنوز هیچ آدرسی ثبت نکرده‌اید!</h3>
-                            <p class="font-Dana text-sm text-gray-500 dark:text-gray-400 max-w-sm mb-6 leading-6">
-                                برای ثبت سفارش و دریافت مرسوله‌ها، لطفاً مشخصات و نشانی دقیق پستی خود را وارد کنید.
-                            </p>
-                            <a href="#"
-                               class="inline-flex items-center gap-x-2 px-6 py-2.5 font-DanaMedium text-sm text-white bg-blue-600 hover:bg-blue-700 active:scale-95 rounded-xl transition-all shadow-sm hover:shadow-blue-500/25">
-                                <svg class="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                                </svg>
-                                ثبت آدرس جدید
-                            </a>
-                        </div>
+                <div class="flex flex-col shadow rounded-lg p-4 dark:bg-gray-800 bg-white mt-5 lg:mt-0">
+                    <div class="flex items-center justify-between">
+                        <h2 class="font-DanaMedium text-lg">پیام های من:</h2>
                     </div>
-                {% else %}
-                    <div class="flex flex-col shadow rounded-2xl p-6 dark:bg-gray-800 bg-white mt-5 lg:mt-0">
-                        <div class="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-gray-700/60">
-                            <span class="flex items-center gap-x-2.5">
-                                <img src="{% static "./images/svg/map.png" %}"
-                                     class="w-8 h-8 object-contain"
-                                     alt="آدرس من">
-                                <h2 class="font-DanaMedium text-lg text-gray-800 dark:text-white">آدرس تحویل سفارش</h2>
-                            </span>
-                        </div>
-                        <ul class="mt-6">
-                            <li class="relative w-full border border-blue-200 dark:border-blue-500/30 bg-blue-50/20 dark:bg-blue-500/5 p-5 rounded-xl space-y-3">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center gap-x-2 text-blue-600 dark:text-blue-400">
-                                        <svg class="size-5">
-                                            <use href="#map"></use>
-                                        </svg>
-                                        <h3 class="font-DanaMedium text-base font-bold">{{ user_addresses_obj.province }}</h3>
-                                    </div>
-                                </div>
-                                <div class="space-y-2 text-gray-600 dark:text-gray-300 font-Dana text-sm leading-relaxed pr-7">
-                                    <p class="text-gray-800 dark:text-gray-200">{{ user_addresses_obj.full_address }}</p>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-x-1 font-Dana">
-                                        <span>کد پستی:</span>
-                                        <span class="tracking-wider">{{ user_addresses_obj.postal_code }}</span>
-                                    </p>
-                                </div>
+                    <ul class="mt-5 space-y-3">
+                        <li class="relative w-full border border-blue-300 dark:border-blue-400  p-3 md:p-4 rounded-lg">
+                            <h2 class="font-DanaMedium text-lg text-green-500">
+                                {{ user_profile.get_full_name|default:"کاربر" }} عزیز، به کارین‌شاپ خوش آمدید! حساب کاربری شما با موفقیت فعال شد
+                            </h2>
+                            <div class="space-y-1.5 text-gray-600 dark:text-gray-300 mt-3 mr-2">
+                                <p class="flex items-center gap-x-1">
+                                    {{ user_obj.date_joined|to_jalali:"%Y/%m/%d" }} | {{ user_obj.date_joined|to_jalali:"%H:%M" }}
+                                    <svg class="size-5 mb-1">
+                                        <use href="#calendar"></use>
+                                    </svg>
+                                </p>
+                                <a class="absolute p-1.5 md:p-2 rounded-lg bg-blue-500/10 text-blue-500 left-4 bottom-3 flex items-center gap-x-2 cursor-pointer"
+                                   href="{% url "products:shop" %}">
+                                    رفتن به فروشگاه
+                                    <svg class="size-5">
+                                        <use href="#arrow"></use>
+                                    </svg>
+                                </a>
                             </li>
                         </ul>
                     </div>
-                {% endif %}
+                </div>
             </div>
-        </div>
-    </main>
-{% endblock content %}
-{% block extra_js %}
-    <script src="{% static 'core/js/dashboard.js' %}"></script>
-{% endblock extra_js %}
+        </main>
+    {% endblock content %}
+    {% block extra_js %}
+        <script src="{% static 'core/js/dashboard.js' %}"></script>
+    {% endblock extra_js %}

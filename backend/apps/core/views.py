@@ -63,12 +63,31 @@ class DashboardAddressView(LoginRequiredMixin, generic.View):
     def get(self, request, *args, **kwargs):
         user = request.user
         address = Address.objects.filter(user=user).first()
-
+        try:
+            profile = user.profile
+        except (AttributeError, Profile.DoesNotExist):
+            profile = None
         context = {
             "user_obj": user,
             "user_addresses_obj": address,
+            "user_profile": profile,
         }
         return render(request=request, template_name="core/dashboard-address.html", context=context)
+
+
+class DashboardMessagesView(LoginRequiredMixin, generic.View):
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        try:
+            profile = user.profile
+        except (AttributeError, Profile.DoesNotExist):
+            profile = None
+
+        context = {
+            "user_obj": user,
+            "user_profile": profile,
+        }
+        return render(request=request, template_name="core/dashboard-messages.html", context=context)
 
 
 class AboutPageView(generic.View):
