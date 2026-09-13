@@ -208,3 +208,8 @@ if sys.platform.startswith("win32"):
     locale.setlocale(locale.LC_ALL, "Persian_Iran.UTF-8")
 else:
     locale.setlocale(locale.LC_ALL, "fa_IR.UTF-8")
+
+SITE_NAME = "karinshop"
+SITE_DOMAIN = env.str("SITE_DOMAIN", default="karinapp.ir")
+
+ACCOUNT_EMAIL_SUBJECT_PREFIX = f"[{SITE_NAME}] "

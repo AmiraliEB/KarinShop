@@ -1,11 +1,10 @@
 from accounts.models import Address, Profile
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import OuterRef, Prefetch, Q, Subquery, Sum
+from django.db.models import Prefetch, Q, Sum
 from django.db.models.functions import Coalesce
-from django.shortcuts import redirect, render
-from django.urls import reverse
+from django.shortcuts import render
 from django.views import View, generic
-from orders.models import Order, OrderItem
+from orders.models import OrderItem
 from products.models import ProductVariant
 
 
@@ -43,7 +42,8 @@ class DashboardView(LoginRequiredMixin, generic.View):
         try:
             profile = user.profile
         except (AttributeError, Profile.DoesNotExist):
-            return redirect(reverse("account_login"))
+            profile = None
+
         user_orders = user.orders.order_by("-datetime_created").prefetch_related(
             Prefetch("items", queryset=OrderItem.objects.select_related("product__product_variant"))
         )
