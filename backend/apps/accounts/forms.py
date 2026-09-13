@@ -1,10 +1,32 @@
 from allauth.account import app_settings
 from allauth.account.forms import LoginForm, ResetPasswordForm, ResetPasswordKeyForm, SignupForm
 from allauth.account.utils import filter_users_by_email, get_adapter
+from allauth.socialaccount.forms import SignupForm as SocialSignupForm
 from django import forms
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 
 from .models import CustomUser
+
+
+class CustomSocialSignupForm(SocialSignupForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        input_classes = (
+            "peer inline-block w-full p-3 text-base outline dark:outline-none outline-1 -outline-offset-1 "
+            "placeholder:text-transparent sm:text-sm/6 transition-all text-gray-800 dark:text-gray-100 "
+            "dark:bg-gray-900 bg-slate-100 border border-transparent hover:border-slate-200 appearance-none "
+            "rounded-md outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 "
+            "dark:focus:ring-blue-400"
+        )
+        for field in ["email", "username"]:
+            if field in self.fields:
+                self.fields[field].widget.attrs.update(
+                    {
+                        "class": input_classes,
+                        "placeholder": " ",
+                    }
+                )
 
 
 class CustomUserCreationForm(UserCreationForm):

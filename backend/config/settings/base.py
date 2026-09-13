@@ -186,9 +186,17 @@ ACCOUNT_FORMS = {
     "reset_password": "accounts.forms.CustomResetPasswordForm",
     "reset_password_from_key": "accounts.forms.CustomResetPasswordKeyForm",
 }
+SOCIALACCOUNT_FORMS = {
+    "signup": "accounts.forms.CustomSocialSignupForm",
+}
 
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
+        "APP": {
+            "client_id": env.str("GOOGLE_CLIENT_ID", default=""),
+            "secret": env.str("GOOGLE_CLIENT_SECRET", default=""),
+            "key": "",
+        },
         "SCOPE": [
             "profile",
             "email",
@@ -196,9 +204,26 @@ SOCIALACCOUNT_PROVIDERS = {
         "AUTH_PARAMS": {
             "access_type": "online",
         },
-    }
+        "VERIFIED_EMAIL": True,
+    },
+    "github": {
+        "APP": {
+            "client_id": env.str("GITHUB_CLIENT_ID", default=""),
+            "secret": env.str("GITHUB_CLIENT_SECRET", default=""),
+            "key": "",
+        },
+        "SCOPE": [
+            "user:email",
+            "read:user",
+        ],
+        "VERIFIED_EMAIL": True,
+    },
 }
+
 SOCIALACCOUNT_LOGIN_ON_GET = True
+SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
+SOCIALACCOUNT_AUTO_SIGNUP = True
+SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
 
 DEFAULT_FROM_EMAIL = env.str("DEFAULT_FROM_EMAIL", default="KarinShop <noreply@karinapp.ir>")
 SERVER_EMAIL = env.str("SERVER_EMAIL", default="KarinShop Errors <admin@karinapp.ir>")

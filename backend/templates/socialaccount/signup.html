@@ -1,0 +1,56 @@
+{% extends "base_account.html" %}
+{% load i18n %}
+{% block page_title %}
+    تکمیل ثبت‌نام | {{ block.super }}
+{% endblock page_title %}
+{% block form_title %}
+    تکمیل ثبت‌نام
+{% endblock form_title %}
+{% block base_content %}
+    <p class="mt-1 text-sm/6 font-DanaMedium text-gray-500 dark:text-gray-300">
+        شما در حال ورود با حساب
+        <span class="font-bold text-gray-800 dark:text-gray-100">{{ account.get_provider.name }}</span>
+        هستید. لطفاً جهت نهایی‌سازی حساب، اطلاعات زیر را تأیید کنید:
+    </p>
+    {% if form.non_field_errors %}
+        <div class="mt-3">
+            {% for error in form.non_field_errors %}<p class="text-sm font-DanaMedium text-red-600">{{ error }}</p>{% endfor %}
+        </div>
+    {% endif %}
+    {% if redirect_field_value %}
+        <input type="hidden"
+               name="{{ redirect_field_name }}"
+               value="{{ redirect_field_value }}" />
+    {% endif %}
+    {% for field in form.visible_fields %}
+        <div class="relative mt-4">
+            {{ field }}
+            <label for="{{ field.id_for_label }}"
+                   class="absolute top-3 right-3 z-10 cursor-text text-gray-400 transition-all duration-200 peer-focus:-top-2 peer-focus:right-2 peer-focus:rounded-md peer-focus:bg-white peer-focus:px-1 peer-focus:text-xs peer-focus:font-medium peer-focus:text-blue-500 dark:peer-focus:bg-gray-800 peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:right-2 peer-[:not(:placeholder-shown)]:rounded-md peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-1 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:font-medium peer-[:not(:placeholder-shown)]:text-gray-600 dark:peer-[:not(:placeholder-shown)]:text-gray-300 dark:peer-[:not(:placeholder-shown)]:bg-gray-800">
+                {{ field.label }}
+            </label>
+        </div>
+        {% for error in field.errors %}<p class="mt-2 text-sm text-red-600 font-DanaMedium">{{ error }}</p>{% endfor %}
+    {% endfor %}
+    <div>
+        <button type="submit" class="mt-5 submit-btn">تأیید و ورود به حساب</button>
+    </div>
+</form>
+<div class="text-right mt-4">
+    <p class="text-sm text-gray-400 font-DanaMedium">
+        انصراف؟
+        <a href="{% url 'account_login' %}"
+           class="font-medium text-blue-500 hover:underline">بازگشت به صفحه ورود</a>
+    </p>
+</div>
+<p class="mt-6 text-center text-sm/6 text-gray-500 dark:text-gray-300">
+    ورود شما به معنای پذیرش
+    <button type="button"
+            id="openTermsModal"
+            class="font-DanaMedium text-blue-400 hover:underline focus:outline-none">قوانین سایت</button>
+    است
+</p>
+</div>
+</div>
+</section>
+{% endblock base_content %}
