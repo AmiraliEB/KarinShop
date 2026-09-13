@@ -8,3 +8,11 @@ def user_factory(db, django_user_model):
         return user
 
     return _create_user
+
+
+@pytest.fixture(autouse=True)
+def disable_debug_toolbar(settings):
+    settings.DEBUG_TOOLBAR_CONFIG = {
+        "SHOW_TOOLBAR_CALLBACK": lambda request: False,
+    }
+    settings.MIDDLEWARE = [m for m in settings.MIDDLEWARE if "debug_toolbar" not in m]
