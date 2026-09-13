@@ -28,8 +28,8 @@ services:
     container_name: karinshop_mailpit
     restart: unless-stopped
     ports:
-      - "8025:8025" # رابط کاربری وب
-      - "1025:1025" # دریافت ایمیل (SMTP)
+      - "8025:8025"
+      - "1025:1025"
 volumes:
   postgres_data:
     driver: local
