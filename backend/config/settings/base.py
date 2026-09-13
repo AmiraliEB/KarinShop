@@ -169,7 +169,7 @@ USE_TZ = True
 ACCOUNT_SESSION_REMEMBER = True
 ACCOUNT_LOGIN_METHODS = {"email"}
 ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_EMAIL_VERIFICATION = "optional"
 ACCOUNT_LOGIN_BY_CODE_ENABLED = True
 ACCOUNT_SIGNUP_REDIRECT_URL = "/"
 ACCOUNT_PASSWORD_RESET_REDIRECT_URL = "/"
@@ -200,14 +200,8 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 SOCIALACCOUNT_LOGIN_ON_GET = True
 
-# email
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = os.environ.get("EMAIL_HOST")
-EMAIL_PORT = int(os.environ.get("EMAIL_PORT", 587))
-EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
-EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
-EMAIL_USE_TLS = False
-
+DEFAULT_FROM_EMAIL = env.str("DEFAULT_FROM_EMAIL", default="KarinShop <noreply@karinapp.ir>")
+SERVER_EMAIL = env.str("SERVER_EMAIL", default="KarinShop Errors <admin@karinapp.ir>")
 # jalali date settings
 
 if sys.platform.startswith("win32"):
