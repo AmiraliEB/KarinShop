@@ -149,7 +149,7 @@
         </symbol>
     </svg>
     {% include "partials/header.html" %}
-    <main class="container">
+    <main class="container mx-auto px-3 sm:px-4 overflow-x-hidden">
         <!-- Breadcrumb -->
         <nav class="flex mt-8" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
@@ -693,11 +693,11 @@
                     <span class="text-sm text-gray-400 end">{{ count_all_products }} کالا</span>
                 </div>
                 <!-- PRODUCTS -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                <div class="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-2.5 sm:gap-4">
                     {% for product in products_by_page %}
-                        <div class="product-card group">
+                        <div class="product-card group min-w-0">
                             <div class="product-card_header">
-                                <div class="flex items-center gap-x-2">
+                                <div class="flex items-center gap-x-1 sm:gap-x-2">
                                     <div class="tooltip">
                                         <button class="rounded-full p-1.5 app-border app-hover">
                                             <svg class="size-4">
@@ -756,7 +756,11 @@
                                         </span>
                                     </div>
                                     <div class="product-card_price">
-                                        {% if product.has_discount %}
+                                        {% if product.final_price == 0 or not product.is_available %}
+                                            <div class="w-full flex justify-end">
+                                                <p class="text-red-500 font-DanaDemiBold text-xs sm:text-sm">ناموجود</p>
+                                            </div>
+                                        {% elif product.has_discount %}
                                             <del>{{ product.initial_price|intcomma:False }}
                                                 <h6>تومان</h6>
                                             </del>
