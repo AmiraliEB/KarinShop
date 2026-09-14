@@ -231,6 +231,21 @@ class ProductVariant(models.Model):
 
         return f"{base_name} {' '.join(final_parts)}".strip()
 
+    @property
+    def key_features(self):
+        parent_specs = self.parent_product.specification_values.filter(attribute__is_key_feature=True).select_related(
+            "attribute"
+        )
+
+        variant_specs = self.attribute_values.filter(attribute__is_key_feature=True).select_related("attribute")
+
+        features = (parent_specs | variant_specs).distinct()[:6]
+
+        if not features.exists():
+            return self.parent_product.specification_values.select_related("attribute")[:4]
+
+        return features
+
     def save(self, *args, **kwargs):
         if self.pk:
             product_counter = self.products.count()
@@ -401,6 +416,7 @@ class Attribute(models.Model):
     )
     is_variant_defining = models.BooleanField(default=False, verbose_name=_("Is this a variant-defining attribute?"))
     show_in_specifications = models.BooleanField(_("Show in specifications in detail page?"), default=True)
+    is_key_feature = models.BooleanField(default=False, verbose_name=_("نمایش در ویژگی‌های کلیدی بالای صفحه"))
 
     # this allows multiple values for an attribute in a product (e.g. color: red, blue)
     allow_multiple_values = models.BooleanField(

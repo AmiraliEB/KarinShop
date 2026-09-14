@@ -43,7 +43,7 @@
                             <a href="{% url "products:shop" %}">فروشگاه</a>
                         </li>
                         <li>
-                            <a href="contact-us.html">تماس با ما</a>
+                            <a href="{% url "contact" %}">تماس با ما</a>
                         </li>
                         <li>
                             <a href="{% url "questions" %}">سوالات متداول</a>
@@ -51,10 +51,10 @@
                     </ul>
                     <ul class="child-hover:text-blue-500 md:hidden child:transition-colors">
                         <li>
-                            <a href="login.html">ثبت نام | ورود</a>
+                            <a href="{% url "account_login" %}">ثبت نام | ورود</a>
                         </li>
                         <li>
-                            <a href="articles.html">وبلاگ</a>
+                            <a href="">وبلاگ</a>
                         </li>
                         <li>
                             <a href="">شرایط و قوانین</a>

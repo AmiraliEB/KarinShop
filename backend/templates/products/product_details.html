@@ -255,7 +255,7 @@
                     </div>
                     <div class="slider-modal">
                         <div class="flex w-full h-fit items-center justify-between">
-                            <h1 class="font-DanaMedium text-lg">تصاویر گوشی موبایل اپل مدل iPhone 16 دو سیم کارت</h1>
+                            <h1 class="font-DanaMedium text-lg">تصاویر {{ product_variant.full_name }}</h1>
                             <svg class="size-6 cursor-pointer close-sliderModal">
                                 <use href="#x-mark"></use>
                             </svg>
@@ -283,7 +283,7 @@
                     <!-- INFOS -->
                     <div class="w-full md:w-3/5 flex flex-col gap-y-7">
                         <div class="flex items-center justify-between">
-                            <a href="{% url "products:shop" %}" class="font-DanaMedium text-sky-400">اپل / گوشی موبایل اپل</a>
+                            <a href="{% url 'products:shop' %}" class="font-DanaMedium text-sky-400">{{ category }} / {{ brand }}</a>
                             <div class="hidden md:flex items-center gap-x-2">
                                 <div class="tooltip">
                                     <div id="share-modal"
@@ -326,9 +326,9 @@
                         </div>
                         <div class="flex flex-col gap-y-3">
                             <p class="text-lg font-DanaDemiBold dark:text-gray-300">{{ product_variant.full_name }}</p>
-                            <p class="text-sm text-gray-300 dark:text-gray-500">
+                            {% comment %} <p class="text-sm text-gray-300 dark:text-gray-500">
                                 Apple iPhone 16 CH Dual SIM Storage 128GB And RAM 8GB Mobile Phone
-                            </p>
+                            </p> {% endcomment %}
                             <div class="flex items-center gap-x-2">
                                 <span class="flex items-center gap-x-1 text-sm">
                                     <svg class="size-4 text-yellow-400 mb-1.5">
@@ -345,51 +345,53 @@
                         <div class="flex flex-col gap-y-4">
                             <h1 class="font-DanaDemiBold text-lg color-title dark:text-gray-200"
                                 id="color-text">رنگ : {{ first_product.color }}</h1>
-                            <div class="flex items-center gap-x-3 child:rounded-full child:size-9 child:p-1">
+                            <div class="flex items-center gap-x-3 child:rounded-full child:size-9 child:p-1"
+                                 hx-indicator="#price-loading"
+                                 hx-disabled-elt=".color-select-btn">
                                 {% if product_counts > 1 %}
-                                    <button hx-post="{% url "products:product_selector" first_product.id %}"
-                                            hx-swap="None"
+                                    <button hx-post="{% url 'products:product_selector' first_product.id %}"
+                                            hx-swap="none"
+                                            title="{{ first_product.color.color_name }}"
                                             class="color-select-btn ring-4 ring-blue-400 transition-all duration-300 ease-in-out">
-                                        <span class="bg-black w-full h-full rounded-full flex"></span>
+                                        <span style="background-color: {% if not first_product.color.hex_code|slice:':1' == '#' %}#{% endif %}{{ first_product.color.hex_code }}"
+                                              class="w-full h-full rounded-full flex border border-gray-200 dark:border-gray-600">
+                                        </span>
                                     </button>
                                     {% for product in products %}
-                                        <button hx-post="{% url "products:product_selector" product.id %}"
-                                                hx-swap="None"
+                                        <button hx-post="{% url 'products:product_selector' product.id %}"
+                                                hx-swap="none"
+                                                title="{{ product.color.color_name }}"
                                                 class="color-select-btn ring-1 ring-gray-400 transition-all duration-300 ease-in-out">
-                                            <span class="bg-white app-border w-full h-full rounded-full flex"></span>
+                                            <span style="background-color: {% if not product.color.hex_code|slice:':1' == '#' %}#{% endif %}{{ product.color.hex_code }}"
+                                                  class="w-full h-full rounded-full flex border border-gray-200 dark:border-gray-600">
+                                            </span>
                                         </button>
                                     {% endfor %}
-                                {% else %}
-                                    <button hx-post="{% url "products:product_selector" first_product.id %}"
-                                            hx-swap="None"
-                                            class="color-select-btn ring-4 ring-blue-400 transition-all duration-300 ease-in-out">
-                                        <span class="bg-black w-full h-full rounded-full flex"></span>
+                                {% elif product_counts == 1 %}
+                                    <button class="color-select-btn ring-4 ring-blue-400 cursor-default"
+                                            title="{{ first_product.color.color_name }}">
+                                        <span style="background-color: {% if not first_product.color.hex_code|slice:':1' == '#' %}#{% endif %}{{ first_product.color.hex_code }}"
+                                              class="w-full h-full rounded-full flex border border-gray-200 dark:border-gray-600">
+                                        </span>
                                     </button>
                                 {% endif %}
                             </div>
                         </div>
                         <!-- Features Box  -->
-                        <div class="w-full flex flex-col gap-y-4">
-                            <h1 class="font-DanaDemiBold text-lg dark:text-gray-200">ویژگی‌ها</h1>
-                            <div class="grid grid-cols-12 gap-2 child:p-2 child:h-16 child:bg-gray-100 dark:child:bg-gray-900 child:rounded-lg child:flex child:flex-col child:gap-y-1.5">
-                                <div class="col-span-12 md:col-span-6 xl:col-span-4">
-                                    <p class="text-sm text-gray-500">فناوری صفحه‌ نمایش</p>
-                                    <p class="line-clamp-1 font-DanaDemiBold text-sm text-slate-800 dark:text-slate-200">LTPO Super Retina XDR</p>
-                                </div>
-                                <div class="col-span-12 md:col-span-6 xl:col-span-4">
-                                    <p class="text-sm text-gray-500">نسخه سیستم عامل</p>
-                                    <p class="line-clamp-1 font-DanaDemiBold text-sm text-slate-800 dark:text-slate-200">iOS 18</p>
-                                </div>
-                                <div class="col-span-12 md:col-span-6 xl:col-span-4">
-                                    <p class="text-sm text-gray-500">رزولوشن دوربین اصلی</p>
-                                    <p class="line-clamp-1 font-DanaDemiBold text-sm text-slate-800 dark:text-slate-200">48 مگاپیکسل</p>
-                                </div>
-                                <div class="col-span-12 md:col-span-6 xl:col-span-4">
-                                    <p class="text-sm text-gray-500">اندازه</p>
-                                    <p class="line-clamp-1 font-DanaDemiBold text-sm text-slate-800 dark:text-slate-200">6.1</p>
+                        {% if product_variant.key_features %}
+                            <div class="w-full flex flex-col gap-y-3">
+                                <h3 class="font-DanaDemiBold text-base dark:text-gray-200">ویژگی‌های اصلی</h3>
+                                <div class="grid grid-cols-2 gap-2.5">
+                                    {% for spec in product_variant.key_features %}
+                                        <div class="p-2.5 bg-gray-100 dark:bg-gray-900/70 border border-gray-200/60 dark:border-gray-800 rounded-xl flex flex-col justify-center gap-y-1">
+                                            <span class="text-xs text-gray-500 dark:text-gray-400 font-Dana">{{ spec.attribute.name }}</span>
+                                            <span class="font-DanaMedium text-xs sm:text-sm text-slate-800 dark:text-slate-200 truncate"
+                                                  title="{{ spec.value }}">{{ spec.value }}</span>
+                                        </div>
+                                    {% endfor %}
                                 </div>
                             </div>
-                        </div>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="mt-10 lg:mr-2 grid grid-cols-12 child:col-span-6 xl:child:col-span-3 gap-x-1 gap-y-2 lg:gap-4 child:border child:text-gray-400 child:dark:border-white/20 child:border-gray-200 child:rounded-lg child:h-12  child:p-2 child:flex child:items-center child:gap-x-1 lg:child:gap-x-2 child:text-sm lg:text-base">
@@ -531,14 +533,9 @@
                                         <!-- Price -->
                                         <div class="product-card_price">
                                             {% if product_variant.has_discount %}
-                                                <del>{{ product.initial_price|intcomma:False }}
-                                                    <h6>تومان</h6>
+                                                <del class="text-xs text-gray-400">
+                                                    {{ product_variant.initial_price|intcomma:False }} تومان
                                                 </del>
-                                                <p>{{ product_variant.final_price|intcomma:False }}</p>
-                                                <span>تومان</span>
-                                            {% else %}
-                                                <p>{{ product_variant.final_price|intcomma:False }}</p>
-                                                <span>تومان</span>
                                             {% endif %}
                                             <div class="flex items-baseline gap-x-1">
                                                 <span class="text-sm font-DanaDemiBold text-gray-900 dark:text-gray-50">
@@ -562,7 +559,7 @@
                 <button class="tab-btn text-gray-500 dark:text-gray-300" data-target="tab3">دیدگاه‌ها</button>
             </div>
             <div class="tab-content tab1 block">
-                <h2 class="font-D anaDemiBold border-b-2 border-blue-500 w-fit p-1 text-lg">معرفی</h2>
+                <h2 class="font-DanaDemiBold border-b-2 border-blue-500 w-fit p-1 text-lg">معرفی</h2>
                 <p class="mt-4 leading-8">
                     گوشی موبایل اپل مدل iPhone 16، به عنوان یکی از جدیدترین مدل‌های این برند معتبر، با طراحی مدرن و ویژگی‌های پیشرفته، تجربه‌ای بی‌نظیر از دنیای تکنولوژی را برای کاربران فراهم می‌کند. این گوشی با ظرفیت 128 گیگابایت و رم 8 گیگابایت، عملکردی سریع و روان را ارائه می‌دهد که به راحتی از پس کارهای روزمره و multitasking برمی‌آید. طراحی این دستگاه با دقت و ظرافت بالا انجام شده و بدنه آن از مواد با کیفیت ساخته شده است که حس لوکس بودن را به کاربر منتقل می‌کند. قابلیت پشتیبانی از دو سیم کارت، امکان استفاده هر مفید است. دوربین‌های با کیفیت پارت نامبر CH مربوط به کشور چین است که تفاوت خاصی با دیگر پارت نامبرها ندارند و تنها در مورد استفاده از تماس‌های صوتی و تماس‌های گروهی در نرم افزار فیس تایم شامل محدودیت است. این پارت نامبر از دو سیم‌کارت فیزیکی پشتیبانی می‌کند که یک نکته مثبت محسوب می‌شود. این گوشی، مانند تمامی گوشی‌های عرضه‌شده در دیجی‌کالا، به صورت قانونی و تجاری وارد کشور شده و با رجیستر رسمی، کارت گارانتی معتبر و کد فعال‌سازی به شما تحویل داده می‌شود.
                     <a href="#" class="flex gap-x-1 items-center text-blue-400">

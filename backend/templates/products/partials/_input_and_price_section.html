@@ -1,6 +1,17 @@
-<div class="w-full lg:w-1/4 lg:sticky top-5 flex flex-col gap-y-6"
+<div class="relative overflow-hidden w-full lg:w-1/4 lg:sticky top-5 flex flex-col gap-y-6 rounded-xl"
      id="input-and-price-section"
      {% if oob %}hx-swap-oob="True"{% endif %}>
+    <div id="price-loading"
+         class="htmx-indicator hidden absolute inset-0 bg-white/75 dark:bg-gray-800/75 backdrop-blur-[2px] rounded-xl z-30 items-center justify-center flex-col gap-y-2">
+        <svg class="animate-spin size-8 text-blue-500"
+             xmlns="http://www.w3.org/2000/svg"
+             fill="none"
+             viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+        </svg>
+        <span class="text-xs font-DanaMedium text-gray-500 dark:text-gray-300">در حال بروزرسانی...</span>
+    </div>
     {% if product.is_available %}
         {% include "products/partials/_price_section.html" with product=product %}
         {% include "cart/partials/_product_detail_cart_input.html" with product=product %}
@@ -21,3 +32,8 @@
         </div>
     {% endif %}
 </div>
+<style>
+    #price-loading.htmx-request {
+        display: flex !important;
+    }
+</style>

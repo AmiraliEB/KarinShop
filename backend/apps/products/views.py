@@ -152,7 +152,8 @@ class ProductDetailView(DetailView):
             cart.get_item_quantity(first_product) * first_product.initial_price
         )
         context["item_total_price"] = cart.get_item_quantity(first_product) * first_product.final_price
-
+        context["brand"] = product_variant.parent_product.brand
+        context["category"] = product_variant.parent_product.category
         return context
 
 

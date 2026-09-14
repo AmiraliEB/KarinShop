@@ -1,9 +1,5 @@
 {% load humanize %}
-{% include "cart/partials/_product_detail_cart_input.html" with oob=True %}
-{% include "products/partials/_price_section.html" with oob=True %}
 {% include "products/partials/_input_and_price_section.html" with oob=True %}
 <h1 class="font-DanaDemiBold text-lg color-title dark:text-gray-200"
     id="color-text"
-    hx-post="{% url "products:product_selector" product.id %}"
-    hx-swap="None"
-    hx-swap-oob="True">رنگ : {{ product.color }}</h1>
+    hx-swap-oob="True">رنگ : {{ product.color.color_name }}</h1>

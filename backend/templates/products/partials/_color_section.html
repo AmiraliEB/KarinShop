@@ -5,20 +5,20 @@
     <div class="flex items-center gap-x-3 child:rounded-full child:size-9 child:p-1">
         {% if product_counts > 1 %}
             <button hx-post="{% url "products:product_selector" first_product.id %}"
-                    hx-swap="None"
+                    hx-swap="none"
                     class="color-select-btn ring-4 ring-blue-400 transition-all duration-300 ease-in-out">
                 <span class="bg-black w-full h-full rounded-full flex"></span>
             </button>
             {% for product in products %}
                 <button hx-post="{% url "products:product_selector" product.id %}"
-                        hx-swap="None"
+                        hx-swap="none"
                         class="color-select-btn ring-1 ring-gray-400 transition-all duration-300 ease-in-out">
                     <span class="bg-white app-border w-full h-full rounded-full flex"></span>
                 </button>
             {% endfor %}
         {% else %}
             <button hx-post="{% url "products:product_selector" product.id %}"
-                    hx-swap="None"
+                    hx-swap="none"
                     class="color-select-btn ring-4 ring-blue-400 transition-all duration-300 ease-in-out">
                 <span class="bg-black w-full h-full rounded-full flex"></span>
             </button>
