@@ -93,34 +93,28 @@ class ProductParent(models.Model):
                 product.save(update_fields=["_full_name"])
 
     @property
-    def get_main_image(self: ProductParent) -> ProductImage | None:
-        images: QuerySet[ProductImage] = self.images
-        if images is None:
-            return None
-        main_image: ProductImage | None = images.filter(is_main_image=True).first()
-        return main_image.image.url if main_image is not None else None
+    def get_main_image(self) -> str | None:
+        for img in self.images.all():
+            if img.is_main_image:
+                return img.image.url
+        return None
 
     @property
-    def get_second_image(self: ProductParent) -> ProductImage | None:
-        images: QuerySet[ProductImage] = self.images
-        if images is None:
-            return None
-        second_image: ProductImage | None = images.exclude(is_main_image=True).first()
-        return second_image.image.url if second_image is not None else None
+    def get_second_image(self) -> str | None:
+        for img in self.images.all():
+            if not img.is_main_image:
+                return img.image.url
+        return None
 
-    def get_average_rate(self: ProductParent, comments_query: "QuerySet[Comments]|None" = None) -> int | str:
-        if comments_query is None:
-            comments: QuerySet[Comments] = self.comments
-            if comments is not None:
-                comments = comments.filter(is_approved=True).order_by("-datetime_created")
-        else:
-            comments = comments_query
-        average_rating = comments.aggregate(average_rating=Avg("rating"))
-        average_rating_data = average_rating.get("average_rating")
-        if average_rating_data is not None:
-            return "{:.2f}".format(average_rating_data)
-        else:
-            return 0
+    def get_average_rate(self, comments_query=None) -> int | str:
+        if comments_query is not None:
+            avg = comments_query.aggregate(average_rating=Avg("rating")).get("average_rating")
+            return "{:.2f}".format(avg) if avg is not None else 0
+
+        approved_ratings = [c.rating for c in self.comments.all() if c.is_approved]
+        if approved_ratings:
+            return "{:.2f}".format(sum(approved_ratings) / len(approved_ratings))
+        return 0
 
     def get_comment_count(self: ProductParent, comments_query: "QuerySet[Comments]|None" = None) -> Any | None:
         if comments_query is None:
@@ -179,16 +173,16 @@ class ProductVariant(models.Model):
 
     @property
     def initial_price(self):
-        products = self.products.filter(is_available=True)
-        if products:
-            return min(product.initial_price for product in products)
+        available_products = [p for p in self.products.all() if p.is_available]
+        if available_products:
+            return min(p.initial_price for p in available_products)
         return 0
 
     @property
     def final_price(self):
-        products = self.products.filter(is_available=True)
-        if products:
-            return min(product.final_price for product in products)
+        available_products = [p for p in self.products.all() if p.is_available]
+        if available_products:
+            return min(p.final_price for p in available_products)
         return 0
 
     def __str__(self):

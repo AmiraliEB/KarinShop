@@ -1,37 +1,59 @@
 from accounts.models import Address, Profile
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Prefetch, Q, Sum
+from django.db.models import Avg, Prefetch, Q, Sum, prefetch_related_objects
 from django.db.models.functions import Coalesce
 from django.shortcuts import render
 from django.views import View, generic
 from orders.models import OrderItem
-from products.models import ProductVariant
+from products.models import Comments, Product, ProductImage, ProductVariant
 
 
 class HomePageView(View):
-    # if there are no amazing prod , del the amazing section
     slug_url_kwarg = "slug"
 
     def get(self, request, *args, **kwargs):
-        context = {}
-        product_variant = ProductVariant.objects.filter(is_available=True)
-        amazing_product_variants = (
-            ProductVariant.objects.select_related("parent_product")
-            .prefetch_related("products", "parent_product__images", "parent_product__comments")
-            .filter(is_amazing=True, is_available=True)[:6]
-        )
-        context["amazing_product_variants"] = amazing_product_variants
-
-        latest_product_variants = product_variant.order_by("datetime_modified")[:6]
-        context["latest_product_variants"] = latest_product_variants
-        best_selling = product_variant.annotate(
-            paid_items_count=Coalesce(
-                Sum("products__order_items__quantity", filter=Q(products__order_items__order__is_paid=True)), 0
+        base_qs = (
+            ProductVariant.objects.filter(is_available=True)
+            .select_related("parent_product")
+            .annotate(
+                rating_avg=Coalesce(
+                    Avg(
+                        "parent_product__comments__rating",
+                        filter=Q(parent_product__comments__is_approved=True),
+                    ),
+                    0.0,
+                )
             )
         )
-        context["best_selling_product_variants"] = best_selling.order_by("paid_items_count")
-        context["hot_product_variants"] = None
-        context["hot_product_variants_column"] = range(4)
+        amazing_variants = list(base_qs.filter(is_amazing=True)[:6])
+        latest_variants = list(base_qs.order_by("-datetime_modified")[:6])
+        best_selling_variants = list(
+            base_qs.annotate(
+                paid_items_count=Coalesce(
+                    Sum(
+                        "products__order_items__quantity",
+                        filter=Q(products__order_items__order__is_paid=True),
+                    ),
+                    0,
+                )
+            ).order_by("-paid_items_count")[:6]
+        )
+
+        all_variants = amazing_variants + latest_variants + best_selling_variants
+
+        prefetch_related_objects(
+            all_variants,
+            Prefetch("products", queryset=Product.objects.filter(is_available=True)),
+            Prefetch("parent_product__images", queryset=ProductImage.objects.all()),
+        )
+
+        context = {
+            "amazing_product_variants": amazing_variants,
+            "latest_product_variants": latest_variants,
+            "best_selling_product_variants": best_selling_variants,
+            "hot_product_variants": None,
+            "hot_product_variants_column": range(4),
+        }
 
         return render(request, "core/index.html", context=context)
 
