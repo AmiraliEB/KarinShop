@@ -427,7 +427,6 @@
         <!-- Best-selling products -->
         {% if related_products != None %}
             <section class="mx-4 mt-10 lg:mt-20">
-                <!-- SECTION TITLE -->
                 <div class="flex flex-col gap-y-4 xs:flex-row items-center justify-between w-full text-center xs:text-start">
                     <div class="flex items-center gap-x-2 sm:gap-x-4">
                         <span class="size-12 hidden xs:flex rounded-lg bg-white shadow-lg dark:bg-gray-800 flex-center">
@@ -443,7 +442,7 @@
                             <p class="text-sm text-gray-500 dark:text-gray-300">جدیدترین و بروزترین محصولات</p>
                         </div>
                     </div>
-                    <div class="w-full xs:w-auto flex justify-between xs:justify-end  items-center gap-x-2">
+                    <div class="w-full xs:w-auto flex justify-between xs:justify-end items-center gap-x-2">
                         <div class="flex items-center gap-x-2">
                             <button class="slider-navigate_btn BestSelling-prev-slide">
                                 <svg class="size-6 -rotate-90">
@@ -456,7 +455,7 @@
                                 </svg>
                             </button>
                         </div>
-                        <a href="#"
+                        <a href="{% url 'products:shop' %}"
                            class="group shadow-xl text-sm md:text-base flex gap-x-1.5 items-center px-2 h-10 md:px-3 text-white bg-blue-600 rounded-xl">
                             <p>مشاهده همه</p>
                             <span class="w-7 h-7 rounded-full bg-blue-500 flex-center md:group-hover:-translate-x-1 transition-transform duration-300">
@@ -467,71 +466,82 @@
                         </a>
                     </div>
                 </div>
-                <!-- Latest products Slider -->
                 <div class="swiper BestSelling mt-5 w-full">
                     <div class="swiper-wrapper py-5">
                         {% for product_variant in related_products %}
-                            <!-- PRODUCT ITEM -->
-                            <div class="swiper-slide h-auto">
-                                <div class="flex flex-col justify-between h-full bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/50 rounded-2xl p-4 shadow-sm hover:shadow-xl transition-all duration-300">
-                                    <!-- TOP ACTION & DISCOUNT BAR -->
-                                    <div class="flex items-center justify-between w-full">
-                                        <!-- درصد تخفیف (سمت راست با خط آبی باریک) -->
-                                        {% if product_variant.has_discount %}
-                                            <div class="flex items-center gap-x-1.5 border-r-2 border-blue-500 pr-2">
-                                                <span class="text-sky-400 text-xs font-DanaMedium">{{ product_variant.discount_percentage }}٪ تخفیف</span>
-                                            </div>
-                                        {% else %}
-                                            <div></div>
-                                        {% endif %}
-                                        <!-- سه دکمه گرد اکشن (سمت چپ) -->
-                                        <div class="flex items-center gap-x-1.5">
-                                            <button class="size-7 rounded-full border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/80 flex items-center justify-center text-gray-400 hover:text-blue-500 transition-colors"
-                                                    title="مقایسه">
-                                                <svg class="size-3.5">
-                                                    <use href="#arrows-up-down" />
+                            <div class="swiper-slide product-card group">
+                                <div class="product-card_header">
+                                    <div class="flex items-center gap-x-2">
+                                        <div class="tooltip">
+                                            <button class="rounded-full p-1.5 app-border app-hover">
+                                                <svg class="size-4">
+                                                    <use href="#shopping-cart"></use>
                                                 </svg>
                                             </button>
-                                            <button class="size-7 rounded-full border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/80 flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors"
-                                                    title="علاقه‌مندی">
-                                                <svg class="size-3.5">
-                                                    <use href="#heart" />
+                                            <div class="tooltiptext">سبد خرید</div>
+                                        </div>
+                                        <div class="tooltip">
+                                            <button class="rounded-full p-1.5 app-border app-hover">
+                                                <svg class="size-4">
+                                                    <use href="#heart"></use>
                                                 </svg>
                                             </button>
-                                            <button class="size-7 rounded-full border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/80 flex items-center justify-center text-gray-400 hover:text-blue-500 transition-colors"
-                                                    title="افزودن به سبد">
-                                                <svg class="size-3.5">
-                                                    <use href="#shopping-cart" />
+                                            <div class="tooltiptext">علاقه مندی</div>
+                                        </div>
+                                        <div class="tooltip">
+                                            <button class="rounded-full p-1.5 app-border app-hover">
+                                                <svg class="size-4">
+                                                    <use href="#arrows-up-down"></use>
                                                 </svg>
                                             </button>
+                                            <div class="tooltiptext">مقایسه</div>
                                         </div>
                                     </div>
-                                    <!-- PRODUCT IMAGE (بدون باکس سفید و مستقیماً روی پس‌زمینه کارت) -->
+                                    {% if product_variant.has_discount %}
+                                        <span class="product-card_badge">{{ product_variant.discount_percentage }}% تخفیف‌</span>
+                                    {% endif %}
+                                </div>
+                                <a href="{{ product_variant.get_absolute_url }}"
+                                   class="relative flex items-center justify-center w-full aspect-square bg-white rounded-2xl p-2 overflow-hidden">
+                                    <img class="w-full h-full object-contain transition-all duration-300 {% if product_variant.parent_product.get_second_image %}group-hover:opacity-0{% endif %}"
+                                         src="{{ product_variant.parent_product.get_main_image }}"
+                                         alt="{{ product_variant.full_name }}">
+                                    {% if product_variant.parent_product.get_second_image %}
+                                        <img class="absolute inset-0 w-full h-full object-contain p-2 transition-all duration-300 opacity-0 group-hover:opacity-100"
+                                             src="{{ product_variant.parent_product.get_second_image }}"
+                                             alt="{{ product_variant.full_name }}">
+                                    {% endif %}
+                                </a>
+                                <div class="space-y-2">
                                     <a href="{{ product_variant.get_absolute_url }}"
-                                       class="flex items-center justify-center py-4 my-1">
-                                        <img src="{{ product_variant.parent_product.get_main_image }}"
-                                             alt="{{ product_variant.full_name }}"
-                                             class="h-40 w-auto max-w-full object-contain mx-auto hover:scale-105 transition-transform duration-300">
-                                    </a>
-                                    <!-- TITLE (وسط‌چین با ارتفاع ثابت برای تراز بودن کارت‌ها) -->
-                                    <a href="{{ product_variant.get_absolute_url }}"
-                                       class="text-center font-DanaMedium text-sm text-gray-800 dark:text-gray-200 line-clamp-2 min-h-[2.5rem] leading-5 hover:text-blue-500 transition-colors mb-3"
-                                       title="{{ product_variant.full_name }}">{{ product_variant.full_name }}</a>
-                                    <!-- DIVIDER LINE -->
-                                    <span class="w-full border-b border-gray-100 dark:border-gray-700/60 mb-3"></span>
-                                    <!-- PRICE SECTION (چیدمان استاندارد و بدون تداخل کدهای تکراری) -->
-                                    <div class="flex items-center justify-start gap-x-2 pt-1" dir="ltr">
-                                        <span class="bg-blue-600 text-white text-[11px] font-Dana px-2.5 py-0.5 rounded-full flex items-center justify-center">
-                                            تومان
-                                        </span>
-                                        <span class="text-sm sm:text-base font-DanaDemiBold text-gray-900 dark:text-gray-100">
-                                            {{ product_variant.final_price|intcomma:False }}
-                                        </span>
-                                        {% if product_variant.has_discount %}
-                                            <del class="text-xs text-gray-400 dark:text-gray-500 font-Dana line-through">
-                                                {{ product_variant.initial_price|intcomma:False }}
-                                            </del>
-                                        {% endif %}
+                                       class="product-card_link">{{ product_variant.full_name }}</a>
+                                    <div class="product-card_price-wrapper">
+                                        <div class="product-card_rate">
+                                            <span class="flex items-center gap-x-0.5">
+                                                <svg class="size-4 text-blue-500 mb-0.5">
+                                                    <use href="#rocket"></use>
+                                                </svg>
+                                                <p class="text-xs">ارسال امروز</p>
+                                            </span>
+                                            <span class="text-gray-400 flex items-center text-sm gap-x-0.5">
+                                                <p>{{ product_variant.parent_product.get_average_rate }}</p>
+                                                <svg class="size-4 mb-1">
+                                                    <use href="#star"></use>
+                                                </svg>
+                                            </span>
+                                        </div>
+                                        <div class="product-card_price">
+                                            {% if product_variant.has_discount %}
+                                                <del>{{ product_variant.initial_price|intcomma:False }}
+                                                    <h6>تومان</h6>
+                                                </del>
+                                                <p>{{ product_variant.final_price|intcomma:False }}</p>
+                                                <span>تومان</span>
+                                            {% else %}
+                                                <p>{{ product_variant.final_price|intcomma:False }}</p>
+                                                <span>تومان</span>
+                                            {% endif %}
+                                        </div>
                                     </div>
                                 </div>
                             </div>

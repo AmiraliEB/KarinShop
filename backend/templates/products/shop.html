@@ -693,11 +693,9 @@
                     <span class="text-sm text-gray-400 end">{{ count_all_products }} کالا</span>
                 </div>
                 <!-- PRODUCTS -->
-                <div class="grid grid-cols-1 xxs:grid-cols-2 xs:grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-3 xs:gap-2 sm:gap-4">
-                    <!-- PRODUCT ITEM -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
                     {% for product in products_by_page %}
-                        <div class=" product-card group">
-                            <!-- product header -->
+                        <div class="product-card group">
                             <div class="product-card_header">
                                 <div class="flex items-center gap-x-2">
                                     <div class="tooltip">
@@ -725,26 +723,24 @@
                                         <div class="tooltiptext">مقایسه</div>
                                     </div>
                                 </div>
-                                <!-- badge offer -->
                                 {% if product.has_discount %}
                                     <span class="product-card_badge">{{ product.discount_percentage }}% تخفیف‌</span>
                                 {% endif %}
                             </div>
-                            <!-- product img -->
-                            <a href={{ product.get_absolute_url }}>
-                                <img class="product-card_img group-hover:opacity-0 absolute"
-                                     src="{% static "./images/products/1.png" %}"
-                                     alt="">
-                                <img class="product-card_img opacity-0 group-hover:opacity-100"
-                                     src="{% static "./images/products/2.png" %}"
-                                     alt="">
+                            <a href="{{ product.get_absolute_url }}"
+                               class="relative flex items-center justify-center w-full aspect-square bg-white rounded-2xl p-2 overflow-hidden">
+                                <img class="w-full h-full object-contain transition-all duration-300 {% if product.parent_product.get_second_image %}group-hover:opacity-0{% endif %}"
+                                     src="{{ product.parent_product.get_main_image }}"
+                                     alt="{{ product.full_name }}">
+                                {% if product.parent_product.get_second_image %}
+                                    <img class="absolute inset-0 w-full h-full object-contain p-2 transition-all duration-300 opacity-0 group-hover:opacity-100"
+                                         src="{{ product.parent_product.get_second_image }}"
+                                         alt="{{ product.full_name }}">
+                                {% endif %}
                             </a>
-                            <!--  product footer -->
                             <div class="space-y-2">
-                                <a href={{ product.get_absolute_url }} class="product-card_link">{{ product.full_name }}</a>
-                                <!-- Rate and Price -->
+                                <a href="{{ product.get_absolute_url }}" class="product-card_link">{{ product.full_name }}</a>
                                 <div class="product-card_price-wrapper">
-                                    <!-- RATE -->
                                     <div class="product-card_rate">
                                         <span class="flex items-center gap-x-0.5">
                                             <svg class="size-4 text-blue-500 mb-0.5">
@@ -753,13 +749,12 @@
                                             <p class="text-xs">ارسال امروز</p>
                                         </span>
                                         <span class="text-gray-400 flex items-center text-sm gap-x-0.5">
-                                            <p>5.0</p>
+                                            <p>{{ product.parent_product.get_average_rate }}</p>
                                             <svg class="size-4 mb-1">
                                                 <use href="#star"></use>
                                             </svg>
                                         </span>
                                     </div>
-                                    <!-- Price -->
                                     <div class="product-card_price">
                                         {% if product.has_discount %}
                                             <del>{{ product.initial_price|intcomma:False }}

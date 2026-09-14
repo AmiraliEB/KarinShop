@@ -5,7 +5,7 @@ from django.db.models.functions import Coalesce
 from django.shortcuts import render
 from django.views import View, generic
 from orders.models import OrderItem
-from products.models import Comments, Product, ProductImage, ProductVariant
+from products.models import Product, ProductImage, ProductVariant
 
 
 class HomePageView(View):

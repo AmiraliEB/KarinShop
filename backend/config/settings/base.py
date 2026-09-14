@@ -238,3 +238,10 @@ SITE_NAME = "karinshop"
 SITE_DOMAIN = env.str("SITE_DOMAIN", default="karinapp.ir")
 
 ACCOUNT_EMAIL_SUBJECT_PREFIX = f"[{SITE_NAME}] "
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://redis:6379/1",
+    }
+}

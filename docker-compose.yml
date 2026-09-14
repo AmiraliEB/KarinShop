@@ -30,6 +30,12 @@ services:
     ports:
       - "8025:8025"
       - "1025:1025"
+  redis:
+    image: redis:alpine
+    container_name: redis_cache
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
 volumes:
   postgres_data:
     driver: local
