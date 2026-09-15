@@ -154,7 +154,7 @@
         <nav class="flex mt-8" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
                 <li class="inline-flex items-center">
-                    <a href="index.html"
+                    <a href="{% url "homepage" %}"
                        class="inline-flex items-center text-sm gap-x-1  text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
                         <svg class="size-4 mb-0.5">
                             <use href="#home" />
@@ -378,6 +378,25 @@
             </form>
             <!-- TOP FILTER BOX & PRODUCT & PAGINATION -->
             <div class="lg:w-3/4">
+                <!-- SEARCH QUERY BADGE -->
+                {% if request.GET.q %}
+                    <div class="flex items-center justify-between bg-blue-50/70 dark:bg-blue-950/30 border border-blue-200/60 dark:border-blue-800/40 rounded-xl px-3.5 py-2 mb-4 text-xs sm:text-sm">
+                        <div class="flex items-center gap-x-1.5 text-gray-700 dark:text-gray-200">
+                            <svg class="size-4 text-blue-500">
+                                <use href="#search" />
+                            </svg>
+                            <span>نتیجه جستجو برای:</span>
+                            <span class="font-DanaMedium text-blue-600 dark:text-blue-400">«{{ request.GET.q }}»</span>
+                        </div>
+                        <a href="?{% url_replace q=None page=None %}"
+                           class="flex items-center gap-x-1 text-red-500 hover:text-red-600 dark:text-red-400 text-xs font-DanaMedium transition-colors bg-white dark:bg-gray-800 px-2 py-1 rounded-lg border border-red-100 dark:border-red-900/30 shadow-xs">
+                            <span>حذف</span>
+                            <svg class="size-3.5">
+                                <use href="#x-mark" />
+                            </svg>
+                        </a>
+                    </div>
+                {% endif %}
                 <!-- MOBILE FILTERS -->
                 <div class="flex lg:hidden items-center gap-x-2">
                     <!-- SORT BTN -->
@@ -693,89 +712,130 @@
                     <span class="text-sm text-gray-400 end">{{ count_all_products }} کالا</span>
                 </div>
                 <!-- PRODUCTS -->
-                <div class="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-2.5 sm:gap-4">
-                    {% for product in products_by_page %}
-                        <div class="product-card group min-w-0">
-                            <div class="product-card_header">
-                                <div class="flex items-center gap-x-1 sm:gap-x-2">
-                                    <div class="tooltip">
-                                        <button class="rounded-full p-1.5 app-border app-hover">
-                                            <svg class="size-4">
-                                                <use href="#shopping-cart"></use>
-                                            </svg>
-                                        </button>
-                                        <div class="tooltiptext">سبد خرید</div>
+                {% if products_by_page %}
+                    <div class="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-2.5 sm:gap-4">
+                        {% for product in products_by_page %}
+                            <div class="product-card group min-w-0">
+                                <div class="product-card_header">
+                                    <div class="flex items-center gap-x-1 sm:gap-x-2">
+                                        <div class="tooltip">
+                                            <button class="rounded-full p-1.5 app-border app-hover">
+                                                <svg class="size-4">
+                                                    <use href="#shopping-cart"></use>
+                                                </svg>
+                                            </button>
+                                            <div class="tooltiptext">سبد خرید</div>
+                                        </div>
+                                        <div class="tooltip">
+                                            <button class="rounded-full p-1.5 app-border app-hover">
+                                                <svg class="size-4">
+                                                    <use href="#heart"></use>
+                                                </svg>
+                                            </button>
+                                            <div class="tooltiptext">علاقه مندی</div>
+                                        </div>
+                                        <div class="tooltip">
+                                            <button class="rounded-full p-1.5 app-border app-hover">
+                                                <svg class="size-4">
+                                                    <use href="#arrows-up-down"></use>
+                                                </svg>
+                                            </button>
+                                            <div class="tooltiptext">مقایسه</div>
+                                        </div>
                                     </div>
-                                    <div class="tooltip">
-                                        <button class="rounded-full p-1.5 app-border app-hover">
-                                            <svg class="size-4">
-                                                <use href="#heart"></use>
-                                            </svg>
-                                        </button>
-                                        <div class="tooltiptext">علاقه مندی</div>
-                                    </div>
-                                    <div class="tooltip">
-                                        <button class="rounded-full p-1.5 app-border app-hover">
-                                            <svg class="size-4">
-                                                <use href="#arrows-up-down"></use>
-                                            </svg>
-                                        </button>
-                                        <div class="tooltiptext">مقایسه</div>
-                                    </div>
+                                    {% if product.has_discount %}
+                                        <span class="product-card_badge">{{ product.discount_percentage }}% تخفیف‌</span>
+                                    {% endif %}
                                 </div>
-                                {% if product.has_discount %}
-                                    <span class="product-card_badge">{{ product.discount_percentage }}% تخفیف‌</span>
-                                {% endif %}
-                            </div>
-                            <a href="{{ product.get_absolute_url }}"
-                               class="relative flex items-center justify-center w-full aspect-square bg-white rounded-2xl p-2 overflow-hidden">
-                                <img class="w-full h-full object-contain transition-all duration-300 {% if product.parent_product.get_second_image %}group-hover:opacity-0{% endif %}"
-                                     src="{{ product.parent_product.get_main_image }}"
-                                     alt="{{ product.full_name }}">
-                                {% if product.parent_product.get_second_image %}
-                                    <img class="absolute inset-0 w-full h-full object-contain p-2 transition-all duration-300 opacity-0 group-hover:opacity-100"
-                                         src="{{ product.parent_product.get_second_image }}"
+                                <a href="{{ product.get_absolute_url }}"
+                                   class="relative flex items-center justify-center w-full aspect-square bg-white rounded-2xl p-2 overflow-hidden">
+                                    <img class="w-full h-full object-contain transition-all duration-300 {% if product.parent_product.get_second_image %}group-hover:opacity-0{% endif %}"
+                                         src="{{ product.parent_product.get_main_image }}"
                                          alt="{{ product.full_name }}">
-                                {% endif %}
-                            </a>
-                            <div class="space-y-2">
-                                <a href="{{ product.get_absolute_url }}" class="product-card_link">{{ product.full_name }}</a>
-                                <div class="product-card_price-wrapper">
-                                    <div class="product-card_rate">
-                                        <span class="flex items-center gap-x-0.5">
-                                            <svg class="size-4 text-blue-500 mb-0.5">
-                                                <use href="#rocket"></use>
-                                            </svg>
-                                            <p class="text-xs">ارسال امروز</p>
-                                        </span>
-                                        <span class="text-gray-400 flex items-center text-sm gap-x-0.5">
-                                            <p>{{ product.parent_product.get_average_rate }}</p>
-                                            <svg class="size-4 mb-1">
-                                                <use href="#star"></use>
-                                            </svg>
-                                        </span>
-                                    </div>
-                                    <div class="product-card_price">
-                                        {% if product.final_price == 0 or not product.is_available %}
-                                            <div class="w-full flex justify-end">
-                                                <p class="text-red-500 font-DanaDemiBold text-xs sm:text-sm">ناموجود</p>
-                                            </div>
-                                        {% elif product.has_discount %}
-                                            <del>{{ product.initial_price|intcomma:False }}
-                                                <h6>تومان</h6>
-                                            </del>
-                                            <p>{{ product.final_price|intcomma:False }}</p>
-                                            <span>تومان</span>
-                                        {% else %}
-                                            <p>{{ product.final_price|intcomma:False }}</p>
-                                            <span>تومان</span>
-                                        {% endif %}
+                                    {% if product.parent_product.get_second_image %}
+                                        <img class="absolute inset-0 w-full h-full object-contain p-2 transition-all duration-300 opacity-0 group-hover:opacity-100"
+                                             src="{{ product.parent_product.get_second_image }}"
+                                             alt="{{ product.full_name }}">
+                                    {% endif %}
+                                </a>
+                                <div class="space-y-2">
+                                    <a href="{{ product.get_absolute_url }}" class="product-card_link">{{ product.full_name }}</a>
+                                    <div class="product-card_price-wrapper">
+                                        <div class="product-card_rate">
+                                            <span class="flex items-center gap-x-0.5">
+                                                <svg class="size-4 text-blue-500 mb-0.5">
+                                                    <use href="#rocket"></use>
+                                                </svg>
+                                                <p class="text-xs">ارسال امروز</p>
+                                            </span>
+                                            <span class="text-gray-400 flex items-center text-sm gap-x-0.5">
+                                                <p>{{ product.parent_product.get_average_rate }}</p>
+                                                <svg class="size-4 mb-1">
+                                                    <use href="#star"></use>
+                                                </svg>
+                                            </span>
+                                        </div>
+                                        <div class="product-card_price">
+                                            {% if product.final_price == 0 or not product.is_available %}
+                                                <div class="w-full flex justify-end">
+                                                    <p class="text-red-500 font-DanaDemiBold text-xs sm:text-sm">ناموجود</p>
+                                                </div>
+                                            {% elif product.has_discount %}
+                                                <del>{{ product.initial_price|intcomma:False }}
+                                                    <h6>تومان</h6>
+                                                </del>
+                                                <p>{{ product.final_price|intcomma:False }}</p>
+                                                <span>تومان</span>
+                                            {% else %}
+                                                <p>{{ product.final_price|intcomma:False }}</p>
+                                                <span>تومان</span>
+                                            {% endif %}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <!-- EMPTY STATE BOX -->
+                    <div class="flex flex-col items-center justify-center text-center py-16 px-4 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700/40 my-4">
+                        <!-- Icon -->
+                        <div class="size-20 rounded-full bg-blue-50 dark:bg-blue-500/10 text-blue-500 flex items-center justify-center mb-5">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 stroke-width="1.5"
+                                 stroke="currentColor"
+                                 class="size-10">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607ZM10.5 7.5v6m3-3h-6" />
+                            </svg>
                         </div>
-                    {% endfor %}
-                </div>
+                        <!-- Text -->
+                        <h3 class="font-DanaDemiBold text-lg sm:text-xl text-gray-800 dark:text-gray-100 mb-2">
+                            کالایی با این مشخصات پیدا نشد!
+                        </h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 max-w-md leading-relaxed mb-6">
+                            {% if request.GET.q %}
+                                برای عبارت <span class="font-DanaMedium text-blue-500">«{{ request.GET.q }}»</span> نتیجه‌ای یافت نشد. املای کلمه را بررسی کنید یا فیلترهای دیگر را امتحان نمایید.
+                            {% else %}
+                                با فیلترهای انتخابی شما هیچ محصولی موجود نیست. پیشنهاد می‌کنیم فیلترها را تغییر دهید.
+                            {% endif %}
+                        </p>
+                        <!-- CTA Button -->
+                        <a href="{% url 'products:shop' %}"
+                           class="inline-flex items-center gap-x-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-DanaMedium transition-colors shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 stroke-width="1.8"
+                                 stroke="currentColor"
+                                 class="size-4">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                            </svg>
+                            مشاهده همه محصولات و حذف فیلترها
+                        </a>
+                    </div>
+                {% endif %}
                 <!-- PAGINATION -->
                 {% if products_by_page.paginator.num_pages > 1 %}
                     <div class="mt-10 w-full flex items-center justify-center">

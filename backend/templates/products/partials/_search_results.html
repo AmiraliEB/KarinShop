@@ -1,0 +1,26 @@
+{% if results %}
+    <span class="flex items-center text-sm gap-x-1 text-gray-600 dark:text-gray-200">
+        <p>
+            نتیجه جستجو برای: <span class="font-DanaMedium text-blue-400">«{{ query }}»</span>
+        </p>
+    </span>
+    <ul class="pt-4 text-gray-500 dark:text-gray-300 flex flex-col gap-y-3">
+        {% for variant in results %}
+            <li class="hover:bg-gray-100 dark:hover:bg-gray-800 p-2 rounded-lg transition-colors">
+                <a href="{{ variant.get_absolute_url }}"
+                   class="flex items-center justify-between">
+                    <span class="text-sm font-Dana line-clamp-1">{{ variant.full_name }}</span>
+                    <svg class="size-4 text-gray-400">
+                        <use href="#arrow-up-right" />
+                    </svg>
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+    <div class="pt-3 border-t border-gray-200 dark:border-gray-700 text-center">
+        <a href="{% url 'products:shop' %}?q={{ query }}"
+           class="text-xs text-blue-500 hover:underline">مشاهده تمام نتایج در فروشگاه ←</a>
+    </div>
+{% elif query|length >= 2 %}
+    <p class="text-xs text-gray-400 py-4 text-center">محصولی با این مشخصات یافت نشد.</p>
+{% endif %}

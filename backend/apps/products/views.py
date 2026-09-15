@@ -159,16 +159,19 @@ class ProductDetailView(DetailView):
 
 class ShopView(View):
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        search_query = request.GET.get("q", "").strip()
         context = {}
         applied_ordering = []
         ordering_param = request.GET.get("ordering", "-popular")
         last_month = timezone.now() - timedelta(days=30)
+        search_query = request.GET.get("q", "").strip()
         products_qs = (
             ProductVariant.objects.select_related("parent_product")
             .prefetch_related("products")
             .with_display_price()
             .all()
         )
+
         if any([key in ordering_param for key in ["is_amazing", "best_seller", "popular"]]):
 
             products_qs = products_qs.annotate(
@@ -191,6 +194,9 @@ class ShopView(View):
                     Value(0),
                 ),
             )
+        if search_query:
+            for word in search_query.split():
+                products_qs = products_qs.filter(_full_name__icontains=word)
         product_filter = ProductFilter(request.GET, queryset=products_qs)
         products = product_filter.qs
 
@@ -224,3 +230,22 @@ def product_selector_view(request, pk):
         "item_total_price": item_total_price,
     }
     return render(request, template_name="products/partials/update_response_on_color.html", context=context)
+
+
+def live_search_view(request):
+    query = request.GET.get("q", "").strip()
+    results = []
+
+    if len(query) >= 2:
+        qs = ProductVariant.objects.select_related("parent_product").prefetch_related("parent_product__images")
+
+        for word in query.split():
+            qs = qs.filter(_full_name__icontains=word)
+
+        results = qs[:5]
+
+    return render(
+        request,
+        "products/partials/_search_results.html",
+        {"results": results, "query": query},
+    )

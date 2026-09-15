@@ -9,4 +9,5 @@ urlpatterns = [
     path("product-<int:pk>/<str:slug>", views.ProductDetailView.as_view(), name="product_detail"),
     path("prod-select-<int:pk>", views.product_selector_view, name="product_selector"),
     path("shop/", views.ShopView.as_view(), name="shop"),
+    path("live-search/", views.live_search_view, name="live_search"),
 ]

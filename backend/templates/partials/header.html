@@ -7,56 +7,32 @@
             <!-- Search Box -->
             <div class="relative z-20">
                 <!-- INPUT -->
-                <div class="search-btn-open flex gap-x-2 app-border bg-gray-50 dark:bg-gray-700 p-1 rounded-full cursor-pointer ring-blue-400 w-84 transition-all">
-                    <svg class="size-6 p-1.5 flex-center text-gray-100 bg-blue-600 rounded-full w-9 h-9">
-                        <use href="#search" />
-                    </svg>
-                    <input placeholder="جستجو در کارین..." type="text">
-                </div>
+                <!-- Desktop & Mobile Search Input -->
+                <form action="{% url 'products:shop' %}" method="GET" class="relative z-20">
+                    <div class="search-btn-open flex gap-x-2 app-border bg-gray-50 dark:bg-gray-700 p-1 rounded-full cursor-pointer ring-blue-400 w-84 transition-all">
+                        <button type="submit"
+                                class="size-6 p-1.5 flex-center text-gray-100 bg-blue-600 rounded-full w-9 h-9">
+                            <svg class="size-4">
+                                <use href="#search" />
+                            </svg>
+                        </button>
+                        <input type="text"
+                               name="q"
+                               placeholder="جستجو در کارین..."
+                               autocomplete="off"
+                               hx-get="{% url 'products:live_search' %}"
+                               hx-trigger="keyup changed delay:350ms"
+                               hx-target="#search-results-container"
+                               class="bg-transparent outline-none w-full text-sm">
+                    </div>
+                </form>
                 <!-- Search Modal -->
                 <div class="search-modal space-y-4">
                     <!-- Result -->
-                    <div>
+                    <div id="search-results-container">
                         <span class="flex items-center text-sm gap-x-1 text-gray-600 dark:text-gray-200">
-                            <p>
-                                نتیجه جستجو : <span class="font-DanaMedium text-blue-400">iphone</span>
-                            </p>
+                            <p>عبارت مورد نظر خود را تایپ کنید...</p>
                         </span>
-                        <ul class="pt-4 text-gray-500 dark:text-gray-300 flex flex-col gap-y-4 child:flex-between child:cursor-pointer">
-                            <li>
-                                <a href="#" class="flex items-center gap-x-2">
-                                    <svg class="size-5">
-                                        <use href="#search" />
-                                    </svg>
-                                    آیفون 14
-                                </a>
-                                <svg class="size-4">
-                                    <use href="#arrow-up-right" />
-                                </svg>
-                            </li>
-                            <li>
-                                <a href="#" class="flex items-center gap-x-2">
-                                    <svg class="size-5">
-                                        <use href="#search" />
-                                    </svg>
-                                    قاب آیفون
-                                </a>
-                                <svg class="size-4">
-                                    <use href="#arrow-up-right" />
-                                </svg>
-                            </li>
-                            <li>
-                                <a href="#" class="flex items-center gap-x-2">
-                                    <svg class="size-5">
-                                        <use href="#search" />
-                                    </svg>
-                                    کاور ایفون 16
-                                </a>
-                                <svg class="size-4">
-                                    <use href="#arrow-up-right" />
-                                </svg>
-                            </li>
-                        </ul>
                     </div>
                     <!-- Trend -->
                     <div class="pt-4">
@@ -68,16 +44,16 @@
                         </span>
                         <ul class="w-full flex items-center gap-1.5 mt-3 child:search-modal-list-item">
                             <li>
-                                <a href="#">#آیفون</a>
+                                <a href="{% url 'products:shop' %}?q=اپل">#اپل</a>
                             </li>
                             <li>
-                                <a href="#">#لپ تاپ</a>
+                                <a href="{% url 'products:shop' %}?q=لپ+تاپ">#لپ تاپ</a>
                             </li>
                             <li>
-                                <a href="#">#هدفون</a>
+                                <a href="{% url 'products:shop' %}?q=هدفون">#هدفون</a>
                             </li>
                             <li>
-                                <a href="#">#هلدر</a>
+                                <a href="{% url 'products:shop' %}?q=هلدر">#هلدر</a>
                             </li>
                         </ul>
                     </div>
@@ -506,7 +482,7 @@
             <div class="mobile-menu z-50 flex flex-col">
                 <!--  MENU MOBILE header -->
                 <div class="flex w-full items-center justify-between border-b-normal pb-4">
-                    <a href="index.html" class="text-xl font-MorabbaMedium">
+                    <a href="{% url "homepage" %}" class="text-xl font-MorabbaMedium">
                         <span class="text-blue-500">کارین</span> شاپ
                     </a>
                     <button class="close-menu-mobile">
@@ -841,84 +817,61 @@
                 جستجو در <span class="font-MorabbaMedium">کارین شاپ</span>
             </p>
         </button>
-        <!-- Search Moadal -->
+        <!-- Search Modal Mobile -->
         <div class="mobile_search-modal">
             <!-- TOP -->
             <div class="w-full flex items-center gap-x-2">
-                <button class="w-full flex items-center gap-x-1 bg-gray-200 dark:bg-gray-800 text-gray-500 py-2 px-4 rounded-3xl">
-                    <svg class="size-6">
-                        <use href="#search" />
+                <form action="{% url 'products:shop' %}" method="GET" class="w-full">
+                    <div class="w-full flex items-center gap-x-2 bg-gray-200 dark:bg-gray-800 text-gray-500 py-2 px-4 rounded-3xl">
+                        <button type="submit" class="flex-center">
+                            <svg class="size-5 text-gray-500 dark:text-gray-300">
+                                <use href="#search" />
+                            </svg>
+                        </button>
+                        <input type="text"
+                               name="q"
+                               value="{{ request.GET.q|default:'' }}"
+                               placeholder="جستجو در همه کالاها..."
+                               autocomplete="off"
+                               hx-get="{% url 'products:live_search' %}"
+                               hx-trigger="keyup changed delay:350ms"
+                               hx-target="#mobile-search-results-container"
+                               class="bg-transparent outline-none w-full text-sm text-gray-800 dark:text-gray-100 placeholder:text-gray-400">
+                    </div>
+                </form>
+                <button type="button" class="close-mobile_search-modal">
+                    <svg class="size-6 text-gray-500 dark:text-gray-300">
+                        <use href="#x-mark" />
                     </svg>
-                    <input type="text" placeholder="جستجو در همه کالاها">
                 </button>
-                <svg class="size-6 close-mobile_search-modal">
-                    <use href="#x-mark" />
-                </svg>
             </div>
             <div class="w-full space-y-4">
-                <!-- Result -->
-                <div>
-                    <span class=" flex items-center text-sm gap-x-1 text-gray-600 dark:text-gray-200">
-                        <p>
-                            نتیجه جستجو : <span class="font-DanaMedium text-blue-400">iphone</span>
-                        </p>
+                <!-- Live Results Container -->
+                <div id="mobile-search-results-container">
+                    <span class="flex items-center text-sm gap-x-1 text-gray-600 dark:text-gray-200">
+                        <p>عبارت مورد نظر خود را تایپ کنید...</p>
                     </span>
-                    <ul class="pt-4 text-gray-500 dark:text-gray-300 flex flex-col gap-y-4 child:flex-between child:cursor-pointer">
-                        <li>
-                            <a href="#" class="flex items-center gap-x-2">
-                                <svg class="size-5">
-                                    <use href="#search" />
-                                </svg>
-                                آیفون 14
-                            </a>
-                            <svg class="size-4">
-                                <use href="#arrow-up-right" />
-                            </svg>
-                        </li>
-                        <li>
-                            <a href="#" class="flex items-center gap-x-2">
-                                <svg class="size-5">
-                                    <use href="#search" />
-                                </svg>
-                                قاب آیفون
-                            </a>
-                            <svg class="size-4">
-                                <use href="#arrow-up-right" />
-                            </svg>
-                        </li>
-                        <li>
-                            <a href="#" class="flex items-center gap-x-2">
-                                <svg class="size-5">
-                                    <use href="#search" />
-                                </svg>
-                                کاور ایفون 16
-                            </a>
-                            <svg class="size-4">
-                                <use href="#arrow-up-right" />
-                            </svg>
-                        </li>
-                    </ul>
                 </div>
                 <!-- Trend -->
-                <div class="pt-4">
+                <div class="pt-4 border-t border-gray-100 dark:border-gray-700/40">
                     <span class="flex items-center gap-x-1 text-sm text-gray-500 dark:text-gray-200">
                         <svg class="size-4">
                             <use href="#fire" />
                         </svg>
-                        <p>جستجو های پرطرفدار :</p>
+                        <p>جستجوهای پرطرفدار :</p>
                     </span>
-                    <ul class="w-full flex items-center gap-1.5 mt-3 child:search-modal-list-item">
+                    <ul class="w-full flex items-center flex-wrap gap-1.5 mt-3 child:search-modal-list-item">
                         <li>
-                            <a href="#">#آیفون</a>
+                            <a href="{% url 'products:shop' %}?q=آیفون">#آیفون</a>
                         </li>
                         <li>
-                            <a href="#">#لپ تاپ</a>
+                            <a href="{% url 'products:shop' %}?q=لپ+تاپ">#لپ تاپ</a>
                         </li>
                         <li>
-                            <a href="#">#هدفون</a>
+                            <a href="{% url 'products:shop' %}?q=هدفون">#هدفون</a>
                         </li>
                         <li>
-                            <a href="#">#هلدر</a>
+                            <a href="{% url 'products:shop' %}?q=هلدر">#هلدر</a>
                         </li>
                     </ul>
                 </div>
