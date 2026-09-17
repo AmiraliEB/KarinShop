@@ -12,7 +12,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.utils.text import slugify
 from django.views.generic import DetailView, View
-from products.models import AttributeValue, Comments, Product, ProductParent, ProductVariant
+from products.models import AttributeValue, Comments, Product, ProductImage, ProductParent, ProductVariant
 
 from .filters import ProductFilter
 from .forms import CommentForm
@@ -32,6 +32,7 @@ class ProductDetailView(DetailView):
     model = ProductVariant
     template_name = "products/product_details.html"
     context_object_name = "product_variant"
+    queryset = ProductVariant.objects.prefetch_related("parent_product__images")
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         self.object: ProductVariant = self.get_object()
@@ -167,7 +168,10 @@ class ShopView(View):
         search_query = request.GET.get("q", "").strip()
         products_qs = (
             ProductVariant.objects.select_related("parent_product")
-            .prefetch_related("products")
+            .prefetch_related(
+                "products",
+                "parent_product__images",
+            )
             .with_display_price()
             .all()
         )
@@ -210,8 +214,8 @@ class ShopView(View):
         page_number = self.request.GET.get("page")
         products_filter_by_page_number = paginator.get_page(page_number)
         context["products_by_page"] = products_filter_by_page_number
-        product_counter = products.aggregate(count_all_products=Count("id"))
-        context["count_all_products"] = product_counter.get("count_all_products")
+        # product_counter = products.aggregate(count_all_products=Count("id"))
+        context["count_all_products"] = paginator.count
         context["applied_ordering"] = applied_ordering
 
         return render(request, template_name="products/shop.html", context=context)

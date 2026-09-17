@@ -761,20 +761,6 @@
                                 <div class="space-y-2">
                                     <a href="{{ product.get_absolute_url }}" class="product-card_link">{{ product.full_name }}</a>
                                     <div class="product-card_price-wrapper">
-                                        <div class="product-card_rate">
-                                            <span class="flex items-center gap-x-0.5">
-                                                <svg class="size-4 text-blue-500 mb-0.5">
-                                                    <use href="#rocket"></use>
-                                                </svg>
-                                                <p class="text-xs">ارسال امروز</p>
-                                            </span>
-                                            <span class="text-gray-400 flex items-center text-sm gap-x-0.5">
-                                                <p>{{ product.parent_product.get_average_rate }}</p>
-                                                <svg class="size-4 mb-1">
-                                                    <use href="#star"></use>
-                                                </svg>
-                                            </span>
-                                        </div>
                                         <div class="product-card_price">
                                             {% if product.final_price == 0 or not product.is_available %}
                                                 <div class="w-full flex justify-end">

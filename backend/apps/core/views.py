@@ -67,7 +67,15 @@ class DashboardView(LoginRequiredMixin, generic.View):
             profile = None
 
         user_orders = user.orders.order_by("-datetime_created").prefetch_related(
-            Prefetch("items", queryset=OrderItem.objects.select_related("product__product_variant"))
+            Prefetch(
+                "items",
+                queryset=OrderItem.objects.select_related("product__product_variant__parent_product").prefetch_related(
+                    Prefetch(
+                        "product__product_variant__parent_product__images",
+                        queryset=ProductImage.objects.filter(is_main_image=True),
+                    )
+                ),
+            )
         )
         user_addresses_count = user.addresses.count()
 
