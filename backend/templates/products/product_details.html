@@ -255,7 +255,7 @@
                     </div>
                     <div class="slider-modal">
                         <div class="flex w-full h-fit items-center justify-between">
-                            <h1 class="font-DanaMedium text-lg">تصاویر گوشی موبایل اپل مدل iPhone 16 دو سیم کارت</h1>
+                            <h1 class="font-DanaMedium text-lg">تصاویر {{ product_variant.full_name }}</h1>
                             <svg class="size-6 cursor-pointer close-sliderModal">
                                 <use href="#x-mark"></use>
                             </svg>
@@ -283,7 +283,7 @@
                     <!-- INFOS -->
                     <div class="w-full md:w-3/5 flex flex-col gap-y-7">
                         <div class="flex items-center justify-between">
-                            <a href="{% url "products:shop" %}" class="font-DanaMedium text-sky-400">اپل / گوشی موبایل اپل</a>
+                            <a href="{% url 'products:shop' %}" class="font-DanaMedium text-sky-400">{{ category }} / {{ brand }}</a>
                             <div class="hidden md:flex items-center gap-x-2">
                                 <div class="tooltip">
                                     <div id="share-modal"
@@ -326,9 +326,9 @@
                         </div>
                         <div class="flex flex-col gap-y-3">
                             <p class="text-lg font-DanaDemiBold dark:text-gray-300">{{ product_variant.full_name }}</p>
-                            <p class="text-sm text-gray-300 dark:text-gray-500">
+                            {% comment %} <p class="text-sm text-gray-300 dark:text-gray-500">
                                 Apple iPhone 16 CH Dual SIM Storage 128GB And RAM 8GB Mobile Phone
-                            </p>
+                            </p> {% endcomment %}
                             <div class="flex items-center gap-x-2">
                                 <span class="flex items-center gap-x-1 text-sm">
                                     <svg class="size-4 text-yellow-400 mb-1.5">
@@ -345,51 +345,53 @@
                         <div class="flex flex-col gap-y-4">
                             <h1 class="font-DanaDemiBold text-lg color-title dark:text-gray-200"
                                 id="color-text">رنگ : {{ first_product.color }}</h1>
-                            <div class="flex items-center gap-x-3 child:rounded-full child:size-9 child:p-1">
+                            <div class="flex items-center gap-x-3 child:rounded-full child:size-9 child:p-1"
+                                 hx-indicator="#price-loading"
+                                 hx-disabled-elt=".color-select-btn">
                                 {% if product_counts > 1 %}
-                                    <button hx-post="{% url "products:product_selector" first_product.id %}"
-                                            hx-swap="None"
+                                    <button hx-post="{% url 'products:product_selector' first_product.id %}"
+                                            hx-swap="none"
+                                            title="{{ first_product.color.color_name }}"
                                             class="color-select-btn ring-4 ring-blue-400 transition-all duration-300 ease-in-out">
-                                        <span class="bg-black w-full h-full rounded-full flex"></span>
+                                        <span style="background-color: {% if not first_product.color.hex_code|slice:':1' == '#' %}#{% endif %}{{ first_product.color.hex_code }}"
+                                              class="w-full h-full rounded-full flex border border-gray-200 dark:border-gray-600">
+                                        </span>
                                     </button>
                                     {% for product in products %}
-                                        <button hx-post="{% url "products:product_selector" product.id %}"
-                                                hx-swap="None"
+                                        <button hx-post="{% url 'products:product_selector' product.id %}"
+                                                hx-swap="none"
+                                                title="{{ product.color.color_name }}"
                                                 class="color-select-btn ring-1 ring-gray-400 transition-all duration-300 ease-in-out">
-                                            <span class="bg-white app-border w-full h-full rounded-full flex"></span>
+                                            <span style="background-color: {% if not product.color.hex_code|slice:':1' == '#' %}#{% endif %}{{ product.color.hex_code }}"
+                                                  class="w-full h-full rounded-full flex border border-gray-200 dark:border-gray-600">
+                                            </span>
                                         </button>
                                     {% endfor %}
-                                {% else %}
-                                    <button hx-post="{% url "products:product_selector" first_product.id %}"
-                                            hx-swap="None"
-                                            class="color-select-btn ring-4 ring-blue-400 transition-all duration-300 ease-in-out">
-                                        <span class="bg-black w-full h-full rounded-full flex"></span>
+                                {% elif product_counts == 1 %}
+                                    <button class="color-select-btn ring-4 ring-blue-400 cursor-default"
+                                            title="{{ first_product.color.color_name }}">
+                                        <span style="background-color: {% if not first_product.color.hex_code|slice:':1' == '#' %}#{% endif %}{{ first_product.color.hex_code }}"
+                                              class="w-full h-full rounded-full flex border border-gray-200 dark:border-gray-600">
+                                        </span>
                                     </button>
                                 {% endif %}
                             </div>
                         </div>
                         <!-- Features Box  -->
-                        <div class="w-full flex flex-col gap-y-4">
-                            <h1 class="font-DanaDemiBold text-lg dark:text-gray-200">ویژگی‌ها</h1>
-                            <div class="grid grid-cols-12 gap-2 child:p-2 child:h-16 child:bg-gray-100 dark:child:bg-gray-900 child:rounded-lg child:flex child:flex-col child:gap-y-1.5">
-                                <div class="col-span-12 md:col-span-6 xl:col-span-4">
-                                    <p class="text-sm text-gray-500">فناوری صفحه‌ نمایش</p>
-                                    <p class="line-clamp-1 font-DanaDemiBold text-sm text-slate-800 dark:text-slate-200">LTPO Super Retina XDR</p>
-                                </div>
-                                <div class="col-span-12 md:col-span-6 xl:col-span-4">
-                                    <p class="text-sm text-gray-500">نسخه سیستم عامل</p>
-                                    <p class="line-clamp-1 font-DanaDemiBold text-sm text-slate-800 dark:text-slate-200">iOS 18</p>
-                                </div>
-                                <div class="col-span-12 md:col-span-6 xl:col-span-4">
-                                    <p class="text-sm text-gray-500">رزولوشن دوربین اصلی</p>
-                                    <p class="line-clamp-1 font-DanaDemiBold text-sm text-slate-800 dark:text-slate-200">48 مگاپیکسل</p>
-                                </div>
-                                <div class="col-span-12 md:col-span-6 xl:col-span-4">
-                                    <p class="text-sm text-gray-500">اندازه</p>
-                                    <p class="line-clamp-1 font-DanaDemiBold text-sm text-slate-800 dark:text-slate-200">6.1</p>
+                        {% if product_variant.key_features %}
+                            <div class="w-full flex flex-col gap-y-3">
+                                <h3 class="font-DanaDemiBold text-base dark:text-gray-200">ویژگی‌های اصلی</h3>
+                                <div class="grid grid-cols-2 gap-2.5">
+                                    {% for spec in product_variant.key_features %}
+                                        <div class="p-2.5 bg-gray-100 dark:bg-gray-900/70 border border-gray-200/60 dark:border-gray-800 rounded-xl flex flex-col justify-center gap-y-1">
+                                            <span class="text-xs text-gray-500 dark:text-gray-400 font-Dana">{{ spec.attribute.name }}</span>
+                                            <span class="font-DanaMedium text-xs sm:text-sm text-slate-800 dark:text-slate-200 truncate"
+                                                  title="{{ spec.value }}">{{ spec.value }}</span>
+                                        </div>
+                                    {% endfor %}
                                 </div>
                             </div>
-                        </div>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="mt-10 lg:mr-2 grid grid-cols-12 child:col-span-6 xl:child:col-span-3 gap-x-1 gap-y-2 lg:gap-4 child:border child:text-gray-400 child:dark:border-white/20 child:border-gray-200 child:rounded-lg child:h-12  child:p-2 child:flex child:items-center child:gap-x-1 lg:child:gap-x-2 child:text-sm lg:text-base">
@@ -425,7 +427,6 @@
         <!-- Best-selling products -->
         {% if related_products != None %}
             <section class="mx-4 mt-10 lg:mt-20">
-                <!-- SECTION TITLE -->
                 <div class="flex flex-col gap-y-4 xs:flex-row items-center justify-between w-full text-center xs:text-start">
                     <div class="flex items-center gap-x-2 sm:gap-x-4">
                         <span class="size-12 hidden xs:flex rounded-lg bg-white shadow-lg dark:bg-gray-800 flex-center">
@@ -441,7 +442,7 @@
                             <p class="text-sm text-gray-500 dark:text-gray-300">جدیدترین و بروزترین محصولات</p>
                         </div>
                     </div>
-                    <div class="w-full xs:w-auto flex justify-between xs:justify-end  items-center gap-x-2">
+                    <div class="w-full xs:w-auto flex justify-between xs:justify-end items-center gap-x-2">
                         <div class="flex items-center gap-x-2">
                             <button class="slider-navigate_btn BestSelling-prev-slide">
                                 <svg class="size-6 -rotate-90">
@@ -454,7 +455,7 @@
                                 </svg>
                             </button>
                         </div>
-                        <a href="#"
+                        <a href="{% url 'products:shop' %}"
                            class="group shadow-xl text-sm md:text-base flex gap-x-1.5 items-center px-2 h-10 md:px-3 text-white bg-blue-600 rounded-xl">
                             <p>مشاهده همه</p>
                             <span class="w-7 h-7 rounded-full bg-blue-500 flex-center md:group-hover:-translate-x-1 transition-transform duration-300">
@@ -465,73 +466,73 @@
                         </a>
                     </div>
                 </div>
-                <!-- Latest products Slider -->
                 <div class="swiper BestSelling mt-5 w-full">
                     <div class="swiper-wrapper py-5">
                         {% for product_variant in related_products %}
-                            <!-- PRODUCT ITEM -->
-                            <div class="swiper-slide">
-                                <div class="group relative flex flex-col bg-white dark:bg-gray-800 rounded-[18px] overflow-hidden border border-gray-100 dark:border-white/[0.07] shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 ease-out">
-                                    <!-- badge تخفیف -->
-                                    {% if product_variant.discount_percentage > 0 %}
-                                        <span class="absolute top-3 right-3 z-10 bg-red-500 text-white text-[11px] font-DanaMedium px-2.5 py-0.5 rounded-full">
-                                            ٪{{ product_variant.discount_percentage }}
-                                        </span>
-                                    {% endif %}
-                                    <div class="absolute top-3 left-3 z-10 flex flex-col gap-y-1.5 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 ease-out">
-                                        <button class="size-8 bg-white dark:bg-gray-700 rounded-[10px] flex items-center justify-center border border-gray-100 dark:border-white/10 text-gray-400 hover:bg-blue-600 hover:border-blue-600 hover:text-white dark:hover:bg-blue-600 dark:hover:border-blue-600 dark:hover:text-white shadow-sm transition-all duration-150">
-                                            <svg class="size-4">
-                                                <use href="#shopping-cart"></use>
-                                            </svg>
-                                        </button>
-                                        <button class="size-8 bg-white dark:bg-gray-700 rounded-[10px] flex items-center justify-center border border-gray-100 dark:border-white/10 text-gray-400 hover:bg-red-500 hover:border-red-500 hover:text-white dark:hover:bg-red-500 dark:hover:border-red-500 dark:hover:text-white shadow-sm transition-all duration-150">
-                                            <svg class="size-4">
-                                                <use href="#heart"></use>
-                                            </svg>
-                                        </button>
-                                        <button class="size-8 bg-white dark:bg-gray-700 rounded-[10px] flex items-center justify-center border border-gray-100 dark:border-white/10 text-gray-400 hover:bg-blue-600 hover:border-blue-600 hover:text-white dark:hover:bg-blue-600 dark:hover:border-blue-600 dark:hover:text-white shadow-sm transition-all duration-150">
-                                            <svg class="size-4">
-                                                <use href="#arrows-up-down"></use>
-                                            </svg>
-                                        </button>
+                            <div class="swiper-slide product-card group">
+                                <div class="product-card_header">
+                                    <div class="flex items-center gap-x-2">
+                                        <div class="tooltip">
+                                            <button class="rounded-full p-1.5 app-border app-hover">
+                                                <svg class="size-4">
+                                                    <use href="#shopping-cart"></use>
+                                                </svg>
+                                            </button>
+                                            <div class="tooltiptext">سبد خرید</div>
+                                        </div>
+                                        <div class="tooltip">
+                                            <button class="rounded-full p-1.5 app-border app-hover">
+                                                <svg class="size-4">
+                                                    <use href="#heart"></use>
+                                                </svg>
+                                            </button>
+                                            <div class="tooltiptext">علاقه مندی</div>
+                                        </div>
+                                        <div class="tooltip">
+                                            <button class="rounded-full p-1.5 app-border app-hover">
+                                                <svg class="size-4">
+                                                    <use href="#arrows-up-down"></use>
+                                                </svg>
+                                            </button>
+                                            <div class="tooltiptext">مقایسه</div>
+                                        </div>
                                     </div>
-                                    <!-- تصویر محصول -->
-                                    <a href="{{ product_variant.get_absolute_url }}"
-                                       class="relative block w-full aspect-square bg-gray-50 dark:bg-gray-900/50 overflow-hidden rounded-2xl">
-                                        <img class="absolute inset-0 w-full h-full object-contain p-6 mix-blend-multiply dark:mix-blend-normal transition-opacity duration-500 ease-in-out group-hover:opacity-0"
-                                             src="{{ product_variant.parent_product.get_main_image }}"
-                                             alt="{{ product_variant.full_name }}">
-                                        <img class="absolute inset-0 w-full h-full object-contain p-6 mix-blend-multiply dark:mix-blend-normal transition-opacity duration-500 ease-in-out opacity-0 group-hover:opacity-100"
+                                    {% if product_variant.has_discount %}
+                                        <span class="product-card_badge">{{ product_variant.discount_percentage }}% تخفیف‌</span>
+                                    {% endif %}
+                                </div>
+                                <a href="{{ product_variant.get_absolute_url }}"
+                                   class="relative flex items-center justify-center w-full aspect-square bg-white rounded-2xl p-2 overflow-hidden">
+                                    <img class="w-full h-full object-contain transition-all duration-300 {% if product_variant.parent_product.get_second_image %}group-hover:opacity-0{% endif %}"
+                                         src="{{ product_variant.parent_product.get_main_image }}"
+                                         alt="{{ product_variant.full_name }}">
+                                    {% if product_variant.parent_product.get_second_image %}
+                                        <img class="absolute inset-0 w-full h-full object-contain p-2 transition-all duration-300 opacity-0 group-hover:opacity-100"
                                              src="{{ product_variant.parent_product.get_second_image }}"
                                              alt="{{ product_variant.full_name }}">
-                                    </a>
-                                    <!-- خط جدا کننده -->
-                                    <div class="h-px bg-gray-100 dark:bg-white/[0.06] mx-3.5"></div>
-                                    <!-- اطلاعات محصول -->
-                                    <div class="flex flex-col gap-y-2.5 p-3.5">
-                                        <a href="{{ product_variant.get_absolute_url }}"
-                                           class="text-[13px] font-DanaMedium leading-[1.7] text-gray-800 dark:text-gray-100 line-clamp-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200">
-                                            {{ product_variant.full_name }}
-                                        </a>
-                                        <!-- ارسال و امتیاز -->
-                                        <div class="flex items-center justify-between">
-                                            <span class="flex items-center gap-x-1 text-blue-500 text-xs font-DanaMedium">
-                                                <svg class="size-3.5 shrink-0">
+                                    {% endif %}
+                                </a>
+                                <div class="space-y-2">
+                                    <a href="{{ product_variant.get_absolute_url }}"
+                                       class="product-card_link">{{ product_variant.full_name }}</a>
+                                    <div class="product-card_price-wrapper">
+                                        <div class="product-card_rate">
+                                            <span class="flex items-center gap-x-0.5">
+                                                <svg class="size-4 text-blue-500 mb-0.5">
                                                     <use href="#rocket"></use>
                                                 </svg>
-                                                ارسال امروز
+                                                <p class="text-xs">ارسال امروز</p>
                                             </span>
-                                            <span class="flex items-center gap-x-0.5 text-xs text-gray-400">
-                                                5.0
-                                                <svg class="size-3.5 text-amber-400 mb-0.5">
+                                            <span class="text-gray-400 flex items-center text-sm gap-x-0.5">
+                                                <p>{{ product_variant.parent_product.get_average_rate }}</p>
+                                                <svg class="size-4 mb-1">
                                                     <use href="#star"></use>
                                                 </svg>
                                             </span>
                                         </div>
-                                        <!-- Price -->
                                         <div class="product-card_price">
                                             {% if product_variant.has_discount %}
-                                                <del>{{ product.initial_price|intcomma:False }}
+                                                <del>{{ product_variant.initial_price|intcomma:False }}
                                                     <h6>تومان</h6>
                                                 </del>
                                                 <p>{{ product_variant.final_price|intcomma:False }}</p>
@@ -540,12 +541,6 @@
                                                 <p>{{ product_variant.final_price|intcomma:False }}</p>
                                                 <span>تومان</span>
                                             {% endif %}
-                                            <div class="flex items-baseline gap-x-1">
-                                                <span class="text-sm font-DanaDemiBold text-gray-900 dark:text-gray-50">
-                                                    {{ product_variant.final_price|intcomma:False }}
-                                                </span>
-                                                <span class="text-xs text-gray-500 dark:text-gray-400">تومان</span>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -562,7 +557,7 @@
                 <button class="tab-btn text-gray-500 dark:text-gray-300" data-target="tab3">دیدگاه‌ها</button>
             </div>
             <div class="tab-content tab1 block">
-                <h2 class="font-D anaDemiBold border-b-2 border-blue-500 w-fit p-1 text-lg">معرفی</h2>
+                <h2 class="font-DanaDemiBold border-b-2 border-blue-500 w-fit p-1 text-lg">معرفی</h2>
                 <p class="mt-4 leading-8">
                     گوشی موبایل اپل مدل iPhone 16، به عنوان یکی از جدیدترین مدل‌های این برند معتبر، با طراحی مدرن و ویژگی‌های پیشرفته، تجربه‌ای بی‌نظیر از دنیای تکنولوژی را برای کاربران فراهم می‌کند. این گوشی با ظرفیت 128 گیگابایت و رم 8 گیگابایت، عملکردی سریع و روان را ارائه می‌دهد که به راحتی از پس کارهای روزمره و multitasking برمی‌آید. طراحی این دستگاه با دقت و ظرافت بالا انجام شده و بدنه آن از مواد با کیفیت ساخته شده است که حس لوکس بودن را به کاربر منتقل می‌کند. قابلیت پشتیبانی از دو سیم کارت، امکان استفاده هر مفید است. دوربین‌های با کیفیت پارت نامبر CH مربوط به کشور چین است که تفاوت خاصی با دیگر پارت نامبرها ندارند و تنها در مورد استفاده از تماس‌های صوتی و تماس‌های گروهی در نرم افزار فیس تایم شامل محدودیت است. این پارت نامبر از دو سیم‌کارت فیزیکی پشتیبانی می‌کند که یک نکته مثبت محسوب می‌شود. این گوشی، مانند تمامی گوشی‌های عرضه‌شده در دیجی‌کالا، به صورت قانونی و تجاری وارد کشور شده و با رجیستر رسمی، کارت گارانتی معتبر و کد فعال‌سازی به شما تحویل داده می‌شود.
                     <a href="#" class="flex gap-x-1 items-center text-blue-400">
@@ -613,9 +608,7 @@
                                 خود شوید
                             </p>
                         {% else %}
-                            <form action="{% url "products:post_redirect" product_variant.id %}"
-                                  method="post"
-                                  class='w-full flex flex-col items-start'>
+                            <form action="" method="post" class='w-full flex flex-col items-start'>
                                 {% csrf_token %}
                                 <div class="flex flex-col items-start mb-4">
                                     <p class="text-gray-500 dark:text-white text-sm mb-2">امتیاز شما:</p>
@@ -721,23 +714,6 @@
                                             <p>{{ comment_item.datetime_created|to_jalali:"%Y/%m/%d" }}</p>
                                             <p>{{ comment_item.user.username }}</p>
                                         </div>
-                                        <div class="flex items-center gap-x-2 flex-wrap mt-2">
-                                            <p class="text-gray-400 text-sm">آیا این دیدگاه برایتان مفید بود؟</p>
-                                            <div class="flex items-center gap-x-2 child:flex child:items-center child:gap-x-1 child:rounded-lg child:p-2 child:font-DanaMedium child:duration-300 child:transition-all child:text-sm">
-                                                <button class="text-green-600 ring-transparent ring-1 focus:ring-green-600  dark:focus:ring-green-600">
-                                                    78
-                                                    <svg class="w-4 h-4">
-                                                        <use href="#hand-up"></use>
-                                                    </svg>
-                                                </button>
-                                                <button class="text-red-500 ring-transparent ring-1 focus:ring-[#EF4343]  dark:focus:ring-[#EF4343]">
-                                                    25
-                                                    <svg class="w-4 h-4">
-                                                        <use href="#hand-down"></use>
-                                                    </svg>
-                                                </button>
-                                            </div>
-                                        </div>
                                     </div>
                                 </li>
                             {% empty %}
@@ -783,7 +759,7 @@
                                         </li>
                                     {% elif page_num > comments.number|add:'-3' and page_num < comments.number|add:'3' %}
                                         <li class="bg-white dark:bg-gray-800 hover:bg-blue-500 dark:hover:bg-blue-500 hover:text-white">
-                                            <a href="?page={{ page_num }}"
+                                            <a href="?page={{ page_num }}#comments-section"
                                                class="flex items-center justify-center w-full h-full">
                                                 {{ page_num }}
                                             </a>
@@ -796,7 +772,7 @@
                                 {% endfor %}
                                 {% if comments.has_next %}
                                     <li class="bg-white dark:bg-gray-800 hover:bg-blue-500 dark:hover:bg-blue-500 hover:text-white">
-                                        <a href="?page={{ comments.next_page_number }}"
+                                        <a href="?page={{ comments.next_page_number }}#comments-section"
                                            class="flex items-center justify-center w-full h-full">
                                             <svg class="size-5">
                                                 <use href="#chevron-left"></use>

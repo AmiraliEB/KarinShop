@@ -12,7 +12,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.utils.text import slugify
 from django.views.generic import DetailView, View
-from products.models import AttributeValue, Comments, Product, ProductParent, ProductVariant
+from products.models import AttributeValue, Comments, Product, ProductImage, ProductParent, ProductVariant
 
 from .filters import ProductFilter
 from .forms import CommentForm
@@ -32,6 +32,7 @@ class ProductDetailView(DetailView):
     model = ProductVariant
     template_name = "products/product_details.html"
     context_object_name = "product_variant"
+    queryset = ProductVariant.objects.prefetch_related("parent_product__images")
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         self.object: ProductVariant = self.get_object()
@@ -152,22 +153,29 @@ class ProductDetailView(DetailView):
             cart.get_item_quantity(first_product) * first_product.initial_price
         )
         context["item_total_price"] = cart.get_item_quantity(first_product) * first_product.final_price
-
+        context["brand"] = product_variant.parent_product.brand
+        context["category"] = product_variant.parent_product.category
         return context
 
 
 class ShopView(View):
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        search_query = request.GET.get("q", "").strip()
         context = {}
         applied_ordering = []
         ordering_param = request.GET.get("ordering", "-popular")
         last_month = timezone.now() - timedelta(days=30)
+        search_query = request.GET.get("q", "").strip()
         products_qs = (
             ProductVariant.objects.select_related("parent_product")
-            .prefetch_related("products")
+            .prefetch_related(
+                "products",
+                "parent_product__images",
+            )
             .with_display_price()
             .all()
         )
+
         if any([key in ordering_param for key in ["is_amazing", "best_seller", "popular"]]):
 
             products_qs = products_qs.annotate(
@@ -190,6 +198,9 @@ class ShopView(View):
                     Value(0),
                 ),
             )
+        if search_query:
+            for word in search_query.split():
+                products_qs = products_qs.filter(_full_name__icontains=word)
         product_filter = ProductFilter(request.GET, queryset=products_qs)
         products = product_filter.qs
 
@@ -199,12 +210,12 @@ class ShopView(View):
         if not applied_ordering:
             applied_ordering = ["popular"]
 
-        paginator = Paginator(products, 3)
+        paginator = Paginator(products, 6)
         page_number = self.request.GET.get("page")
         products_filter_by_page_number = paginator.get_page(page_number)
         context["products_by_page"] = products_filter_by_page_number
-        product_counter = products.aggregate(count_all_products=Count("id"))
-        context["count_all_products"] = product_counter.get("count_all_products")
+        # product_counter = products.aggregate(count_all_products=Count("id"))
+        context["count_all_products"] = paginator.count
         context["applied_ordering"] = applied_ordering
 
         return render(request, template_name="products/shop.html", context=context)
@@ -223,3 +234,22 @@ def product_selector_view(request, pk):
         "item_total_price": item_total_price,
     }
     return render(request, template_name="products/partials/update_response_on_color.html", context=context)
+
+
+def live_search_view(request):
+    query = request.GET.get("q", "").strip()
+    results = []
+
+    if len(query) >= 2:
+        qs = ProductVariant.objects.select_related("parent_product").prefetch_related("parent_product__images")
+
+        for word in query.split():
+            qs = qs.filter(_full_name__icontains=word)
+
+        results = qs[:5]
+
+    return render(
+        request,
+        "products/partials/_search_results.html",
+        {"results": results, "query": query},
+    )

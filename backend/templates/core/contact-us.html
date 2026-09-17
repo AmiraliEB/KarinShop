@@ -132,7 +132,7 @@
         <nav class="flex mt-8" aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
                 <li class="inline-flex items-center">
-                    <a href="index.html"
+                    <a href="{% url "homepage" %}"
                        class="inline-flex items-center text-sm gap-x-1  text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
                         <svg class="w-4 h-4 mb-0.5">
                             <use href="#home" />
@@ -187,7 +187,7 @@
                                       class="w-full h-24 p-3 outline dark:outline-none outline-1 -outline-offset-1 placeholder:text-gray-400 transition-all col-span-12 text-gray-800 dark:text-gray-100 dark:bg-gray-900 bg-slate-100 border border-transparent hover:border-slate-200 appearance-none rounded-md outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 dark:focus:ring-blue-400"></textarea>
                         </div>
                         <div>
-                            <a href="index.html" class="submit-btn">ارسال پیام</a>
+                            <a href="{% url "homepage" %}" class="submit-btn">ارسال پیام</a>
                         </div>
                     </form>
                     <div class="mt-10 flex items-center justify-center gap-x-8 flex-wrap text-gray-500 dark:text-gray-400 child:flex child:items-center child:justify-center child:gap-x-1">
