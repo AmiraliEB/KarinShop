@@ -245,3 +245,6 @@ CACHES = {
         "LOCATION": "redis://redis:6379/1",
     }
 }
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
+DJANGO_REDIS_SCAN_ITERSIZE = 100_000
